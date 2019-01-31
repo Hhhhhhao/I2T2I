@@ -2,19 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b3134c42-5a5c-4eae-8274-2ca6fc32ab15" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/coco/cocoapi/PythonAPI/pycocotools/coco.py" beforeDir="false" afterPath="$PROJECT_DIR$/data/coco/cocoapi/PythonAPI/pycocotools/coco.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data_loader/data_loaders.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_loader/data_loaders.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data_loader/datasets_custom.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_loader/datasets_custom.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/loss.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/loss.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/metric.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/metric.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/train.py" beforeDir="false" afterPath="$PROJECT_DIR$/train.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/trainer/trainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/trainer/trainer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/util.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/util.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/train_show_and_tell.sh" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -109,11 +97,20 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="config.json" pinned="false" current-in-tab="true">
+      <file leaf-file-name="config.json" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/config.json">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="270">
               <caret line="18" column="31" selection-start-line="18" selection-start-column="31" selection-end-line="18" selection-end-column="31" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="train_show_and_tell.sh" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/train_show_and_tell.sh">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="480">
+              <caret line="32" column="17" lean-forward="true" selection-start-line="32" selection-start-column="17" selection-end-line="32" selection-end-column="17" />
             </state>
           </provider>
         </entry>
@@ -157,6 +154,7 @@
         <option value="$PROJECT_DIR$/model/metric.py" />
         <option value="$PROJECT_DIR$/trainer/trainer.py" />
         <option value="$PROJECT_DIR$/config.json" />
+        <option value="$PROJECT_DIR$/train_show_and_tell.sh" />
       </list>
     </option>
   </component>
@@ -170,10 +168,10 @@
     <packageJsonPaths />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="2359" />
-    <option name="y" value="-157" />
-    <option name="width" value="1001" />
-    <option name="height" value="1057" />
+    <option name="x" value="372" />
+    <option name="y" value="23" />
+    <option name="width" value="1068" />
+    <option name="height" value="877" />
   </component>
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -189,41 +187,6 @@
             <path>
               <item name="I2T2I" type="b2602c69:ProjectViewProjectNode" />
               <item name="I2T2I" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="I2T2I" type="b2602c69:ProjectViewProjectNode" />
-              <item name="I2T2I" type="462c0819:PsiDirectoryNode" />
-              <item name="base" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="I2T2I" type="b2602c69:ProjectViewProjectNode" />
-              <item name="I2T2I" type="462c0819:PsiDirectoryNode" />
-              <item name="data" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="I2T2I" type="b2602c69:ProjectViewProjectNode" />
-              <item name="I2T2I" type="462c0819:PsiDirectoryNode" />
-              <item name="data_loader" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="I2T2I" type="b2602c69:ProjectViewProjectNode" />
-              <item name="I2T2I" type="462c0819:PsiDirectoryNode" />
-              <item name="model" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="I2T2I" type="b2602c69:ProjectViewProjectNode" />
-              <item name="I2T2I" type="462c0819:PsiDirectoryNode" />
-              <item name="saved" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="I2T2I" type="b2602c69:ProjectViewProjectNode" />
-              <item name="I2T2I" type="462c0819:PsiDirectoryNode" />
-              <item name="trainer" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="I2T2I" type="b2602c69:ProjectViewProjectNode" />
-              <item name="I2T2I" type="462c0819:PsiDirectoryNode" />
-              <item name="utils" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -366,7 +329,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="2359" y="-157" width="1001" height="1057" extended-state="0" />
+    <frame x="372" y="23" width="1068" height="877" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -376,12 +339,12 @@
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Python Console" order="7" />
       <window_info anchor="bottom" id="Terminal" order="7" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.12304484" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.11500975" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="right" id="Database" order="3" />
       <window_info anchor="right" id="SciView" order="3" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.3991462" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.49405548" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -632,6 +595,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="270">
           <caret line="18" column="31" selection-start-line="18" selection-start-column="31" selection-end-line="18" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/train_show_and_tell.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="480">
+          <caret line="32" column="17" lean-forward="true" selection-start-line="32" selection-start-column="17" selection-end-line="32" selection-end-column="17" />
         </state>
       </provider>
     </entry>
