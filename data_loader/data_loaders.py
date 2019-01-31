@@ -1,11 +1,27 @@
-import os
-import h5py
-import json
 import torch
 from torch.utils.data import DataLoader, sampler
 from torchvision import datasets, transforms
 from base import BaseDataLoader
-from datasets_custom import COCOCaptionDataset
+from data_loader.datasets_custom import COCOCaptionDataset
+
+
+def collate_fn(data):
+    # sort the data in descentding order
+    data.sort(key=lambda  x: len(x[1]), reverse=True)
+    images, captions = zip(*data)
+
+    # merge images (from tuple of 1D tensor to 4D tensor)
+    batch_images = torch.stack(images, 0)
+
+    # merge captions (from tuple of 1D tensor to 2D tensor)
+    batch_caption_lengths = [len(cap) for cap in captions]
+    batch_captions = torch.zeros(len(captions), max(batch_caption_lengths)).long()
+    for i, cap in enumerate(captions):
+        end = batch_caption_lengths[i]
+        batch_captions[i, :end] = cap[:end]
+
+    return batch_images, batch_captions, batch_caption_lengths
+
 
 
 class MnistDataLoader(BaseDataLoader):
@@ -32,40 +48,34 @@ class COCOCaptionDataLoader(DataLoader):
         self.which_set = which_set
         assert self.which_set in {'train', 'val', 'test'}
 
-        self.image_size = image_size
+        self.image_size = (image_size, image_size)
         self.batch_size = batch_size
         self.num_workers = num_workers
 
+        # transforms.ToTensor convert PIL images in range [0, 255] to a torch in range [0.0, 1.0]
         self.transform = transforms.Compose([
             transforms.Resize(self.image_size),
+            transforms.RandomHorizontalFlip(),
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         ])
         self.dataset = COCOCaptionDataset(self.data_dir, self.which_set, self.image_size, self.batch_size, self.transform)
 
         if self.which_set == 'train':
-            # Randomly sample a caption length, and sample indices with that length.
-            # indices = self.dataset.get_indices()
-            # Create and assign a batch sampler to retrieve a batch with the sampled indices.
-            # initial_sampler = sampler.SubsetRandomSampler(indices=indices)
-            # data loader for COCO dataset.
-            # super(COCOCaptionDataLoader, self).__init__(
-            #     dataset=self.dataset,
-            #     batch_sampler=initial_sampler,
-            #     num_workers=self.num_workers,
-            #     drop_last=False)
             super(COCOCaptionDataLoader, self).__init__(
                 dataset=self.dataset,
                 batch_size=self.batch_size,
                 shuffle=True,
-                num_workers=self.num_workers
+                num_workers=self.num_workers,
+                collate_fn=collate_fn
             )
         else:
             super(COCOCaptionDataLoader, self).__init__(
                 dataset=self.dataset,
                 batch_size=self.batch_size,
-                shuffle=True,
-                num_workers=self.num_workers)
+                shuffle=False,
+                num_workers=self.num_workers,
+                collate_fn=collate_fn)
 
 
 if __name__ == '__main__':
@@ -74,7 +84,7 @@ if __name__ == '__main__':
     data_loader = COCOCaptionDataLoader(
         data_dir='/Users/leon/Projects/I2T2I/data/coco/',
         which_set='train',
-        image_size=(128, 128),
+        image_size=128,
         batch_size=16,
         num_workers=0)
 
@@ -106,21 +116,9 @@ if __name__ == '__main__':
     # Print the total number of keys in the word2idx dictionary.
     print('Total number of tokens in vocabulary:', len(data_loader.dataset.vocab))
 
-    # Randomly sample a caption length, and sample indices with that length.
-    indices = data_loader.dataset.get_indices()
-    print('{} sampled indices: {}'.format(len(indices), indices))
-    # Create and assign a batch sampler to retrieve a batch with the sampled indices.
-    new_sampler = sampler.SubsetRandomSampler(indices=indices)
-    data_loader.batch_sampler.sampler = new_sampler
+    for i, (images, captions, caption_lengths) in enumerate(data_loader):
+        print("done")
 
-    # batch = data_loader
-
-    for batch in data_loader:
-        images = batch[0]
-        captions = batch[1]
-        break
-
-    images, captions = batch[0], batch[1]
     print('images.shape:', images.shape)
     print('captions.shape:', captions.shape)
 

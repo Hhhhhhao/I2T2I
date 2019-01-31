@@ -87,13 +87,6 @@ class COCOCaptionDataset(Dataset):
 
             return orig_image, image
 
-    def get_indices(self):
-        sel_length = np.random.choice(self.caption_lengths)
-        all_indices = np.where([self.caption_lengths[i] == \
-                                sel_length for i in np.arange(len(self.caption_lengths))])[0]
-        indices = list(np.random.choice(all_indices, size=self.batch_size))
-        return indices
-
     def __len__(self):
         if self.which_set == "train" or self.which_set == "val":
             return len(self.ids)
