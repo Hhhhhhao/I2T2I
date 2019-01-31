@@ -36,9 +36,9 @@ def bleu4(output, target, length, vocab):
         output_list = output.tolist()
         start_slice = 0
         end_slice = 0
-        for i, len in enumerate(length):
+        for i, l in enumerate(length):
             predicted_ids = []
-            end_slice += len
+            end_slice += l
             sentence_target = caption_list[start_slice:end_slice]
             sentence_output = output_list[start_slice:end_slice]
             start_slice = end_slice
