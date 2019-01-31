@@ -60,6 +60,7 @@ class COCOCaptionDataLoader(DataLoader):
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         ])
         self.dataset = COCOCaptionDataset(self.data_dir, self.which_set, self.image_size, self.batch_size, self.transform)
+        self.n_samples = len(self.dataset)
 
         if self.which_set == 'train':
             super(COCOCaptionDataLoader, self).__init__(
