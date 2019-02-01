@@ -108,10 +108,10 @@ class DecoderRNN(BaseModel):
         """
         Initializes some parameters with values from the uniform distribution, for easier convergence.
         """
-        seed = 1997
-        rng = np.random.RandomState(seed)
-        embedding_weights = rng.uniform(-0.1, 0.1, size=(self.vocab_size, self.embed_size))
-        self.embedding.weight.data.copy_(torch.fromnumpy(embedding_weights))
+        # seed = 1997
+        # rng = np.random.RandomState(seed)
+        # embedding_weights = rng.uniform(-0.1, 0.1, size=(self.vocab_size, self.embed_size))
+        # self.embedding.weight.data.copy_(torch.fromnumpy(embedding_weights))
         self.linear.bias.data.fill_(0)
         self.linear.weight.data.uniform_(-0.1, 0.1)
 
