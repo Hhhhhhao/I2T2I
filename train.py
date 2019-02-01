@@ -20,7 +20,8 @@ def main(config, resume):
     # setup data_loader instances
     train_data_loader = get_instance(module_data, 'train_data_loader', config)
     valid_data_loader = get_instance(module_data, 'valid_data_loader', config)
-
+    print("train vocab size:{}".format(len(train_data_loader.dataset.vocab)))
+    print("val vocab size:{}".format(len(valid_data_loader.dataset.vocab)))
     # build model architecture
     model = get_instance(module_arch, 'arch', config)
     print(model)
