@@ -54,6 +54,7 @@ class Trainer(BaseTrainer):
             batch_captions = batch_captions.to(self.device)
             # batch_caption_lengths = batch_caption_lengths.to(self.device)
             batch_caption_lengths = [l-1 for l in batch_caption_lengths]
+            batch_caption_lengths = torch.tensor(batch_caption_lengths)
 
             self.optimizer.zero_grad()
             outputs = self.model(batch_images, batch_captions[:, :-1], batch_caption_lengths)
@@ -65,7 +66,7 @@ class Trainer(BaseTrainer):
             self.writer.set_step((epoch - 1) * len(self.data_loader) + batch_idx)
             self.writer.add_scalar('loss', loss.item())
             total_loss += loss.item()
-            total_metrics += self._eval_metrics(outputs, targets, batch_caption_lengths)
+            total_metrics += self._eval_metrics(outputs, targets, batch_caption_lengths.tolist())
 
             if self.verbosity >= 2 and batch_idx % self.log_step == 0:
                 self.logger.info('Train Epoch: {} [{}/{} ({:.0f}%)] Loss: {:.6f}'.format(
@@ -105,6 +106,7 @@ class Trainer(BaseTrainer):
                 batch_images = batch_images.to(self.device)
                 batch_captions = batch_captions.to(self.device)
                 batch_caption_lengths = [l - 1 for l in batch_caption_lengths]
+                batch_caption_lengths = torch.tensor(batch_caption_lengths)
 
                 outputs = self.model(batch_images, batch_captions[:, :-1], batch_caption_lengths)
                 targets = pack_padded_sequence(batch_captions[:, 1:], batch_caption_lengths, batch_first=True)[0]
@@ -113,7 +115,7 @@ class Trainer(BaseTrainer):
                 self.writer.set_step((epoch - 1) * len(self.valid_data_loader) + batch_idx, 'valid')
                 self.writer.add_scalar('loss', loss.item())
                 total_val_loss += loss.item()
-                total_val_metrics += self._eval_metrics(outputs, targets)
+                total_val_metrics += self._eval_metrics(outputs, targets, batch_caption_lengths.tolist())
                 self.writer.add_image('input', make_grid(batch_images.cpu(), nrow=8, normalize=True))
 
         return {
