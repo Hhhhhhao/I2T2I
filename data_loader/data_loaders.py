@@ -2,7 +2,7 @@ import torch
 from torch.utils.data import DataLoader, sampler
 from torchvision import datasets, transforms
 from base import BaseDataLoader
-from data_loader.datasets_custom import COCOCaptionDataset
+from data_loader.datasets_custom import COCOCaptionDataset, CaptionDataset
 
 
 def collate_fn(data):
@@ -23,7 +23,6 @@ def collate_fn(data):
     return batch_images, batch_captions, batch_caption_lengths
 
 
-
 class MnistDataLoader(BaseDataLoader):
     """
     MNIST data loading demo using BaseDataLoader
@@ -40,7 +39,7 @@ class MnistDataLoader(BaseDataLoader):
 
 class COCOCaptionDataLoader(DataLoader):
     """
-
+    COCO Image Caption Model Data Loader
     """
     def __init__(self, data_dir, which_set, image_size, batch_size, num_workers):
 
@@ -59,7 +58,7 @@ class COCOCaptionDataLoader(DataLoader):
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         ])
-        self.dataset = COCOCaptionDataset(self.data_dir, self.which_set, self.image_size, self.batch_size, self.transform)
+        self.dataset = COCOCaptionDataset(self.data_dir, self.batch_size, self.transform)
         self.n_samples = len(self.dataset)
 
         if self.which_set == 'train':
@@ -79,53 +78,68 @@ class COCOCaptionDataLoader(DataLoader):
                 collate_fn=collate_fn)
 
 
-if __name__ == '__main__':
-    import nltk
+class CaptionDataLoader(DataLoader):
+    """
+    CUB (Birds) Image Captioning Data Loader
+    """
+    def __init__(self, data_dir, dataset_name, which_set, image_size, batch_size, num_workers):
 
-    data_loader = COCOCaptionDataLoader(
-        data_dir='/Users/leon/Projects/I2T2I/data/coco/',
+        self.data_dir = data_dir
+        self.which_set = which_set
+        self.dataset_name = dataset_name
+        assert self.which_set in {'train', 'valid', 'test'}
+
+        self.image_size = (image_size, image_size)
+        self.batch_size = batch_size
+        self.num_workers = num_workers
+
+        # transforms.ToTensor convert PIL images in range [0, 255] to a torch in range [0.0, 1.0]
+        self.transform = transforms.Compose([
+            transforms.Resize(self.image_size),
+            transforms.RandomHorizontalFlip(),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+        ])
+
+        self.dataset = CaptionDataset(self.data_dir, self.dataset_name, self.which_set, self.transform, vocab_from_file=False)
+        self.n_samples = len(self.dataset)
+
+        if self.which_set == 'train':
+            super(CaptionDataLoader, self).__init__(
+                dataset=self.dataset,
+                batch_size=self.batch_size,
+                shuffle=True,
+                num_workers=self.num_workers,
+                collate_fn=collate_fn
+            )
+        else:
+            super(CaptionDataLoader, self).__init__(
+                dataset=self.dataset,
+                batch_size=self.batch_size,
+                shuffle=False,
+                num_workers=0,
+                collate_fn=collate_fn)
+
+
+
+if __name__ == '__main__':
+    data_loader = CaptionDataLoader(
+        data_dir='/Users/leon/Projects/I2T2I/data/',
+        dataset_name="flowers",
         which_set='train',
         image_size=128,
         batch_size=16,
         num_workers=0)
 
-    sample_caption = 'A person doing a trick on a rail while riding a skateboard.'
-    sample_tokens = nltk.tokenize.word_tokenize(str(sample_caption).lower())
-    print(sample_tokens)
-
-    sample_caption = []
-    start_word = data_loader.dataset.vocab.start_word
-    print('Special start word:', start_word)
-    sample_caption.append(data_loader.dataset.vocab(start_word))
-    print(sample_caption)
-
-    sample_caption.extend([data_loader.dataset.vocab(token) for token in sample_tokens])
-    print(sample_caption)
-
-    end_word = data_loader.dataset.vocab.end_word
-    print('Special end word:', end_word)
-
-    sample_caption.append(data_loader.dataset.vocab(end_word))
-    print(sample_caption)
-
-    sample_caption = torch.Tensor(sample_caption).long()
-    print(sample_caption)
-
-    # Preview the word2idx dictionary.
-    print(dict(list(data_loader.dataset.vocab.word2idx.items())[:10]))
-
-    # Print the total number of keys in the word2idx dictionary.
-    print('Total number of tokens in vocabulary:', len(data_loader.dataset.vocab))
-
     for i, (images, captions, caption_lengths) in enumerate(data_loader):
         print("done")
 
-    print('images.shape:', images.shape)
-    print('captions.shape:', captions.shape)
+        print('images.shape:', images.shape)
+        print('captions.shape:', captions.shape)
 
-    # Print the pre-processed images and captions.
-    print('images:', images)
-    print('captions:', captions)
+        # Print the pre-processed images and captions.
+        print('images:', images)
+        print('captions:', captions)
 
 
 
