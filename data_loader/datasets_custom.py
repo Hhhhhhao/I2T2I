@@ -12,6 +12,7 @@ from torch.autograd import Variable
 import torch.nn.functional as F
 from torch.utils.data import Dataset, DataLoader
 sys.path.append('/Users/cuijingchen/Documents/Your Projects/I2T2I/data/coco/cocoapi/PythonAPI')
+sys.path.append('/Users/leon/Projects/I2T2I/data/coco/cocoapi/PythonAPI')
 from pycocotools.coco import COCO
 from tqdm import tqdm
 from utils.data_processing import Vocabulary
@@ -26,8 +27,6 @@ class COCOCaptionDataset(Dataset):
     def __init__(self,
                  data_dir,
                  which_set,
-                 image_size,
-                 batch_size,
                  transform,
                  vocab_threshold=5,
                  vocab_file="/Users/cuijingchen/Documents/Your Projects/I2T2I/data/coco/vocab.pkl",
@@ -40,8 +39,6 @@ class COCOCaptionDataset(Dataset):
         self.data_dir = data_dir
         self.which_set = which_set
         assert self.which_set in {'train', 'val', 'test'}
-        self.image_size = image_size
-        self.batch_size = batch_size
         self.vocab = Vocabulary(vocab_threshold, vocab_file, start_word,
             end_word, unk_word, annotations_file, vocab_from_file)
         self.transform = transform
@@ -100,84 +97,67 @@ class COCOCaptionDataset(Dataset):
             return len(self.paths)
 
 
-
 class Text2ImageDataset(Dataset):
 
-
-    def __init__(self, datasetFile, which_set='train',transform=None):
+    def __init__(self, data_dir, dataset_name, which_set='train', transform=None):
         """
             @:param datasetFile (string): path for dataset file
             @:param which_set (string): "train:, "valid", "test"
 
         """
-        self.datasetFile = datasetFile
+
+        if os.path.exists(data_dir):
+            assert dataset_name in {'birds', 'flowers'}, "wrong dataset name"
+            self.h5_file = os.path.join(data_dir, '{}/{}.hdf5'.format(dataset_name, dataset_name))
+        else:
+            raise ValueError("data directory not found")
+
         self.which_set = which_set
         assert self.which_set in {'train', 'valid', 'test'}
 
         self.transform = transform
-        self.dataset = None
-        self.dataset_keys = None
-        self.h5py2int = lambda x: int(np.array(x))
+        self.total_data = h5py.File(self.h5_file, mode='r')
+        self.data = self.total_data[which_set]
+        self.ids = [str(k) for k in self.data.keys()]
 
     def __len__(self):
-        f = h5py.File(self.datasetFile, 'r')
-        self.dataset_keys = [str(k) for k in f[self.which_set].keys()]
-        length = len(f[self.which_set])
-        f.close()
+        return len(self.ids)
 
-        return length
+    def __getitem__(self, index):
 
-    def __getitem__(self, idx):
-        if self.dataset is None:
-            self.dataset = h5py.File(self.datasetFile, mode='r')
-            self.dataset_keys = [str(k) for k in self.dataset[self.which_set].keys()]
-
-        example_name = self.dataset_keys[idx]
-        example = self.dataset[self.which_set][example_name]
-
-        # pdb.set_trace()
-
-        right_image = bytes(np.array(example['img']))
-        right_embed = np.array(example['embeddings'], dtype=float)
-        wrong_image = bytes(np.array(self.find_wrong_image(example['class'])))
+        img_id = self.ids[index]
+        caption = str(np.array(self.data[img_id]['txt']))
+        right_image_path = bytes(np.array(self.data[img_id]['img']))
+        right_embed = np.array(self.data[img_id]['embeddings'], dtype=float)
+        wrong_image_path = bytes(np.array(self.find_wrong_image(self.data[img_id]['class'])))
         wrong_embed = np.array(self.find_wrong_embed())
 
-        right_image = Image.open(io.BytesIO(right_image)).convert("RGB")
-        wrong_image = Image.open(io.BytesIO(wrong_image)).convert("RGB")
+        right_image = Image.open(io.BytesIO(right_image_path)).convert("RGB")
+        wrong_image = Image.open(io.BytesIO(wrong_image_path)).convert("RGB")
         right_image = self.transform(right_image)
         wrong_image = self.transform(wrong_image)
-
-        #right_image = self.validate_image(right_image)
-        #wrong_image = self.validate_image(wrong_image)
-
-        txt = np.array(example['txt']).astype(str)
 
         sample = {
                 'right_image': right_image,
                 'right_embed': torch.FloatTensor(right_embed),
                 'wrong_image': wrong_image,
                 'wrong_embed': torch.FloatTensor(wrong_embed),
-                'txt': str(txt)
+                'txt': caption
                  }
-
-        # sample['right_images'] = sample['right_images'].sub_(127.5).div_(127.5)
-        # sample['wrong_images'] =sample['wrong_images'].sub_(127.5).div_(127.5)
 
         return sample
 
     def find_wrong_image(self, category):
-        idx = np.random.randint(len(self.dataset_keys))
-        example_name = self.dataset_keys[idx]
-        example = self.dataset[self.which_set][example_name]
-        _category = example['class']
+        idx = np.random.randint(len(self.ids))
+        img_id = self.ids[idx]
+        _category = self.data[img_id]
 
         if _category != category:
-            return example['img']
+            return self.data[img_id]['img']
 
         return self.find_wrong_image(category)
 
     def find_wrong_embed(self):
-        idx = np.random.randint(len(self.dataset_keys))
-        example_name = self.dataset_keys[idx]
-        example = self.dataset[self.which_set][example_name]
-        return example['embeddings']
+        idx = np.random.randint(len(self.ids))
+        img_id = self.ids[idx]
+        return self.data[img_id]['embeddings']

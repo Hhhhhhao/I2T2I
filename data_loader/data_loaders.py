@@ -67,7 +67,7 @@ class COCOCaptionDataLoader(DataLoader):
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         ])
-        self.dataset = COCOCaptionDataset(self.data_dir, self.which_set, self.image_size, self.batch_size, self.transform)
+        self.dataset = COCOCaptionDataset(self.data_dir, self.which_set, self.transform)
         self.n_samples = len(self.dataset)
 
         if self.which_set == 'train':
@@ -95,6 +95,7 @@ class Text2ImageDataLoader(DataLoader):
         """
 
         self.data_dir = data_dir
+        self.dataset_name = dataset_name
         self.which_set = which_set
         assert self.which_set in {'train', 'val', 'test'}
 
@@ -111,13 +112,7 @@ class Text2ImageDataLoader(DataLoader):
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         ])
 
-        if dataset_name == "birds":
-            self.dataset = Text2ImageDataset(os.path.join(self.data_dir, 'birds/birds.hdf5'), which_set=self.which_set, transform=self.transform)
-        elif dataset_name == "flowers":
-            self.dataset = Text2ImageDataset(os.path.join(self.data_dir, 'flowers/flowers.hdf5'), which_set=self.which_set, transform=self.transform)
-        else:
-            print("Dataset not supported, please select either birds or flowers.")
-            exit()
+        self.dataset = Text2ImageDataset(self.data_dir, self.dataset_name, self.which_set, self.transform)
 
         self.n_samples = len(self.dataset)
 
@@ -131,24 +126,20 @@ class Text2ImageDataLoader(DataLoader):
         else:
             super(Text2ImageDataLoader, self).__init__(
                 dataset=self.dataset,
-                batch_size=self.batch_size,
+                batch_size=1,
                 shuffle=False,
                 num_workers=0)
 
 
 
 if __name__ == '__main__':
-    import nltk
-
-    # data_loader = COCOCaptionDataLoader(
-    #     data_dir='/Users/cuijingchen/Documents/Your Projects/I2T2I/data/coco/',
-    #     which_set='train',
-    #     image_size=128,
-    #     batch_size=16,
-    #     num_workers=0)
-
     bird_data_loader = Text2ImageDataLoader(
-        data_dir='/Users/cuijingchen/Documents/Your Projects/I2T2I/data/', dataset_name = "flowers", which_set = "train", image_size = 64, batch_size = 16, num_workers=0
+        data_dir='/Users/leon/Projects/I2T2I/data/',
+        dataset_name="flowers",
+        which_set="train",
+        image_size=64,
+        batch_size=16,
+        num_workers=0
     )
 
     for i, sample in enumerate(bird_data_loader):
