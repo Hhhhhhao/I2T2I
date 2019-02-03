@@ -1,10 +1,8 @@
 import nltk
 import os
 import pickle
-import json
 import h5py
 import sys
-import cv2
 import numpy as np
 sys.path.append('/Users/leon/Projects/I2T2I/data/coco/cocoapi/PythonAPI')
 from pycocotools.coco import COCO
