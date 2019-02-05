@@ -34,17 +34,18 @@ class EncoderCNN(BaseModel):
     Encoder
     """
 
-    def __init__(self, image_size, embed_size):
+    def __init__(self, image_size=256, encode_image_size=4, embed_size=256):
         super(EncoderCNN, self).__init__()
 
-        resnet = torchvision.models.resnet101(pretrained=True)
+        resnet = torchvision.models.resnet34(pretrained=True)
 
         # Remove linear and pool layers
         modules = list(resnet.children())[:-2]
         self.resnet = nn.Sequential(*modules)
 
+        self.adaptive_pool = nn.AdaptiveAvgPool2d((encode_image_size, encode_image_size))
         # Resize image to fixed size to allow input images of variable size
-        self.linear = nn.Linear(int(image_size/32)**2 * 2048, embed_size)
+        self.linear = nn.Linear(encode_image_size**2 * 512, embed_size)
         self.bn = nn.BatchNorm1d(embed_size, momentum=0.01)
         self.init_weights()
         self.fine_tune()
@@ -61,7 +62,8 @@ class EncoderCNN(BaseModel):
         :return: encoded images
         """
 
-        features = self.resnet(images)  # (batch_size, 2048, image_size/32, image_size/32)
+        features = self.resnet(images)
+        features = self.adaptive_pool(features)
         features = features.view(features.size(0), -1)
         features = self.linear(features)
         features = self.bn(features)  # (batch_size, embed_size)
@@ -182,16 +184,17 @@ class DecoderRNN(BaseModel):
 
 
 class ImageCaptionModel(BaseModel):
-    def __init__(self, image_size, image_embed_size, word_embed_size, lstm_hidden_size, vocab_size, lstm_num_layers=1):
+    def __init__(self, image_size, image_encode_size, image_embed_size, word_embed_size, lstm_hidden_size, vocab_size, lstm_num_layers=1):
         super(ImageCaptionModel, self).__init__()
         self.image_size = image_size
+        se;f.image_encode_size = image_encode_size
         self.image_embed_size = image_embed_size
         self.word_embed_size = word_embed_size
         self.lstm_hidden_size = lstm_hidden_size
         self.lstm_num_layers = lstm_num_layers
         self.vocab_size = vocab_size
 
-        self.encoder = EncoderCNN(self.image_size, self.image_embed_size)
+        self.encoder = EncoderCNN(self.image_size, self.image_encode_size, self.image_embed_size)
         self.decoder = DecoderRNN(self.word_embed_size, self.lstm_hidden_size, self.vocab_size, self.lstm_num_layers)
 
     def forward(self, images, captions, caption_lengths):

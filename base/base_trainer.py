@@ -55,7 +55,7 @@ class BaseTrainer:
 
         # Save configuration file into checkpoint directory:
         ensure_dir(self.checkpoint_dir)
-        config_save_path = os.path.join(self.checkpoint_dir, 'config.json')
+        config_save_path = os.path.join(self.checkpoint_dir, 'birds_config.json')
         with open(config_save_path, 'w') as handle:
             json.dump(config, handle, indent=4, sort_keys=False)
 

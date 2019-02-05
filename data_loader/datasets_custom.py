@@ -11,7 +11,7 @@ sys.path.append('/home/s1786991/I2T2I/data/coco/cocoapi/PythonAPI')
 from pycocotools.coco import COCO
 from tqdm import tqdm
 from torch.utils.data import Dataset
-from utils.data_processing import Vocabulary, COCOVocabulary
+from utils.data_processing import Vocabulary, COCOVocabulary, SpellChecker
 from PIL import Image
 
 
@@ -141,6 +141,7 @@ class CaptionDataset(Dataset):
 
         # Convert caption to tensor of word ids.
         tokens = nltk.tokenize.word_tokenize(str(caption).lower())
+        tokens = [SpellChecker(word) for word in tokens]
         caption = []
         caption.append(self.vocab(self.vocab.start_word))
         caption.extend(self.vocab(token) for token in tokens)
@@ -163,8 +164,9 @@ if __name__ == '__main__':
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
     ])
 
-    dataset = BirdsCaptionDataset(
+    dataset = CaptionDataset(
         data_dir="/Users/leon/Projects/I2T2I/data/",
+        dataset_name="birds",
         which_set='train',
         transform=transform,
         vocab_threshold=5,
@@ -172,3 +174,5 @@ if __name__ == '__main__':
         end_word="<end>",
         unk_word="<unk>",
         vocab_from_file=False)
+
+    print(len(dataset.vocab))

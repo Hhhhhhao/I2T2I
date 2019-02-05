@@ -127,11 +127,14 @@ if __name__ == '__main__':
         data_dir='/Users/leon/Projects/I2T2I/data/',
         dataset_name="flowers",
         which_set='train',
-        image_size=128,
+        image_size=256,
         batch_size=16,
         num_workers=0)
 
     print(len(data_loader.dataset.vocab))
+    # 10330 for coco
+    # 914 for birds
+    # 1161 for flowers
 
     for i, (images, captions, caption_lengths) in enumerate(data_loader):
         print("done")

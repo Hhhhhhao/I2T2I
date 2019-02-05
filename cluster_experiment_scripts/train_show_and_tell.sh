@@ -1,9 +1,9 @@
 #!/bin/sh
 #SBATCH -N 1	  # nodes requested
 #SBATCH -n 1	  # tasks requested
-#SBATCH --partition=Standard
+#SBATCH --partition=LongJobs
 #SBATCH --gres=gpu:8
-#SBATCH --mem=12000  # memory in Mb
+#SBATCH --mem=48000  # memory in Mb
 #SBATCH --time=0-08:00:00
 
 export CUDA_HOME=/opt/cuda-9.0.176.1/
@@ -34,4 +34,4 @@ export DATASET_DIR=${TMP}/datasets/
 
 source /home/${STUDENT_ID}/anaconda3/bin/activate I2T2I
 cd ..
-python train.py
+python train.py --config birds_config.json

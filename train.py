@@ -48,7 +48,7 @@ def main(config, resume):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='PyTorch Template')
-    parser.add_argument('-c', '--config', default="config.json", type=str,
+    parser.add_argument('-c', '--config', default="birds_config.json", type=str,
                            help='config file path (default: None)')
     parser.add_argument('-r', '--resume', default=None, type=str,
                            help='path to latest checkpoint (default: None)')
@@ -65,7 +65,7 @@ if __name__ == '__main__':
         # Use '--config' and '--resume' arguments together to load trained model and train more with changed config.
         config = torch.load(args.resume)['config']
     else:
-        raise AssertionError("Configuration file need to be specified. Add '-c config.json', for example.")
+        raise AssertionError("Configuration file need to be specified. Add '-c birds_config.json', for example.")
     
     if args.device:
         os.environ["CUDA_VISIBLE_DEVICES"] = args.device
