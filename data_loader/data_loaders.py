@@ -58,7 +58,7 @@ class COCOCaptionDataLoader(DataLoader):
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         ])
-        self.dataset = COCOCaptionDataset(self.data_dir, self.batch_size, self.transform)
+        self.dataset = COCOCaptionDataset(self.data_dir, self.which_set, self.transform)
         self.n_samples = len(self.dataset)
 
         if self.which_set == 'train':
@@ -130,6 +130,8 @@ if __name__ == '__main__':
         image_size=128,
         batch_size=16,
         num_workers=0)
+
+    print(len(data_loader.dataset.vocab))
 
     for i, (images, captions, caption_lengths) in enumerate(data_loader):
         print("done")

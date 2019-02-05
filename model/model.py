@@ -257,7 +257,7 @@ if __name__ == '__main__':
     from data_loader import COCOCaptionDataLoader
     from torchsummary import summary
 
-    image_size = 256
+    image_size = 128
     batch_size = 16
 
     data_loader = COCOCaptionDataLoader(

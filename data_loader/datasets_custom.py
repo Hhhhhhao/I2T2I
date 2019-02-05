@@ -7,10 +7,11 @@ import sys
 import nltk
 import numpy as np
 sys.path.append('/Users/leon/Projects/I2T2I/data/coco/cocoapi/PythonAPI')
+sys.path.append('/home/s1786991/I2T2I/data/coco/cocoapi/PythonAPI')
 from pycocotools.coco import COCO
 from tqdm import tqdm
 from torch.utils.data import Dataset
-from utils.data_processing import Vocabulary
+from utils.data_processing import Vocabulary, COCOVocabulary
 from PIL import Image
 
 
@@ -33,7 +34,7 @@ class COCOCaptionDataset(Dataset):
         self.data_dir = data_dir
         self.which_set = which_set
         assert self.which_set in {'train', 'val', 'test'}
-        self.vocab = Vocabulary(vocab_threshold, vocab_file, start_word,
+        self.vocab = COCOVocabulary(vocab_threshold, vocab_file, start_word,
             end_word, unk_word, annotations_file, vocab_from_file)
         self.transform = transform
 
