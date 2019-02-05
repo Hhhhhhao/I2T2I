@@ -187,7 +187,7 @@ class ImageCaptionModel(BaseModel):
     def __init__(self, image_size, image_encode_size, image_embed_size, word_embed_size, lstm_hidden_size, vocab_size, lstm_num_layers=1):
         super(ImageCaptionModel, self).__init__()
         self.image_size = image_size
-        se;f.image_encode_size = image_encode_size
+        self.image_encode_size = image_encode_size
         self.image_embed_size = image_embed_size
         self.word_embed_size = word_embed_size
         self.lstm_hidden_size = lstm_hidden_size
