@@ -133,8 +133,8 @@ if __name__ == '__main__':
 
     print(len(data_loader.dataset.vocab))
     # 10330 for coco
-    # 914 for birds
-    # 1161 for flowers
+    # 888 for birds
+    # 1143 for flowers
 
     for i, (images, captions, caption_lengths) in enumerate(data_loader):
         print("done")

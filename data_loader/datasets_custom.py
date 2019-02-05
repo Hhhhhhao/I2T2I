@@ -154,6 +154,75 @@ class CaptionDataset(Dataset):
         return len(self.ids)
 
 
+class TextEmbeddingDataset(Dataset):
+
+    def __init__(self, data_dir, dataset_name, which_set='train', transform=None):
+        """
+            @:param datasetFile (string): path for dataset file
+            @:param which_set (string): "train:, "valid", "test"
+        """
+
+        if os.path.exists(data_dir):
+            assert dataset_name in {'birds', 'flowers'}, "wrong dataset name"
+            self.h5_file = os.path.join(data_dir, '{}/{}.hdf5'.format(dataset_name, dataset_name))
+        else:
+            raise ValueError("data directory not found")
+
+        self.which_set = which_set
+        assert self.which_set in {'train', 'valid', 'test'}
+
+        self.transform = transform
+        self.total_data = h5py.File(self.h5_file, mode='r')
+        self.data = self.total_data[which_set]
+        self.ids = [str(k) for k in self.data.keys()]
+
+    def __len__(self):
+        return len(self.ids)
+
+    def __getitem__(self, index):
+
+        img_id = self.ids[index]
+        caption = str(np.array(self.data[img_id]['txt']))
+        right_image_path = bytes(np.array(self.data[img_id]['img']))
+        right_embed = np.array(self.data[img_id]['embeddings'], dtype=float)
+        wrong_image_path = bytes(np.array(self.find_wrong_image(self.data[img_id]['class'])))
+        wrong_embed = np.array(self.find_wrong_embed())
+
+        right_image = Image.open(io.BytesIO(right_image_path)).convert("RGB")
+        wrong_image = Image.open(io.BytesIO(wrong_image_path)).convert("RGB")
+        right_image = self.transform(right_image)
+        wrong_image = self.transform(wrong_image)
+
+        sample = {
+                'right_image': right_image,
+                'right_embed': torch.FloatTensor(right_embed),
+                'wrong_image': wrong_image,
+                'wrong_embed': torch.FloatTensor(wrong_embed),
+                'txt': caption
+                 }
+
+        return sample
+
+    def find_wrong_image(self, category):
+        idx = np.random.randint(len(self.ids))
+        img_id = self.ids[idx]
+        _category = self.data[img_id]
+
+        if _category != category:
+            return self.data[img_id]['img']
+
+        return self.find_wrong_image(category)
+
+    def find_wrong_embed(self):
+        idx = np.random.randint(len(self.ids))
+        img_id = self.ids[idx]
+        return self.data[img_id]['embeddings']
+
+
+class COCOTextEmbeddingDataset(Dataset):
+    pass
+
+
 if __name__ == '__main__':
     from torchvision import transforms
 
@@ -166,7 +235,7 @@ if __name__ == '__main__':
 
     dataset = CaptionDataset(
         data_dir="/Users/leon/Projects/I2T2I/data/",
-        dataset_name="birds",
+        dataset_name="flowers",
         which_set='train',
         transform=transform,
         vocab_threshold=5,
