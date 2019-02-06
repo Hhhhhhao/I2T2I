@@ -90,14 +90,15 @@ class COCOCaptionDataLoader(DataLoader):
 class Text2ImageDataLoader(DataLoader):
     def __init__(self, data_dir, dataset_name, which_set, image_size, batch_size, num_workers):
         """
-            @:param dataset -- string: "birds" or "flowers"
+            @:param dataset_name -- string: "birds" or "flowers"
+            @:param which_set -- string: 'train', 'valid', 'test'
 
         """
 
         self.data_dir = data_dir
         self.dataset_name = dataset_name
         self.which_set = which_set
-        assert self.which_set in {'train', 'val', 'test'}
+        assert self.which_set in {'train', 'valid', 'test'}
 
         self.image_size = (image_size, image_size)
         self.batch_size = batch_size
@@ -134,7 +135,7 @@ class Text2ImageDataLoader(DataLoader):
 
 if __name__ == '__main__':
     bird_data_loader = Text2ImageDataLoader(
-        data_dir='/Users/leon/Projects/I2T2I/data/',
+        data_dir='/Users/cuijingchen/Documents/Your Projects/I2T2I/data/',
         dataset_name="flowers",
         which_set="train",
         image_size=64,
@@ -148,7 +149,7 @@ if __name__ == '__main__':
         print('captions.shape:', sample['right_embed'].shape)
         print('images.shape:', sample['wrong_image'].shape)
         print('captions.shape:', sample['wrong_embed'].shape)
-        print('txt:',sample['txt'])
+        print('txt:', sample['txt'])
 
 
 
