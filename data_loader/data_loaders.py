@@ -37,14 +37,15 @@ class MnistDataLoader(BaseDataLoader):
         super(MnistDataLoader, self).__init__(self.dataset, batch_size, shuffle, validation_split, num_workers)
 
 
-class COCOCaptionDataLoader(DataLoader):
+class COCOCaptionDataLoader(BaseDataLoader):
     """
     COCO Image Caption Model Data Loader
     """
-    def __init__(self, data_dir, which_set, image_size, batch_size, num_workers):
+    def __init__(self, data_dir, which_set, image_size, batch_size, validation_split, num_workers):
 
         self.data_dir = data_dir
         self.which_set = which_set
+        self.validation_split = validation_split
         assert self.which_set in {'train', 'val', 'test'}
 
         self.image_size = (image_size, image_size)
@@ -59,13 +60,14 @@ class COCOCaptionDataLoader(DataLoader):
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         ])
         self.dataset = COCOCaptionDataset(self.data_dir, self.which_set, self.transform)
-        self.n_samples = len(self.dataset)
+        # self.n_samples = len(self.dataset)
 
         if self.which_set == 'train':
             super(COCOCaptionDataLoader, self).__init__(
                 dataset=self.dataset,
                 batch_size=self.batch_size,
                 shuffle=True,
+                validation_split=validation_split,
                 num_workers=self.num_workers,
                 collate_fn=collate_fn
             )
@@ -74,6 +76,7 @@ class COCOCaptionDataLoader(DataLoader):
                 dataset=self.dataset,
                 batch_size=self.batch_size,
                 shuffle=False,
+                validation_split=validation_split,
                 num_workers=self.num_workers,
                 collate_fn=collate_fn)
 

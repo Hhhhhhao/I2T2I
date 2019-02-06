@@ -34,4 +34,4 @@ export DATASET_DIR=${TMP}/datasets/
 
 source /home/${STUDENT_ID}/anaconda3/bin/activate I2T2I
 cd ..
-python train.py --config flowers_config.json
+python train.py --config config/flowers_config.json

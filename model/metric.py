@@ -53,3 +53,5 @@ def bleu4(output, target, length, vocab):
                                           predicted_word_list,
                                           smoothing_function=smoothing.method1)
     return batch_bleu_4 / len(length)
+
+

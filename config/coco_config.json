@@ -20,13 +20,14 @@
             "which_set": "train",
             "image_size":256,
             "batch_size": 32,
+            "validation_split":0.05,
             "num_workers": 0
         }
     },
     "valid_data_loader": {
-        "type": "CaptionDataLoader",
+        "type": "COCOCaptionDataLoader",
         "args":{
-            "data_dir": "/Users/leon/Projects/I2T2I/data/coco/",
+            "data_dir": "/home/s1786991/I2T2I/data/coco/",
             "which_set": "val",
             "image_size":256,
             "batch_size": 1,

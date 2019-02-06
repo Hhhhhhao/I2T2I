@@ -19,9 +19,13 @@ def main(config, resume):
 
     # setup data_loader instances
     train_data_loader = get_instance(module_data, 'train_data_loader', config)
-    valid_data_loader = get_instance(module_data, 'valid_data_loader', config)
     print("train vocab size:{}".format(len(train_data_loader.dataset.vocab)))
-    print("val vocab size:{}".format(len(valid_data_loader.dataset.vocab)))
+
+    if "CoCo" in config['name']:
+        valid_data_loader = train_data_loader.split_validation()
+    else:
+        valid_data_loader = get_instance(module_data, 'valid_data_loader', config)
+        print("val vocab size:{}".format(len(valid_data_loader.dataset.vocab)))
     # build model architecture
     model = get_instance(module_arch, 'arch', config)
     print(model)
@@ -48,7 +52,7 @@ def main(config, resume):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='PyTorch Template')
-    parser.add_argument('-c', '--config', default="flowers_config.json", type=str,
+    parser.add_argument('-c', '--config', default="config/coco_config.json", type=str,
                            help='config file path (default: None)')
     parser.add_argument('-r', '--resume', default=None, type=str,
                            help='path to latest checkpoint (default: None)')

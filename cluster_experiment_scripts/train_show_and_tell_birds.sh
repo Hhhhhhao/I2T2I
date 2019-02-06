@@ -34,4 +34,4 @@ export DATASET_DIR=${TMP}/datasets/
 
 source /home/${STUDENT_ID}/anaconda3/bin/activate I2T2I
 cd ..
-python train.py --config birds_config.json
+python train.py --config config/birds_config.json
