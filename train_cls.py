@@ -13,7 +13,7 @@ if __name__ == '__main__':
     parser.add_argument("--l2_coef", default=100, type=float)
 
     # TODO: 'env_name'???
-    parser.add_argument("--vis_screen", default='gan')
+    parser.add_argument("--vis_screen", default='I2T2I')
 
     parser.add_argument("--save_path", default='/Users/cuijingchen/Documents/Your Projects/I2T2I')
     parser.add_argument('--pre_trained_disc', default=None)
