@@ -7,7 +7,7 @@ from torch.utils.data import DataLoader
 
 from data_loader.data_loaders import Text2ImageDataLoader
 from model.gan_factory import gan_factory
-from utils.utils_cls import Utils, Logger
+from utils.utils_cls import Utils
 from PIL import Image
 import os
 
@@ -15,7 +15,7 @@ import os
 class Trainer(object):
     # gan_type can only be 'gan_cls' temporarily
     def __init__(self, gan_type, data_loader,
-                 num_epochs, lr, vis_screen, save_path, l1_coef, l2_coef,
+                 num_epochs, lr, save_path, l1_coef, l2_coef,
                  pre_trained_gen=None, pre_trained_disc=None):
 
         self.generator = torch.nn.DataParallel(gan_factory.generator_factory(gan_type))
@@ -49,7 +49,6 @@ class Trainer(object):
         self.optimD = torch.optim.Adam(self.discriminator.parameters(), lr=self.lr, betas=(self.beta1, 0.999))
         self.optimG = torch.optim.Adam(self.generator.parameters(), lr=self.lr, betas=(self.beta1, 0.999))
 
-        self.logger = Logger(vis_screen)
         self.checkpoints_path = 'checkpoints'
         self.save_path = save_path
 
@@ -148,11 +147,6 @@ class Trainer(object):
                 g_loss.backward()
                 self.optimG.step()
 
-                if iteration % 5 == 0:
-                    self.logger.log_iteration_gan(epoch, d_loss, g_loss, real_score, fake_score)
-                    self.logger.draw(right_image, fake_image)
-
-            self.logger.plot_epoch_w_scores(epoch)
 
             if epoch % 10 == 0:
                 Utils.save_checkpoint(self.discriminator, self.generator, self.checkpoints_path, self.save_path, epoch)
@@ -173,7 +167,6 @@ class Trainer(object):
             noise = noise.view(noise.size(0), 100, 1, 1)
             fake_images = self.generator(right_embed, noise)
 
-            self.logger.draw(right_images, fake_images)
 
             for image, t in zip(fake_images, txt):
                 im = Image.fromarray(image.data.mul_(127.5).add_(127.5).byte().permute(1, 2, 0).cpu().numpy())

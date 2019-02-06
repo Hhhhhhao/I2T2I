@@ -12,7 +12,6 @@ from torch.autograd import Variable
 import torch.nn.functional as F
 from torch.utils.data import Dataset, DataLoader
 sys.path.append('/Users/cuijingchen/Documents/Your Projects/I2T2I/data/coco/cocoapi/PythonAPI')
-#sys.path.append('/Users/leon/Projects/I2T2I/data/coco/cocoapi/PythonAPI')
 from pycocotools.coco import COCO
 from tqdm import tqdm
 from utils.data_processing import Vocabulary
