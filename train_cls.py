@@ -15,14 +15,14 @@ if __name__ == '__main__':
     # TODO: 'env_name'???
     parser.add_argument("--vis_screen", default='I2T2I')
 
-    parser.add_argument("--save_path", default='/Users/cuijingchen/Documents/Your Projects/I2T2I')
+    parser.add_argument("--save_path", default='/home/s1784380/lala/I2T2I/savee')
     parser.add_argument('--pre_trained_disc', default=None)
     parser.add_argument('--pre_trained_gen', default=None)
 
     args = parser.parse_args()
 
     bird_train_data_loader = Text2ImageDataLoader(
-        data_dir='/Users/cuijingchen/Documents/Your Projects/I2T2I/data/',
+        data_dir='/home/s1784380/I2T2I/data/',
         dataset_name="flowers",
         which_set="train",
         image_size=64,
