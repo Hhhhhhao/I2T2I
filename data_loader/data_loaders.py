@@ -2,7 +2,7 @@ import torch
 from torch.utils.data import DataLoader, sampler
 from torchvision import datasets, transforms
 from base import BaseDataLoader
-from data_loader.datasets_custom import COCOCaptionDataset, CaptionDataset
+from data_loader.datasets_custom import COCOCaptionDataset, CaptionDataset, TextEmbeddingDataset
 
 
 def collate_fn(data):
@@ -124,9 +124,56 @@ class CaptionDataLoader(DataLoader):
                 collate_fn=collate_fn)
 
 
+class TextEmbeddingDataLoader(DataLoader):
+    def __init__(self, data_dir, dataset_name, which_set, image_size, batch_size, num_workers):
+        """
+            @:param dataset -- string: "birds" or "flowers"
+        """
+
+        self.data_dir = data_dir
+        self.dataset_name = dataset_name
+        self.which_set = which_set
+        assert self.which_set in {'train', 'valid', 'test'}
+
+        self.image_size = (image_size, image_size)
+        self.batch_size = batch_size
+        self.num_workers = num_workers
+
+        # transforms.ToTensor convert PIL images in range [0, 255] to a torch in range [0.0, 1.0]
+        self.transform = transforms.Compose([
+            transforms.Resize(self.image_size),
+            transforms.RandomHorizontalFlip(),
+            transforms.ToTensor(),
+            # TODO: change mean and std
+            transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
+        ])
+
+        self.dataset = TextEmbeddingDataset(self.data_dir, self.dataset_name, self.which_set, self.transform)
+
+        self.n_samples = len(self.dataset)
+
+        if self.which_set == 'train':
+            super(TextEmbeddingDataLoader, self).__init__(
+                dataset=self.dataset,
+                batch_size=self.batch_size,
+                shuffle=True,
+                num_workers=self.num_workers
+            )
+        else:
+            super(TextEmbeddingDataLoader, self).__init__(
+                dataset=self.dataset,
+                batch_size=1,
+                shuffle=False,
+                num_workers=0)
+
+
+
 
 if __name__ == '__main__':
-    data_loader = CaptionDataLoader(
+
+    import numpy as np
+
+    data_loader = TextEmbeddingDataLoader(
         data_dir='/Users/leon/Projects/I2T2I/data/',
         dataset_name="flowers",
         which_set='train',
@@ -134,20 +181,20 @@ if __name__ == '__main__':
         batch_size=16,
         num_workers=0)
 
-    print(len(data_loader.dataset.vocab))
+    # print(len(data_loader.dataset.vocab))
     # 10330 for coco
     # 888 for birds
     # 1143 for flowers
 
-    for i, (images, captions, caption_lengths) in enumerate(data_loader):
+    for i, samples in enumerate(data_loader):
         print("done")
 
-        print('images.shape:', images.shape)
-        print('captions.shape:', captions.shape)
+        print('right images.shape:', samples["right_image"].shape)
+        print('right embed.shape:', samples["right_embed"].shape)
 
         # Print the pre-processed images and captions.
-        print('images:', images)
-        print('captions:', captions)
+        print('right images:', samples["right_image"])
+        print('right embedding:', samples["right_embed"])
 
 
 

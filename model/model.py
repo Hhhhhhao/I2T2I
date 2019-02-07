@@ -2,31 +2,197 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torchvision
-import numpy as np
+import torchgan
 from torch.nn.utils.rnn import pack_padded_sequence
 from base import BaseModel
+from torch.autograd import Variable
+from torchgan.models import Generator, Discriminator, DCGANGenerator, DCGANDiscriminator
+from torchgan.layers import SpectralNorm2d, ResidualBlockTranspose2d
+from math import ceil, log2
+from collections import OrderedDict
 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-class MnistModel(BaseModel):
-    def __init__(self, num_classes=10):
-        super(MnistModel, self).__init__()
-        self.conv1 = nn.Conv2d(1, 10, kernel_size=5)
-        self.conv2 = nn.Conv2d(10, 20, kernel_size=5)
-        self.conv2_drop = nn.Dropout2d()
-        self.fc1 = nn.Linear(320, 50)
-        self.fc2 = nn.Linear(50, num_classes)
+class CAEmbedding(BaseModel):
+    def __init__(self, text_dim, embed_dim):
+        super(CAEmbedding, self).__init__()
 
-    def forward(self, x):
-        x = F.relu(F.max_pool2d(self.conv1(x), 2))
-        x = F.relu(F.max_pool2d(self.conv2_drop(self.conv2(x)), 2))
-        x = x.view(-1, 320)
-        x = F.relu(self.fc1(x))
-        x = F.dropout(x, training=self.training)
-        x = self.fc2(x)
-        return F.log_softmax(x, dim=1)
+        self.text_dim = text_dim
+        self.embed_dim = embed_dim
+        self.linear = nn.Linear(self.text_dim, self.embed_dim*2, bias=True)
+        self.relu = nn.ReLU()
+
+    def encode(self, text_embedding):
+        x = self.relu(self.linear(text_embedding))
+        mean = x[:, :self.embed_dim]
+        log_var = x[:, self.embed_dim:]
+        return mean, log_var
+
+    def reparametrize(self, mean, log_var):
+        std = log_var.mul(0.5).exp_()
+
+        if torch.cuda.is_available():
+            eps = torch.cuda.FloatTensor(std.size()).normal_()
+        else:
+            eps = torch.FloatTensor(std.size()).normal_()
+
+        eps = Variable(eps)
+        return eps.mul(std).add_(mean)
+
+    def forward(self, text_embedding):
+        mean, log_var = self.encode(text_embedding)
+        c_code = self.reparametrize(mean, log_var)
+        return c_code, mean, log_var
+
+
+class HDGANGenerator(DCGANGenerator):
+    def __init__(self,
+                 text_embed_dim=1024,
+                 ca_code_dim=128,
+                 noise_dim=128,
+                 image_size=256,
+                 image_channels=3,
+                 discriminator_at=['64', '128', '256'],
+                 step_channels=64,
+                 batchnorm=True,
+                 nonlinearity=None,
+                 last_nonlinearity=None,
+                 label_type='none'):
+        super(HDGANGenerator, self).__init__(
+                encoding_dims=ca_code_dim+noise_dim,
+                out_size=image_size,
+                out_channels=image_channels,
+                step_channels=step_channels,
+                batchnorm=batchnorm,
+                nonlinearity=nonlinearity,
+                last_nonlinearity=last_nonlinearity,
+                label_type=label_type)
+        self.intermediate_output = discriminator_at
+        self.ca_embedding = CAEmbedding(text_embed_dim, ca_code_dim)
+
+    def forward(self, text_embedding, noise):
+        """Calculates the output tensor on passing the encoding ``x`` through the Generator.
+
+        Args:
+            noise (torch.Tensor): A 2D torch tensor of the encoding sampled from a probability
+                distribution.
+            feature_matching (bool, optional): Returns the activation from a predefined intermediate
+                layer.
+
+        Returns:
+            A 4D torch.Tensor of the generated image.
+        """
+
+        output = OrderedDict()
+
+        c_code, mean, log_var = self.ca_embedding(text_embedding)
+        # print("c shape:{}".format(c_code.shape))
+        x = torch.cat((noise, c_code), 1)
+        # print("x shape:{}".format(x.shape))
+        x = x.view(-1, x.size(1), 1, 1)
+        # print("input shape:{}".format(x.shape))
+        for i in range(len(self.model)):
+            x = self.model[i](x)
+            if str(x.shape[-1]) in self.intermediate_output:
+                output[str(x.shape[-1])] = x
+            # print("middle {} shape:{}".format(i, x.shape))
+            # print(str(x.shape[-1]))
+        return output, mean, log_var
+
+
+class HDGANDiscriminator(DCGANDiscriminator):
+    def __init__(self,
+                 text_embed_dim=1024,
+                 reduced_text_embed_dim=128,
+                 image_size=256,
+                 image_channels=3,
+                 step_channels=64,
+                 batchnorm=True,
+                 nonlinearity=None,
+                 last_nonlinearity=None,
+                 label_type='none'
+                 ):
+        super(HDGANDiscriminator, self).__init__(
+            in_size=image_size,
+            in_channels=image_channels,
+            step_channels=step_channels,
+            batchnorm=batchnorm,
+            nonlinearity=nonlinearity,
+            last_nonlinearity=last_nonlinearity,
+            label_type=label_type)
+        self.image_size = image_size
+        self.linear = nn.Linear(text_embed_dim, reduced_text_embed_dim, bias=True)
+        self.activation = nn.LeakyReLU(0.2)
+
+    def forward(self, images, text_embeddings):
+        image_size = images.size()[-1]
+        assert image_size == self.image_size, "wrong input size {} in discriminator".format(image_size)
+
+        disc_output = self.model[:-1](images)
+        print(disc_output.shape)
+
+#
+#
+# class HDGANDiscriminator(BaseModel):
+#     def __init__(self,
+#                  text_embed_dim=1024,
+#                  reduced_text_embed_dim=128,
+#                  image_size=256,
+#                  image_channels=3,
+#                  step_channels=64,
+#                  discriminator_at=['64', '128', '256'],
+#                  batchnorm=True,
+#                  nonlinearity=None,
+#                  last_nonlinearity=nn.Sigmoid(),
+#                  label_type='none'
+#                  ):
+#         super(HDGANDiscriminator).__init__()
+#
+#         self.discriminators = OrderedDict()
+#         self.discriminator_at = discriminator_at
+#         self.linear = nn.Linear(text_embed_dim, reduced_text_embed_dim, bias=True)
+#         self.activation = nn.LeakyReLU(0.2, True)
+#
+#         for i, in_size in enumerate(discriminator_at):
+#             if i == 2 and in_size == str(image_size):
+#                 in_channels=image_channels
+#             else:
+#                 in_channels=(i-1)*step_channels
+#
+#             self.discriminators[in_size] = DCGANDiscriminator(
+#                 in_size=in_size,
+#                 in_channels=in_channels,
+#                 step_channels=step_channels,
+#                 batchnorm=batchnorm,
+#                 nonlinearity=nonlinearity,
+#                 last_nonlinearity=last_nonlinearity,
+#                 label_type=label_type
+#             )
+#
+#             print("discriminator:{}".format(in_size))
+#             print(self.discriminators[in_size])
+#
+#
+#     def forward(self, images, text_embedding):
+#
+#         image_size = images.size()[-1]
+#         assert image_size in self.discriminator_at, "wrong input size {} in discriminator".format(image_size)
+#
+#         disc_output = self.discriminators[str(image_size)][:-1](images)
+#         print(disc_output)
+
+
+
+
+
+
+
+
+
+
+
 
 
 class EncoderCNN(BaseModel):
@@ -257,75 +423,42 @@ class ImageCaptionModel(BaseModel):
 
 
 if __name__ == '__main__':
-    from data_loader import COCOCaptionDataLoader
-    from torchsummary import summary
 
-    image_size = 128
-    batch_size = 16
+    from data_loader import TextEmbeddingDataLoader
+    import numpy as np
 
-    data_loader = COCOCaptionDataLoader(
-        data_dir='/Users/leon/Projects/I2T2I/data/coco/',
-        which_set='val',
-        image_size=image_size,
-        batch_size=batch_size,
-        num_workers=0)
+    birds_data_loader = TextEmbeddingDataLoader(
+        data_dir='/Users/leon/Projects/I2T2I/data/',
+        dataset_name="flowers",
+        which_set='train',
+        image_size=256,
+        batch_size=16,
+        num_workers=0
+    )
 
-    for i, (images, captions, caption_lengths) in enumerate(data_loader):
-        print("done")
-        break
+    generator = HDGANGenerator(
+                 text_embed_dim=1024,
+                 ca_code_dim=128,
+                 noise_dim=128)
+    print(generator.model)
 
-    print('images.shape:', images.shape)
-    print('captions.shape:', captions.shape)
+    discriminator = HDGANDiscriminator(
+                 text_embed_dim=1024,
+                 reduced_text_embed_dim=128,
+                 image_size=256,
+                 image_channels=3)
 
-    # Test Encoder
-    embed_size = 256   # dimensionality of the image embedding.
-    encoder = EncoderCNN(image_size, embed_size)
-    # summary(encoder, input_size=(3, 256, 256))
 
-    # Move the encoder to GPU if CUDA is available.
-    if torch.cuda.is_available():
-        encoder = encoder.cuda()
+    for i, sample in enumerate(birds_data_loader):
+        images = sample["right_image"]
+        text_embeddings = sample["right_embed"]
+        noise = Variable(torch.FloatTensor(np.random.normal(0, 1, (images.shape[0], 128))))
+        generator(text_embeddings, noise)
 
-    # Move the last batch of images from Step 2 to GPU if CUDA is available
-    if torch.cuda.is_available():
-        images = images.cuda()
+        discriminator(images, text_embeddings)
 
-    features = encoder(images)
 
-    print('type(features):', type(features))
-    print('features.shape:', features.shape)
 
-    # Check that our encoder satisfies some requirements
-    assert (features.shape[0] == 16) & (
-                features.shape[1] == embed_size), "The shape of the encoder output is incorrect."
-
-    # Test Decoder
-    hidden_size = 512
-    vocab_size = len(data_loader.dataset.vocab)
-    decoder = DecoderRNN(embed_size, hidden_size, vocab_size)
-    # summary(decoder, input_size=(256))
-
-    # Move the decoder to GPU if CUDA is available.
-    if torch.cuda.is_available():
-        decoder = decoder.cuda()
-
-    # Move the last batch of captions (from Step 1) to GPU if cuda is availble
-    if torch.cuda.is_available():
-        captions = captions.cuda()
-
-    outputs = decoder(features, captions, caption_lengths)
-
-    # test the whole model
-
-    model = ImageCaptionModel(image_size, embed_size, embed_size, hidden_size, vocab_size)
-    # summary(model, input_size=(3, 256, 256))
-    # Move the decoder to GPU if CUDA is available.
-    if torch.cuda.is_available():
-        model = model.cuda()
-
-    outputs = model(images, captions, caption_lengths)
-    print('type(features):', type(outputs))
-    print('features.shape:', outputs.shape)
 
 
 
