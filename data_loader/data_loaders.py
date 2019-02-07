@@ -110,7 +110,7 @@ class Text2ImageDataLoader(DataLoader):
             transforms.RandomHorizontalFlip(),
             transforms.ToTensor(),
             # TODO: change mean and std
-            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+            transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
         ])
 
         self.dataset = Text2ImageDataset(self.data_dir, self.dataset_name, self.which_set, self.transform)

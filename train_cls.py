@@ -34,7 +34,6 @@ if __name__ == '__main__':
                       data_loader=bird_train_data_loader,
                       num_epochs=args.num_epochs,
                       lr=args.lr,
-                      vis_screen=args.vis_screen,
                       save_path=args.save_path,
                       l1_coef=args.l1_coef,
                       l2_coef=args.l2_coef,

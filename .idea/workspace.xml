@@ -2,11 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b3134c42-5a5c-4eae-8274-2ca6fc32ab15" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/I2T2I.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/I2T2I.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_loader/data_loaders.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_loader/data_loaders.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/train_cls.py" beforeDir="false" afterPath="$PROJECT_DIR$/train_cls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/utils_cls.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/utils_cls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/trainer/trainer_cls.py" beforeDir="false" afterPath="$PROJECT_DIR$/trainer/trainer_cls.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -35,7 +33,8 @@
       <file leaf-file-name="trainer_cls.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/trainer/trainer_cls.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
+            <state relative-caret-position="3340">
+              <caret line="167" selection-start-line="167" selection-end-line="167" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -43,11 +42,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="train_cls.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="train_cls.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/train_cls.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="670">
-              <caret line="44" column="19" selection-start-line="44" selection-start-column="19" selection-end-line="44" selection-end-column="19" />
+            <state relative-caret-position="438">
+              <caret line="35" column="33" selection-start-line="35" selection-start-column="33" selection-end-line="35" selection-end-column="33" />
               <folding>
                 <element signature="e#0#39#0" expanded="true" />
               </folding>
@@ -55,14 +54,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="data_loaders.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="data_loaders.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/data_loader/data_loaders.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2220">
-              <caret line="111" selection-start-line="111" selection-end-line="111" />
-              <folding>
-                <element signature="e#0#12#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="158">
+              <caret line="112" column="73" selection-start-line="112" selection-start-column="73" selection-end-line="112" selection-end-column="73" />
             </state>
           </provider>
         </entry>
@@ -154,13 +150,13 @@
         <option value="$PROJECT_DIR$/model/model.py" />
         <option value="$PROJECT_DIR$/data_loader/config.yaml" />
         <option value="$PROJECT_DIR$/utils/data_processing.py" />
-        <option value="$PROJECT_DIR$/data_loader/data_loaders.py" />
         <option value="$PROJECT_DIR$/train.py" />
         <option value="$PROJECT_DIR$/trainer/trainer.py" />
         <option value="$PROJECT_DIR$/utils/logger.py" />
-        <option value="$PROJECT_DIR$/trainer/trainer_cls.py" />
         <option value="$PROJECT_DIR$/data_loader/datasets_custom.py" />
         <option value="$PROJECT_DIR$/train_cls.py" />
+        <option value="$PROJECT_DIR$/trainer/trainer_cls.py" />
+        <option value="$PROJECT_DIR$/data_loader/data_loaders.py" />
       </list>
     </option>
   </component>
@@ -426,16 +422,6 @@
           <line>96</line>
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/trainer/trainer_cls.py</url>
-          <line>51</line>
-          <option name="timeStamp" value="48" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/trainer/trainer_cls.py</url>
-          <line>20</line>
-          <option name="timeStamp" value="50" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/utils/logger.py</url>
           <line>3</line>
           <option name="timeStamp" value="60" />
@@ -467,9 +453,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2920">
           <caret line="146" selection-start-line="146" selection-end-line="146" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -517,11 +500,20 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="675">
           <caret line="45" column="26" selection-start-line="45" selection-start-column="19" selection-end-line="45" selection-end-column="26" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/base/base_trainer.py">
-      <provider selected="true" editor-type-id="text-editor" />
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/data/coco/cocoapi/PythonAPI/pycocotools/coco.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -544,6 +536,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="720">
           <caret line="36" column="45" selection-start-line="36" selection-start-column="45" selection-end-line="36" selection-end-column="45" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -565,16 +560,6 @@
       </provider>
     </entry>
     <entry file="file:///anaconda3/envs/I2T2I/lib/python3.6/site-packages/torch/utils/data/dataloader.py" />
-    <entry file="file://$PROJECT_DIR$/data_loader/data_loaders.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2220">
-          <caret line="111" selection-start-line="111" selection-end-line="111" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/config.json" />
     <entry file="file://$PROJECT_DIR$/model/model.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -624,22 +609,30 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/train_cls.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="438">
+          <caret line="35" column="33" selection-start-line="35" selection-start-column="33" selection-end-line="35" selection-end-column="33" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/trainer/trainer_cls.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
+        <state relative-caret-position="3340">
+          <caret line="167" selection-start-line="167" selection-end-line="167" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/train_cls.py">
+    <entry file="file://$PROJECT_DIR$/data_loader/data_loaders.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="670">
-          <caret line="44" column="19" selection-start-line="44" selection-start-column="19" selection-end-line="44" selection-end-column="19" />
-          <folding>
-            <element signature="e#0#39#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="158">
+          <caret line="112" column="73" selection-start-line="112" selection-start-column="73" selection-end-line="112" selection-end-column="73" />
         </state>
       </provider>
     </entry>
