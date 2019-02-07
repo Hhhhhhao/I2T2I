@@ -15,7 +15,7 @@ if __name__ == '__main__':
     # TODO: 'env_name'???
     parser.add_argument("--vis_screen", default='I2T2I')
 
-    parser.add_argument("--save_path", default='/home/s1784380/lala/I2T2I/savee')
+    parser.add_argument("--save_path", default='/home/s1784380/lala/I2T2I/saved/GAN-CLS')
     parser.add_argument('--pre_trained_disc', default=None)
     parser.add_argument('--pre_trained_gen', default=None)
 
