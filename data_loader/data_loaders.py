@@ -31,7 +31,7 @@ def collate_fn_test(data):
     # merge images (from tuple of 1D tensor to 4D tensor)
     batch_images = torch.stack(images, 0)
     # batch_image_ids = torch.stack(image_ids, 0)
-    batch_images_ids = image_ids
+    batch_image_ids = image_ids
 
     # merge captions (from tuple of 1D tensor to 2D tensor)
     batch_caption_lengths = [len(cap) for cap in captions]
@@ -75,7 +75,7 @@ class COCOCaptionDataLoader(BaseDataLoader):
         # transforms.ToTensor convert PIL images in range [0, 255] to a torch in range [0.0, 1.0]
         self.transform = transforms.Compose([
             transforms.Resize(self.image_size),
-            transforms.RandomHorizontalFlip(),
+            # transforms.RandomHorizontalFlip(),
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         ])
@@ -119,7 +119,7 @@ class CaptionDataLoader(DataLoader):
         # transforms.ToTensor convert PIL images in range [0, 255] to a torch in range [0.0, 1.0]
         self.transform = transforms.Compose([
             transforms.Resize(self.image_size),
-            transforms.RandomHorizontalFlip(),
+            # transforms.RandomHorizontalFlip(),
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         ])
@@ -155,8 +155,9 @@ if __name__ == '__main__':
         num_workers=0)
 
     print(len(data_loader.dataset.vocab))
+    print(len(data_loader.dataset.vocab.word2idx))
     # 10330 for coco
-    # 888 for birds
+    # 889 for birds
     # 1143 for flowers
 
     for i, (images, captions, caption_lengths) in enumerate(data_loader):

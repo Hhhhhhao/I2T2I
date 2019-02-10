@@ -2,6 +2,7 @@ import os
 import argparse
 import torch
 import json
+import cv2
 from tqdm import tqdm
 import data_loader.data_loaders as module_data
 import model.loss as module_loss
@@ -10,19 +11,32 @@ import model.model as module_arch
 from train import get_instance
 from utils.util import convert_back_to_text
 from eval_metrics.eval import compute_score
+from torch.nn.utils.rnn import pack_padded_sequence
 
 
 def main(config, resume):
     # setup data_loader instances
     # batch size must be one
-    data_loader = getattr(module_data, config['train_data_loader']['type'])(
-        '/Users/leon/Projects/I2T2I/data/',# config['train_data_loader']['args']['data_dir'],
-        config['train_data_loader']['args']['dataset_name'],
-        which_set='test',
-        image_size=256,
-        batch_size=1,
-        num_workers=0
-    )
+    if "CoCo" in config["name"]:
+        which_set = 'val'
+        data_loader = getattr(module_data, config['train_data_loader']['type'])(
+            config['train_data_loader']['args']['data_dir'],
+            which_set=which_set,
+            image_size=256,
+            batch_size=1,
+            num_workers=0,
+            validation_split=0
+        )
+    else:
+        which_set = 'test'
+        data_loader = getattr(module_data, config['train_data_loader']['type'])(
+            config['train_data_loader']['args']['data_dir'],
+            config['train_data_loader']['args']['dataset_name'],
+            which_set=which_set,
+            image_size=256,
+            batch_size=1,
+            num_workers=0
+        )
 
     # build model architecture
     model = get_instance(module_arch, 'arch', config)
@@ -33,7 +47,7 @@ def main(config, resume):
     metric_fns = [getattr(module_metric, met) for met in config['metrics']]
 
     # load state dict
-    checkpoint = torch.load(resume, map_location='cpu')
+    checkpoint = torch.load(resume)
     state_dict = checkpoint['state_dict']
     if config['n_gpu'] > 1:
         model = torch.nn.DataParallel(model)
@@ -53,25 +67,25 @@ def main(config, resume):
     with torch.no_grad():
         for i, (batch_image_ids, batch_images, batch_captions, batch_caption_lengths) in enumerate(tqdm(data_loader)):
             batch_images, batch_captions = batch_images.to(device), batch_captions.to(device)
+            # batch_caption_lengths = [l - 1 for l in batch_caption_lengths]
 
             batch_features = model.encoder(batch_images)
-            pred_captions = model.decoder(batch_features)
-            pred_captions_cpu = pred_captions.cpu().data.numpy()
-            pred_sentence = convert_back_to_text(pred_captions_cpu, data_loader.dataset.vocab)
-            target_sentence = convert_back_to_text(batch_captions, data_loader.dataset.vocab)
-            print(pred_sentence)
-            print(target_sentence)
+            pred_captions= model.decoder.sample_beam_search(batch_features)
+
+            pred_sentence = convert_back_to_text(pred_captions[0], data_loader.dataset.vocab)
+            # pred_sentence_2 = convert_back_to_text(pred_captions_greedy, data_loader.dataset.vocab)
+            target_sentence = convert_back_to_text((batch_captions.numpy())[0], data_loader.dataset.vocab)
 
             # save sample images, or do something with output here
             gts["{}".format(batch_image_ids[0])] = target_sentence
             res["{}".format(batch_image_ids[0])] = pred_sentence
 
             # computing loss, metrics (for sentence) on test set
-            loss = loss_fn(pred_captions, batch_captions)
-            batch_size = batch_images.shape[0]
-            total_loss += loss.item() * batch_size
-            for i, metric in enumerate(metric_fns):
-                total_metrics[i] += metric(pred_sentence, target_sentence) * batch_size
+            # loss = loss_fn(targets, outputs)
+            # batch_size = batch_images.shape[0]
+            # total_loss += loss.item() * batch_size
+            # for i, metric in enumerate(metric_fns):
+            #    total_metrics[i] += metric(pred_sentence, target_sentence) * batch_size
 
     with open('saved/{}/gts.json'.format(config["name"]), 'w') as f:
         json.dump(gts, f)
@@ -93,7 +107,7 @@ def main(config, resume):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='PyTorch Template')
 
-    parser.add_argument('-r', '--resume', default='/Users/leon/Projects/I2T2I/saved/Show-and-Tell-Flowers/0205_233748/model_best.pth', type=str,
+    parser.add_argument('-r', '--resume', default='/Users/leon/Projects/I2T2I/saved/Show-and-Tell-Birds/0206_205028/model_best.pth', type=str,
                            help='path to latest checkpoint (default: None)')
     parser.add_argument('-d', '--device', default=None, type=str,
                            help='indices of GPUs to enable (default: all)')

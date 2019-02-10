@@ -5,7 +5,7 @@
     "arch": {
         "type": "ImageCaptionModel",
         "args": {
-            "image_size":256,
+            "image_size":128,
             "image_encode_size":4,
             "image_embed_size":256,
             "word_embed_size": 256,
@@ -19,7 +19,7 @@
             "data_dir": "/home/s1786991/I2T2I/data/",
             "dataset_name":"flowers",
             "which_set": "train",
-            "image_size":256,
+            "image_size":128,
             "batch_size": 32,
             "num_workers": 0
         }
@@ -30,7 +30,7 @@
             "data_dir": "/home/s1786991/I2T2I/data/",
             "dataset_name":"flowers",
             "which_set": "valid",
-            "image_size":256,
+            "image_size":128,
             "batch_size": 1,
             "num_workers": 0
         }
@@ -46,7 +46,7 @@
     "loss": "cross_entropy_loss",
     "metrics": [],
     "trainer": {
-        "epochs": 100,
+        "epochs": 50,
         "save_dir": "saved/",
         "save_period": 1,
         "verbosity": 2,

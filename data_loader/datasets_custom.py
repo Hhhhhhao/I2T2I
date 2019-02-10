@@ -52,7 +52,7 @@ class COCOCaptionDataset(Dataset):
 
     def __getitem__(self, index):
         # Obtain image and caption if in training or validation mode
-        if self.which_set == 'train':
+        if self.which_set == 'train' or self.which_set == 'val':
             ann_id = self.ids[index]
             caption = self.coco.anns[ann_id]["caption"]
             img_id = self.coco.anns[ann_id]["image_id"]
@@ -61,6 +61,9 @@ class COCOCaptionDataset(Dataset):
             # Convert image to tensor and pre-process using transform
             image = Image.open(os.path.join(self.data_dir + 'images/{}/'.format(self.which_set), path))
             image = image.convert("RGB")
+
+            # image.show()
+
             image = self.transform(image)
 
             # Convert caption to tensor of word ids.
@@ -70,27 +73,11 @@ class COCOCaptionDataset(Dataset):
             caption.extend(self.vocab(token) for token in tokens)
             caption.append(self.vocab(self.vocab.end_word))
             caption = torch.Tensor(caption).long()
-            return image, caption
 
-        elif self.which_set == 'val':
-            ann_id = self.ids[index]
-            caption = self.coco.anns[ann_id]["caption"]
-            img_id = self.coco.anns[ann_id]["image_id"]
-            path = self.coco.loadImgs(img_id)[0]["file_name"]
-
-            # Convert image to tensor and pre-process using transform
-            image = Image.open(os.path.join(self.data_dir + 'images/{}/'.format(self.which_set), path))
-            image = image.convert("RGB")
-            image = self.transform(image)
-
-            # Convert caption to tensor of word ids.
-            tokens = nltk.tokenize.word_tokenize(str(caption).lower())
-            caption = []
-            caption.append(self.vocab(self.vocab.start_word))
-            caption.extend(self.vocab(token) for token in tokens)
-            caption.append(self.vocab(self.vocab.end_word))
-            caption = torch.Tensor(caption).long()
-            return img_id, image, caption
+            if self.which_set == 'train':
+                return image, caption
+            else:
+                return img_id, image, caption
 
         # Obtain image, caption in test mode
         else:
@@ -155,6 +142,8 @@ class CaptionDataset(Dataset):
         caption = str(np.array(self.data[img_id]['txt']))
         image_path = bytes(np.array(self.data[img_id]['img']))
         image = Image.open(io.BytesIO(image_path)).convert("RGB")
+
+        image.show()
 
         image = self.transform(image)
 

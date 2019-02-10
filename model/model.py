@@ -104,6 +104,7 @@ class DecoderRNN(BaseModel):
         self.embedding = nn.Embedding(vocab_size, embed_size) # embedding layer
         self.lstm = nn.LSTM(embed_size, hidden_size, num_layers, bias=True, batch_first=True)
         self.linear = nn.Linear(hidden_size, vocab_size)   # linear layer to find scores over vocabulary
+        self.softmax = nn.Softmax()
         self.init_weights()
 
     def init_weights(self):
@@ -129,6 +130,7 @@ class DecoderRNN(BaseModel):
         packed = pack_padded_sequence(embeddings, caption_lengths, batch_first=True)
         hiddens, _ = self.lstm(packed)
         outputs = self.linear(hiddens[0])
+        outputs = self.softmax(outputs)
         return outputs
 
     def sample(self, features, states=None, max_len=20):
@@ -145,7 +147,7 @@ class DecoderRNN(BaseModel):
             # represents a word
             predicted = outputs.argmax(1)
             sampled_ids.append(predicted.item())
-            inputs = self.embed(predicted)
+            inputs = self.embedding(predicted)
             inputs = inputs.unsqueeze(1)
         return sampled_ids
 
@@ -175,7 +177,7 @@ class DecoderRNN(BaseModel):
                     log_prob += top_log_probs[0][i].item()
                     # Indexing 1-dimensional top_idx gives 0-dimensional tensors.
                     # We have to expand dimensions before embedding them
-                    inputs = self.embed(top_idx[i].unsqueeze(0)).unsqueeze(0)
+                    inputs = self.embedding(top_idx[i].unsqueeze(0)).unsqueeze(0)
                     all_candidates.append([next_idx_seq, log_prob, inputs, states])
             # Keep only the top sequences according to their total log probability
             ordered = sorted(all_candidates, key=lambda x: x[1], reverse=True)
