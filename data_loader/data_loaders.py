@@ -25,7 +25,7 @@ def collate_fn_train(data):
 
 def collate_fn_test(data):
     # sort the data in descentding order
-    data.sort(key=lambda  x: len(x[1]), reverse=True)
+    data.sort(key=lambda  x: len(x[2]), reverse=True)
     image_ids, images, captions = zip(*data)
 
     # merge images (from tuple of 1D tensor to 4D tensor)
@@ -35,6 +35,7 @@ def collate_fn_test(data):
 
     # merge captions (from tuple of 1D tensor to 2D tensor)
     batch_caption_lengths = [len(cap) for cap in captions]
+
     batch_captions = torch.zeros(len(captions), max(batch_caption_lengths)).long()
     for i, cap in enumerate(captions):
         end = batch_caption_lengths[i]
