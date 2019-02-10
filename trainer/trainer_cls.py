@@ -108,8 +108,8 @@ class Trainer(object):
                 wrong_score = outputs
 
                 # fake image, right text
-                noise = Variable(torch.randn(right_image.size(0), 100)).cuda()
-                noise = noise.view(noise.size(0), 100, 1, 1)
+                noise = Variable(torch.randn(right_image.size(0), self.noise_dim)).cuda()
+                noise = noise.view(noise.size(0), self.noise_dim, 1, 1)
                 fake_image = self.generator(right_embed, noise)
                 outputs, _ = self.discriminator(fake_image, right_embed)
                 fake_loss = criterion(outputs, fake_labels)
@@ -125,8 +125,9 @@ class Trainer(object):
 
                 # Train the generator
                 self.generator.zero_grad()
-                noise = Variable(torch.randn(right_image.size(0), 100)).cuda()
-                noise = noise.view(noise.size(0), 100, 1, 1)
+                noise = Variable(torch.randn(right_image.size(0), self.noise_dim)).cuda()
+                noise = noise.view(noise.size(0), self.noise_dim, 1, 1)
+
                 fake_image = self.generator(right_embed, noise)
                 outputs, activation_fake = self.discriminator(fake_image, right_embed)
 
@@ -147,8 +148,7 @@ class Trainer(object):
                 g_loss.backward()
                 self.optimG.step()
 
-
-            if epoch % 10 == 0:
+            if epoch % 5 == 0:
                 Utils.save_checkpoint(self.discriminator, self.generator, self.checkpoints_path, self.save_path, epoch)
 
     def predict(self):
@@ -163,11 +163,10 @@ class Trainer(object):
             right_images = Variable(right_images.float()).cuda()
             right_embed = Variable(right_embed.float()).cuda()
 
+            noise = Variable(torch.randn(right_images.size(0), self.noise_dim)).cuda()
+            noise = noise.view(noise.size(0), self.noise_dim, 1, 1)
 
-            noise = Variable(torch.randn(right_images.size(0), 100)).cuda()
-            noise = noise.view(noise.size(0), 100, 1, 1)
             fake_images = self.generator(right_embed, noise)
-
 
             for image, t in zip(fake_images, txt):
                 im = Image.fromarray(image.data.mul_(127.5).add_(127.5).byte().permute(1, 2, 0).cpu().numpy())
