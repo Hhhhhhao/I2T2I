@@ -4,7 +4,7 @@ import yaml
 from torch import nn
 from torch.autograd import Variable
 from torch.utils.data import DataLoader
-
+import logging
 from data_loader.data_loaders import Text2ImageDataLoader
 from model.gan_factory import gan_factory
 from utils.utils_cls import Utils
@@ -18,6 +18,7 @@ class Trainer(object):
                  num_epochs, lr, save_path, l1_coef, l2_coef,
                  pre_trained_gen=None, pre_trained_disc=None):
 
+        self.logger = logging.getLogger(self.__class__.__name__)
         self.generator = torch.nn.DataParallel(gan_factory.generator_factory(gan_type).cuda())
         self.discriminator = torch.nn.DataParallel(gan_factory.discriminator_factory(gan_type).cuda())
 
@@ -51,6 +52,7 @@ class Trainer(object):
 
         self.checkpoints_path = 'checkpoints'
         self.save_path = save_path
+        self.log_step = int(np.sqrt(data_loader.batch_size))
 
     def train(self):
 
@@ -65,11 +67,9 @@ class Trainer(object):
         criterion = nn.BCELoss()
         l2_loss = nn.MSELoss()
         l1_loss = nn.L1Loss()
-        iteration = 0
 
         for epoch in range(self.num_epochs):
-            for sample in self.data_loader:
-                iteration += 1
+            for batch_idx, sample in enumerate(self.data_loader):
                 right_image = sample['right_image']
                 right_embed = sample['right_embed']
                 wrong_image = sample['wrong_image']
@@ -87,12 +87,9 @@ class Trainer(object):
                 # =============================================
                 smoothed_real_labels = torch.FloatTensor(Utils.smooth_label(real_labels.numpy(), -0.1))
 
-
                 real_labels = Variable(real_labels).cuda()
                 smoothed_real_labels = Variable(smoothed_real_labels).cuda()
                 fake_labels = Variable(fake_labels).cuda()
-
-
 
                 # Train the discriminator
                 self.discriminator.zero_grad()
@@ -121,8 +118,6 @@ class Trainer(object):
 
                 self.optimD.step()
 
-
-
                 # Train the generator
                 self.generator.zero_grad()
                 noise = Variable(torch.randn(right_image.size(0), self.noise_dim)).cuda()
@@ -147,6 +142,16 @@ class Trainer(object):
 
                 g_loss.backward()
                 self.optimG.step()
+
+                # log
+                if batch_idx % self.log_step == 0:
+                    self.logger.info('Train Epoch: {} [{}/{} ({:.0f}%)] G_Loss: {:.6f} D_Loss: {:.6f}'.format(
+                        epoch,
+                        batch_idx * self.data_loader.batch_size,
+                        self.data_loader.n_samples,
+                        100.0 * batch_idx / len(self.data_loader),
+                        g_loss.item(),
+                        d_loss.item()))
 
             if epoch % 5 == 0:
                 Utils.save_checkpoint(self.discriminator, self.generator, self.checkpoints_path, self.save_path, epoch)

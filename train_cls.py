@@ -11,10 +11,6 @@ if __name__ == '__main__':
     parser.add_argument("--lr", default=0.0002, type=float)
     parser.add_argument("--l1_coef", default=50, type=float)
     parser.add_argument("--l2_coef", default=100, type=float)
-
-    # TODO: 'env_name'???
-    parser.add_argument("--vis_screen", default='I2T2I')
-
     parser.add_argument("--save_path", default='/home/s1784380/lala/I2T2I/saved/GAN-CLS')
     parser.add_argument('--pre_trained_disc', default=None)
     parser.add_argument('--pre_trained_gen', default=None)
@@ -23,7 +19,7 @@ if __name__ == '__main__':
 
     bird_train_data_loader = Text2ImageDataLoader(
         data_dir='/home/s1784380/I2T2I/data/',
-        dataset_name="flowers",
+        dataset_name="birds",
         which_set="train",
         image_size=64,
         batch_size=16,
