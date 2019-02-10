@@ -5,7 +5,7 @@ from base import BaseDataLoader
 from data_loader.datasets_custom import COCOCaptionDataset, CaptionDataset
 
 
-def collate_fn(data):
+def collate_fn_train(data):
     # sort the data in descentding order
     data.sort(key=lambda  x: len(x[1]), reverse=True)
     images, captions = zip(*data)
@@ -21,6 +21,26 @@ def collate_fn(data):
         batch_captions[i, :end] = cap[:end]
 
     return batch_images, batch_captions, batch_caption_lengths
+
+
+def collate_fn_test(data):
+    # sort the data in descentding order
+    data.sort(key=lambda  x: len(x[1]), reverse=True)
+    image_ids, images, captions = zip(*data)
+
+    # merge images (from tuple of 1D tensor to 4D tensor)
+    batch_images = torch.stack(images, 0)
+    # batch_image_ids = torch.stack(image_ids, 0)
+    batch_images_ids = image_ids
+
+    # merge captions (from tuple of 1D tensor to 2D tensor)
+    batch_caption_lengths = [len(cap) for cap in captions]
+    batch_captions = torch.zeros(len(captions), max(batch_caption_lengths)).long()
+    for i, cap in enumerate(captions):
+        end = batch_caption_lengths[i]
+        batch_captions[i, :end] = cap[:end]
+
+    return batch_image_ids, batch_images, batch_captions, batch_caption_lengths
 
 
 class MnistDataLoader(BaseDataLoader):
@@ -69,16 +89,16 @@ class COCOCaptionDataLoader(BaseDataLoader):
                 shuffle=True,
                 validation_split=validation_split,
                 num_workers=self.num_workers,
-                collate_fn=collate_fn
+                collate_fn=collate_fn_train
             )
         else:
             super(COCOCaptionDataLoader, self).__init__(
                 dataset=self.dataset,
                 batch_size=self.batch_size,
                 shuffle=False,
-                validation_split=validation_split,
+                validation_split=0,
                 num_workers=self.num_workers,
-                collate_fn=collate_fn)
+                collate_fn=collate_fn_test)
 
 
 class CaptionDataLoader(DataLoader):
@@ -113,7 +133,7 @@ class CaptionDataLoader(DataLoader):
                 batch_size=self.batch_size,
                 shuffle=True,
                 num_workers=self.num_workers,
-                collate_fn=collate_fn
+                collate_fn=collate_fn_train
             )
         else:
             super(CaptionDataLoader, self).__init__(
@@ -121,7 +141,7 @@ class CaptionDataLoader(DataLoader):
                 batch_size=self.batch_size,
                 shuffle=False,
                 num_workers=0,
-                collate_fn=collate_fn)
+                collate_fn=collate_fn_test)
 
 
 
