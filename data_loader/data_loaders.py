@@ -127,7 +127,7 @@ class CaptionDataLoader(DataLoader):
         self.dataset = CaptionDataset(self.data_dir, self.dataset_name, self.which_set, self.transform, vocab_from_file=False)
         self.n_samples = len(self.dataset)
 
-        if self.which_set == 'train':
+        if self.which_set == 'train' or self.which_set == 'valid':
             super(CaptionDataLoader, self).__init__(
                 dataset=self.dataset,
                 batch_size=self.batch_size,

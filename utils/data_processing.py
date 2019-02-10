@@ -207,7 +207,7 @@ class Vocabulary(object):
         for i, id in enumerate(tqdm(ids)):
             caption = str(np.array(self.data['train'][id]['txt']))
             tokens = nltk.tokenize.word_tokenize(caption.lower())
-            tokens = [word for word in tokens]
+            # tokens = [word for word in tokens]
             counter.update(tokens)
 
         words = [word for word, cnt in counter.items()

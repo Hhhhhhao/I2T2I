@@ -6,8 +6,7 @@ import torch
 import sys
 import nltk
 import numpy as np
-sys.path.append('/Users/leon/Projects/I2T2I/data/coco/cocoapi/PythonAPI')
-sys.path.append('/home/s1786991/I2T2I/data/coco/cocoapi/PythonAPI')
+sys.path.append('../data/coco/cocoapi/PythonAPI')
 from pycocotools.coco import COCO
 from tqdm import tqdm
 from torch.utils.data import Dataset
@@ -24,11 +23,11 @@ class COCOCaptionDataset(Dataset):
                  which_set,
                  transform,
                  vocab_threshold=5,
-                 vocab_file="/Users/leon/Projects/I2T2I/data/coco/vocab.pkl",
+                 vocab_file="../data/coco/vocab.pkl",
                  start_word="<start>",
                  end_word="<end>",
                  unk_word="<unk>",
-                 annotations_file="/Users/leon/Projects/I2T2I/data/coco/annotations/captions_train2017.json",
+                 annotations_file="../data/coco/annotations/captions_train2017.json",
                  vocab_from_file=True):
 
         self.data_dir = data_dir
@@ -149,7 +148,7 @@ class CaptionDataset(Dataset):
 
         # Convert caption to tensor of word ids.
         tokens = nltk.tokenize.word_tokenize(str(caption).lower())
-        tokens = [word for word in tokens]
+        # tokens = [word for word in tokens]
         caption = []
         caption.append(self.vocab(self.vocab.start_word))
         caption.extend(self.vocab(token) for token in tokens)
