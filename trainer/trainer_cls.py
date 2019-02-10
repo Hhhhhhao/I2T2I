@@ -18,6 +18,17 @@ class Trainer(object):
                  num_epochs, lr, save_path, l1_coef, l2_coef,
                  pre_trained_gen=None, pre_trained_disc=None):
 
+        # setup GPU device if available, move model into configured device
+        if torch.cuda.is_available():
+            print("use GPU")
+            self.device = torch.device('cuda')
+        else:
+            print("use CPU")
+            self.device = torch.device('cpu')
+
+        # self.model = model.to(self.device)
+
+
         self.logger = logging.getLogger(self.__class__.__name__)
         self.generator = torch.nn.DataParallel(gan_factory.generator_factory(gan_type).cuda())
         self.discriminator = torch.nn.DataParallel(gan_factory.discriminator_factory(gan_type).cuda())
@@ -53,6 +64,7 @@ class Trainer(object):
         self.checkpoints_path = 'checkpoints'
         self.save_path = save_path
         self.log_step = int(np.sqrt(data_loader.batch_size))
+
 
     def train(self):
 
