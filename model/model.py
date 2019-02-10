@@ -34,7 +34,7 @@ class EncoderCNN(BaseModel):
     Encoder
     """
 
-    def __init__(self, image_size=256, encode_image_size=4, embed_size=256):
+    def __init__(self, encode_image_size=4, embed_size=256):
         super(EncoderCNN, self).__init__()
 
         resnet = torchvision.models.resnet34(pretrained=True)
@@ -80,7 +80,7 @@ class EncoderCNN(BaseModel):
         for p in self.resnet.parameters():
             p.requires_grad = False
         # If fine-tuning, only fine tune convolutional blocks 2 through 4
-        for c in list(self.resnet.children())[5:]:
+        for c in list(self.resnet.children())[7:]:
             for p in c.parameters():
                 p.requires_grad = fine_tune
 
@@ -217,9 +217,10 @@ if __name__ == '__main__':
         which_set='val',
         image_size=image_size,
         batch_size=batch_size,
-        num_workers=0)
+        num_workers=0,
+        validation_split=0)
 
-    for i, (images, captions, caption_lengths) in enumerate(data_loader):
+    for i, (image_ids, images, captions, caption_lengths) in enumerate(data_loader):
         print("done")
         break
 

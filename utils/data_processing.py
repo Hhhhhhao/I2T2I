@@ -4,6 +4,7 @@ import pickle
 import json
 import h5py
 import sys
+import string
 import numpy as np
 sys.path.append('../data/coco/cocoapi/PythonAPI')
 from pycocotools.coco import COCO
@@ -206,7 +207,7 @@ class Vocabulary(object):
         for i, id in enumerate(tqdm(ids)):
             caption = str(np.array(self.data['train'][id]['txt']))
             tokens = nltk.tokenize.word_tokenize(caption.lower())
-            tokens = [SpellChecker(word) for word in tokens]
+            tokens = [word for word in tokens]
             counter.update(tokens)
 
         words = [word for word, cnt in counter.items()
@@ -226,16 +227,23 @@ class Vocabulary(object):
 
 def SpellChecker(token):
     strip = token.rstrip()
-    if not WN.synsets(strip):
+    if not WN.synsets(strip) and not (strip in string.punctuation):
         if strip in stop_words_en:
             return token
         else:
-            return spell(token)
+            print("wrong word:{}".format(token))
+            abc = spell(token)
+            print("right word:{}".format(abc))
+            return abc
     else:
         return token
 
 
 if __name__ == "__main__":
+    # import string
+
+    # print(list(string.punctuation))
+
     vocab = Vocabulary(vocab_threshold=5,
                        dataset_name='birds')
 

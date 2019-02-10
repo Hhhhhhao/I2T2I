@@ -143,13 +143,13 @@ class CaptionDataset(Dataset):
         image_path = bytes(np.array(self.data[img_id]['img']))
         image = Image.open(io.BytesIO(image_path)).convert("RGB")
 
-        image.show()
+        # image.show()
 
         image = self.transform(image)
 
         # Convert caption to tensor of word ids.
         tokens = nltk.tokenize.word_tokenize(str(caption).lower())
-        tokens = [SpellChecker(word) for word in tokens]
+        tokens = [word for word in tokens]
         caption = []
         caption.append(self.vocab(self.vocab.start_word))
         caption.extend(self.vocab(token) for token in tokens)
@@ -239,14 +239,14 @@ if __name__ == '__main__':
 
     transform = transforms.Compose([
         transforms.Resize(256),
-        transforms.RandomHorizontalFlip(),
+        # transforms.RandomHorizontalFlip(),
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
     ])
 
     dataset = CaptionDataset(
         data_dir="/Users/leon/Projects/I2T2I/data/",
-        dataset_name="flowers",
+        dataset_name="birds",
         which_set='train',
         transform=transform,
         vocab_threshold=5,
@@ -256,3 +256,4 @@ if __name__ == '__main__':
         vocab_from_file=False)
 
     print(len(dataset.vocab))
+    print(dataset.vocab.word2idx)
