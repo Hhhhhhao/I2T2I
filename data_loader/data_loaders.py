@@ -148,7 +148,7 @@ class CaptionDataLoader(DataLoader):
 if __name__ == '__main__':
     data_loader = CaptionDataLoader(
         data_dir='/Users/leon/Projects/I2T2I/data/',
-        dataset_name="flowers",
+        dataset_name="birds",
         which_set='train',
         image_size=256,
         batch_size=16,
@@ -158,7 +158,7 @@ if __name__ == '__main__':
     print(len(data_loader.dataset.vocab.word2idx))
     # 10330 for coco
     # 889 for birds
-    # 1143 for flowers
+    # 1161 for flowers
 
     for i, (images, captions, caption_lengths) in enumerate(data_loader):
         print("done")
