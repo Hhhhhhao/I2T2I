@@ -186,9 +186,8 @@ class DecoderRNN(BaseModel):
 
 
 class ImageCaptionModel(BaseModel):
-    def __init__(self, image_size, image_encode_size, image_embed_size, word_embed_size, lstm_hidden_size, vocab_size, lstm_num_layers=1):
+    def __init__(self, image_encode_size, image_embed_size, word_embed_size, lstm_hidden_size, vocab_size, lstm_num_layers=1):
         super(ImageCaptionModel, self).__init__()
-        self.image_size = image_size
         self.image_encode_size = image_encode_size
         self.image_embed_size = image_embed_size
         self.word_embed_size = word_embed_size
@@ -196,13 +195,18 @@ class ImageCaptionModel(BaseModel):
         self.lstm_num_layers = lstm_num_layers
         self.vocab_size = vocab_size
 
-        self.encoder = EncoderCNN(self.image_size, self.image_encode_size, self.image_embed_size)
+        self.encoder = EncoderCNN(self.image_encode_size, self.image_embed_size)
         self.decoder = DecoderRNN(self.word_embed_size, self.lstm_hidden_size, self.vocab_size, self.lstm_num_layers)
 
     def forward(self, images, captions, caption_lengths):
         features = self.encoder(images)
         outputs = self.decoder(features, captions, caption_lengths)
         return outputs
+
+
+
+
+
 
 
 if __name__ == '__main__':
