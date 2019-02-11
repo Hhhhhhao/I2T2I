@@ -50,10 +50,10 @@ class Trainer(object):
         self.gan_type = gan_type
         self.data_loader = data_loader
 
-        # TODO: set noise dimension
+
         self.noise_dim = 100
 
-        # TODO: set beta1 in Adam
+
         self.beta1 = 0.5
 
         self.num_epochs = num_epochs
@@ -174,17 +174,17 @@ class Trainer(object):
 
     def predict(self):
         for sample in self.data_loader:
-            right_images = sample['right_images']
+            right_image = sample['right_image']
             right_embed = sample['right_embed']
             txt = sample['txt']
 
             if not os.path.exists('results/{0}'.format(self.save_path)):
                 os.makedirs('results/{0}'.format(self.save_path))
 
-            right_images = Variable(right_images.float()).cuda()
+            right_image = Variable(right_image.float()).cuda()
             right_embed = Variable(right_embed.float()).cuda()
 
-            noise = Variable(torch.randn(right_images.size(0), self.noise_dim)).cuda()
+            noise = Variable(torch.randn(right_image.size(0), self.noise_dim)).cuda()
             noise = noise.view(noise.size(0), self.noise_dim, 1, 1)
 
             fake_images = self.generator(right_embed, noise)

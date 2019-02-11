@@ -4,30 +4,37 @@ import argparse
 from PIL import Image
 import os
 
+from utils.arg_extractor import get_args
+
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--gan_type", default='gan_cls')
-    parser.add_argument('--num_epochs', default=200, type=int)
-    parser.add_argument("--lr", default=0.0002, type=float)
-    parser.add_argument("--l1_coef", default=50, type=float)
-    parser.add_argument("--l2_coef", default=100, type=float)
-    parser.add_argument("--save_path", default='/home/s1784380/lala/I2T2I/saved/GAN-CLS')
-    parser.add_argument('--pre_trained_disc', default=None)
-    parser.add_argument('--pre_trained_gen', default=None)
 
-    args = parser.parse_args()
+    args = get_args()
 
-    bird_train_data_loader = Text2ImageDataLoader(
-        data_dir='/home/s1784380/I2T2I/data/',
-        dataset_name="birds",
-        which_set="train",
-        image_size=64,
-        batch_size=16,
-        num_workers=0
-    )
+    if args.dataset_name == 'birds':
+
+        train_data_loader = Text2ImageDataLoader(
+            data_dir='/home/s1784380/I2T2I/data/',
+            dataset_name="birds",
+            which_set="train",
+            image_size=64,
+            batch_size=16,
+            num_workers=0
+        )
+    elif args.dataset_name == 'flowers':
+
+        train_data_loader = Text2ImageDataLoader(
+            data_dir='/home/s1784380/I2T2I/data/',
+            dataset_name="flowers",
+            which_set="train",
+            image_size=64,
+            batch_size=16,
+            num_workers=0
+        )
+    else:
+        raise AssertionError("dataset_name not valid!")
 
     trainer = Trainer(gan_type=args.gan_type,
-                      data_loader=bird_train_data_loader,
+                      data_loader=train_data_loader,
                       num_epochs=args.num_epochs,
                       lr=args.lr,
                       save_path=args.save_path,
