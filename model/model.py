@@ -104,7 +104,7 @@ class DecoderRNN(BaseModel):
         self.embedding = nn.Embedding(vocab_size, embed_size) # embedding layer
         self.lstm = nn.LSTM(embed_size, hidden_size, num_layers, bias=True, batch_first=True)
         self.linear = nn.Linear(hidden_size, vocab_size)   # linear layer to find scores over vocabulary
-        self.softmax = nn.Softmax()
+        # self.softmax = nn.Softmax(dim=1)
         self.init_weights()
 
     def init_weights(self):
@@ -131,8 +131,11 @@ class DecoderRNN(BaseModel):
         hiddens, _ = self.lstm(packed)
         outputs = self.linear(hiddens[0])
         # print("before softmax:{}".format(outputs))
-        outputs = self.softmax(outputs, dim=0)
+        # print("sum:{}".format(np.sum(outputs.detach().numpy(), axis=-1)))
+        # outputs = self.softmax(outputs)
         # print("after softmax:{}".format(outputs))
+        # print("sum:{}".format(np.sum(outputs.detach().numpy(), axis=-1)))
+        # print("sum:{}".format(np.sum(outputs.detach().numpy(), axis=-1).shape))
         return outputs
 
     def sample(self, features, states=None, max_len=20):

@@ -22,7 +22,7 @@ class COCOCaptionDataset(Dataset):
                  data_dir,
                  which_set,
                  transform,
-                 vocab_threshold=3,
+                 vocab_threshold=4,
                  vocab_file="../data/coco/vocab.pkl",
                  start_word="<start>",
                  end_word="<end>",
@@ -104,7 +104,7 @@ class CaptionDataset(Dataset):
                  dataset_name,
                  which_set,
                  transform,
-                 vocab_threshold=3,
+                 vocab_threshold=4,
                  start_word="<start>",
                  end_word="<end>",
                  unk_word="<unk>",
@@ -148,7 +148,6 @@ class CaptionDataset(Dataset):
 
         # Convert caption to tensor of word ids.
         tokens = nltk.tokenize.word_tokenize(str(caption).lower())
-        # tokens = [word for word in tokens]
         caption = []
         caption.append(self.vocab(self.vocab.start_word))
         caption.extend(self.vocab(token) for token in tokens)
@@ -248,7 +247,7 @@ if __name__ == '__main__':
         dataset_name="birds",
         which_set='train',
         transform=transform,
-        vocab_threshold=5,
+        vocab_threshold=4,
         start_word="<start>",
         end_word="<end>",
         unk_word="<unk>",
@@ -256,3 +255,6 @@ if __name__ == '__main__':
 
     print(len(dataset.vocab))
     print(dataset.vocab.word2idx)
+    # brids 1052
+    # flowers
+    # coco 10330

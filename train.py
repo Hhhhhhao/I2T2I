@@ -31,13 +31,14 @@ def main(config, resume):
     print(model)
     
     # get function handles of loss and metrics
-    loss = getattr(module_loss, config['loss'])
+    # loss = getattr(module_loss, config['loss'])
+    loss = torch.nn.CrossEntropyLoss()
     metrics = [getattr(module_metric, met) for met in config['metrics']]
 
     # build optimizer, learning rate scheduler. delete every lines containing lr_scheduler for disabling scheduler
     trainable_params = filter(lambda p: p.requires_grad, model.parameters())
     optimizer = get_instance(torch.optim, 'optimizer', config, trainable_params)
-    lr_scheduler = None # get_instance(torch.optim.lr_scheduler, 'lr_scheduler', config, optimizer)
+    lr_scheduler = get_instance(torch.optim.lr_scheduler, 'lr_scheduler', config, optimizer)
 
     trainer = Trainer(model, loss, metrics, optimizer, 
                       resume=resume,
@@ -52,7 +53,7 @@ def main(config, resume):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='PyTorch Template')
-    parser.add_argument('-c', '--config', default="config/coco_config.json", type=str,
+    parser.add_argument('-c', '--config', default="config/birds_config.json", type=str,
                            help='config file path (default: None)')
     parser.add_argument('-r', '--resume', default=None, type=str,
                            help='path to latest checkpoint (default: None)')

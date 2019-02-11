@@ -1,4 +1,5 @@
 import os
+import torch
 
 
 def ensure_dir(path):
@@ -45,3 +46,17 @@ def convert_back_to_text(word_idx_array, vocab):
 
     sentence = ' '.join(sampled_caption)
     return sentence
+
+
+def one_hot_embedding(labels, num_classes):
+    """Embedding labels to one-hot form.
+
+    Args:
+      labels: (LongTensor) class labels, sized [N,].
+      num_classes: (int) number of classes.
+
+    Returns:
+      (tensor) encoded labels, sized [N, #classes].
+    """
+    y = torch.eye(num_classes).long()
+    return y[labels]

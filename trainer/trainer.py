@@ -3,6 +3,7 @@ import torch
 from torchvision.utils import make_grid
 from torch.nn.utils.rnn import pack_padded_sequence
 from base import BaseTrainer
+from utils.util import one_hot_embedding
 
 
 class Trainer(BaseTrainer):

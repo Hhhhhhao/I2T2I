@@ -6,9 +6,9 @@
         "type": "ImageCaptionModel",
         "args": {
             "image_encode_size":4,
-            "image_embed_size":256,
-            "word_embed_size": 256,
-            "lstm_hidden_size":512,
+            "image_embed_size":512,
+            "word_embed_size": 512,
+            "lstm_hidden_size":1024,
             "vocab_size":10330
         }
     },
@@ -18,7 +18,7 @@
             "data_dir": "/home/s1786991/I2T2I/data/coco/",
             "which_set": "train",
             "image_size":128,
-            "batch_size": 32,
+            "batch_size":128,
             "validation_split":0.05,
             "num_workers": 0
         }
@@ -37,12 +37,18 @@
         "type": "Adam",
         "args":{
             "lr": 1e-3,
-            "weight_decay": 1e-5,
+            "weight_decay": 0,
             "amsgrad": false
         }
     },
     "loss": "cross_entropy_loss",
     "metrics": [],
+    "lr_scheduler": {
+        "type": "StepLR",
+        "args":{
+        "step_size": 2,
+        "gamma": 0.5
+    }},
     "trainer": {
         "epochs": 30,
         "save_dir": "saved/",

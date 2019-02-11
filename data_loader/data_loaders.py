@@ -158,13 +158,13 @@ if __name__ == '__main__':
         data_dir='/Users/leon/Projects/I2T2I/data/coco/',
         # dataset_name="flowers",
         which_set='train',
-        image_size=256,
+        image_size=128,
         batch_size=16,
         num_workers=0,
         validation_split=0)
 
     print(len(data_loader.dataset.vocab))
-    print(len(data_loader.dataset.vocab.word2idx))
+    print(data_loader.dataset.vocab.word2idx)
     # 10330 for coco
     # 914 for birds
     # 1579 for flowers
@@ -178,6 +178,8 @@ if __name__ == '__main__':
         # Print the pre-processed images and captions.
         print('images:', images)
         print('captions:', captions)
+
+        break
 
 
 
