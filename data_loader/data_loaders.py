@@ -139,16 +139,16 @@ if __name__ == '__main__':
         print('right images 256 shape:', data['right_images_256'].shape)
         print("right embed shape:", data['right_embeds'].shape)
         print("right caption shape:", data['right_captions'].shape)
-        print("right caption lengths shape:", data['right_caption_lengths'].shape)
+        print("right caption lengths:", data['right_caption_lengths'])
         print("right txt:", data["right_txt"])
 
         print('wrong images 32 shape:', data['wrong_images_32'].shape)
-        print('wrong images 64 shape:', data['rwrong_images_64'].shape)
+        print('wrong images 64 shape:', data['wrong_images_64'].shape)
         print('wrong images 128 shape:', data['wrong_images_128'].shape)
         print('wrong images 256 shape:', data['wrong_images_256'].shape)
         print("wrong embed shape:", data['wrong_embeds'].shape)
         print("wrong caption shape:", data['wrong_captions'].shape)
-        print("wrong caption lengths shape:", data['wrong_caption_lengths'].shape)
+        print("wrong caption lengths:", data['wrong_caption_lengths'])
         print("wrong txt:", data["wrong_txt"])
 
         if i == 10:
