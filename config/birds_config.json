@@ -9,7 +9,7 @@
             "image_embed_size":512,
             "word_embed_size": 512,
             "lstm_hidden_size":1024,
-            "vocab_size":1273
+            "vocab_size":1044
         }
     },
     "train_data_loader": {

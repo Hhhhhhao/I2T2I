@@ -6,11 +6,13 @@ import torch
 import sys
 import nltk
 import numpy as np
-sys.path.append('/Users/leon/Projects/I2T2I/data/coco/cocoapi/PythonAPI')
+dirname = os.path.dirname(__file__)
+dirname = os.path.dirname(dirname)
+sys.path.append(os.path.join(dirname, '/data/coco/cocoapi/PythonAPI'))
 from pycocotools.coco import COCO
 from tqdm import tqdm
 from torch.utils.data import Dataset
-from utils.data_processing import Vocabulary, COCOVocabulary, SpellChecker
+from utils.data_processing import Vocabulary, COCOVocabulary, text_clean
 from PIL import Image
 
 
@@ -23,11 +25,11 @@ class COCOCaptionDataset(Dataset):
                  which_set,
                  transform,
                  vocab_threshold=4,
-                 vocab_file="../data/coco/vocab.pkl",
+                 vocab_file=os.path.join(dirname, "/data/coco/vocab.pkl"),
                  start_word="<start>",
                  end_word="<end>",
                  unk_word="<unk>",
-                 annotations_file="../data/coco/annotations/captions_train2017.json",
+                 annotations_file=os.path.join(dirname, "/data/coco/annotations/captions_train2017.json"),
                  vocab_from_file=True):
 
         self.data_dir = data_dir
@@ -42,7 +44,7 @@ class COCOCaptionDataset(Dataset):
             self.ids = list(self.coco.anns.keys())
             print("Obtaining caption lengths...")
             all_tokens = [nltk.tokenize.word_tokenize(
-                          str(self.coco.anns[self.ids[index]]["caption"]).lower())
+                          text_clean(str(self.coco.anns[self.ids[index]]["caption"])).lower())
                             for index in tqdm(np.arange(len(self.ids)))]
             self.caption_lengths = [len(token) for token in all_tokens]
         else:
@@ -66,6 +68,7 @@ class COCOCaptionDataset(Dataset):
             image = self.transform(image)
 
             # Convert caption to tensor of word ids.
+            caption = text_clean(caption)
             tokens = nltk.tokenize.word_tokenize(str(caption).lower())
             caption = []
             caption.append(self.vocab(self.vocab.start_word))
@@ -131,7 +134,7 @@ class CaptionDataset(Dataset):
         self.ids = [str(k) for k in self.data.keys()]
         print("Obtaining caption lengths...")
         all_tokens = [nltk.tokenize.word_tokenize(
-                      str(np.array(self.data[index]['txt'])).lower())
+                      text_clean(str(np.array(self.data[index]['txt']))).lower())
                         for index in tqdm(self.ids)]
         self.caption_lengths = [len(token) for token in all_tokens]
 
@@ -147,6 +150,7 @@ class CaptionDataset(Dataset):
         image = self.transform(image)
 
         # Convert caption to tensor of word ids.
+        caption = text_clean(caption)
         tokens = nltk.tokenize.word_tokenize(str(caption).lower())
         caption = []
         caption.append(self.vocab(self.vocab.start_word))
@@ -234,6 +238,11 @@ class COCOTextEmbeddingDataset(Dataset):
 
 if __name__ == '__main__':
     from torchvision import transforms
+    import os
+
+    dirname = os.path.dirname(__file__)
+    dirname = os.path.dirname(dirname)
+    print(dirname)
 
     transform = transforms.Compose([
         transforms.Resize(256),
@@ -244,7 +253,7 @@ if __name__ == '__main__':
 
     dataset = CaptionDataset(
         data_dir="/Users/leon/Projects/I2T2I/data/",
-        dataset_name="birds",
+        dataset_name="flowers",
         which_set='train',
         transform=transform,
         vocab_threshold=4,
@@ -255,6 +264,6 @@ if __name__ == '__main__':
 
     print(len(dataset.vocab))
     print(dataset.vocab.word2idx)
-    # brids 1052
-    # flowers
-    # coco 10330
+    # brids 1044
+    # flowers 1302
+    # coco 10329

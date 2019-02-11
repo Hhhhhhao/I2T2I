@@ -79,7 +79,7 @@ class COCOCaptionDataLoader(BaseDataLoader):
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         ])
-        self.dataset = COCOCaptionDataset(self.data_dir, self.which_set, self.transform)
+        self.dataset = COCOCaptionDataset(self.data_dir, self.which_set, self.transform, vocab_from_file=False)
         # self.n_samples = len(self.dataset)
 
         if self.which_set == 'train':
@@ -144,7 +144,6 @@ class CaptionDataLoader(DataLoader):
                 collate_fn=collate_fn_test)
 
 
-
 if __name__ == '__main__':
     # data_loader = CaptionDataLoader(
     #     data_dir='/Users/leon/Projects/I2T2I/data/',
@@ -166,8 +165,8 @@ if __name__ == '__main__':
     print(len(data_loader.dataset.vocab))
     print(data_loader.dataset.vocab.word2idx)
     # 10330 for coco
-    # 914 for birds
-    # 1579 for flowers
+    #  for birds
+    #  for flowers
 
     for i, (images, captions, caption_lengths) in enumerate(data_loader):
         print("done")
