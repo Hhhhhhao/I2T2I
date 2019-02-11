@@ -135,7 +135,7 @@ class Text2ImageDataLoader(DataLoader):
 
 if __name__ == '__main__':
     bird_data_loader = Text2ImageDataLoader(
-        data_dir='/Users/cuijingchen/Documents/Your Projects/I2T2I/data/',
+        data_dir='/home/s1784380/I2T2I/data/',
         dataset_name="flowers",
         which_set="train",
         image_size=64,

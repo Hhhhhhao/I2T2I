@@ -11,7 +11,6 @@ import torch
 from torch.autograd import Variable
 import torch.nn.functional as F
 from torch.utils.data import Dataset, DataLoader
-sys.path.append('/Users/cuijingchen/Documents/Your Projects/I2T2I/data/coco/cocoapi/PythonAPI')
 sys.path.append('/home/s1784380/I2T2I/data/coco/cocoapi/PythonAPI')
 from pycocotools.coco import COCO
 from tqdm import tqdm
@@ -29,11 +28,11 @@ class COCOCaptionDataset(Dataset):
                  which_set,
                  transform,
                  vocab_threshold=5,
-                 vocab_file="/Users/cuijingchen/Documents/Your Projects/I2T2I/data/coco/vocab.pkl",
+                 vocab_file="/home/s1784380/I2T2I/data/coco/vocab.pkl",
                  start_word="<start>",
                  end_word="<end>",
                  unk_word="<unk>",
-                 annotations_file="/Users/cuijingchen/Documents/Your Projects/I2T2I/data/coco/annotations/captions_train2017.json",
+                 annotations_file="/home/s1783480/I2T2I/data/coco/annotations/captions_train2017.json",
                  vocab_from_file=True):
 
         self.data_dir = data_dir

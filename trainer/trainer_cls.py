@@ -18,18 +18,22 @@ class Trainer(object):
                  num_epochs, lr, save_path, l1_coef, l2_coef,
                  pre_trained_gen=None, pre_trained_disc=None):
 
+        self.logger = logging.getLogger(self.__class__.__name__)
+
         # setup GPU device if available, move model into configured device
         if torch.cuda.is_available():
             print("use GPU")
+            self.logger.info('use GPU')
             self.device = torch.device('cuda')
         else:
             print("use CPU")
+            self.logger.info('use CPU')
             self.device = torch.device('cpu')
 
         # self.model = model.to(self.device)
 
 
-        self.logger = logging.getLogger(self.__class__.__name__)
+
         self.generator = torch.nn.DataParallel(gan_factory.generator_factory(gan_type).cuda())
         self.discriminator = torch.nn.DataParallel(gan_factory.discriminator_factory(gan_type).cuda())
 
