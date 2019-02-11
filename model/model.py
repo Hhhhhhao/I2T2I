@@ -130,9 +130,9 @@ class DecoderRNN(BaseModel):
         packed = pack_padded_sequence(embeddings, caption_lengths, batch_first=True)
         hiddens, _ = self.lstm(packed)
         outputs = self.linear(hiddens[0])
-        print("before softmax:{}".format(outputs))
-        outputs = self.softmax(outputs)
-        print("after softmax:{}".format(outputs))
+        # print("before softmax:{}".format(outputs))
+        outputs = self.softmax(outputs, dim=0)
+        # print("after softmax:{}".format(outputs))
         return outputs
 
     def sample(self, features, states=None, max_len=20):
@@ -235,45 +235,22 @@ if __name__ == '__main__':
 
     # Test Encoder
     embed_size = 256   # dimensionality of the image embedding.
-    encoder = EncoderCNN(image_size, embed_size)
-    # summary(encoder, input_size=(3, 256, 256))
-
-    # Move the encoder to GPU if CUDA is available.
-    if torch.cuda.is_available():
-        encoder = encoder.cuda()
 
     # Move the last batch of images from Step 2 to GPU if CUDA is available
     if torch.cuda.is_available():
         images = images.cuda()
 
-    features = encoder(images)
-
-    print('type(features):', type(features))
-    print('features.shape:', features.shape)
-
-    # Check that our encoder satisfies some requirements
-    assert (features.shape[0] == 16) & (
-                features.shape[1] == embed_size), "The shape of the encoder output is incorrect."
-
     # Test Decoder
     hidden_size = 512
     vocab_size = len(data_loader.dataset.vocab)
-    decoder = DecoderRNN(embed_size, hidden_size, vocab_size)
-    # summary(decoder, input_size=(256))
-
-    # Move the decoder to GPU if CUDA is available.
-    if torch.cuda.is_available():
-        decoder = decoder.cuda()
 
     # Move the last batch of captions (from Step 1) to GPU if cuda is availble
     if torch.cuda.is_available():
         captions = captions.cuda()
 
-    outputs = decoder(features, captions, caption_lengths)
-
     # test the whole model
 
-    model = ImageCaptionModel(embed_size, embed_size, hidden_size, vocab_size)
+    model = ImageCaptionModel(4, embed_size, embed_size, hidden_size, vocab_size)
     # summary(model, input_size=(3, 256, 256))
     # Move the decoder to GPU if CUDA is available.
     if torch.cuda.is_available():
