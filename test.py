@@ -30,7 +30,8 @@ def main(config, resume):
     else:
         which_set = 'test'
         data_loader = getattr(module_data, config['train_data_loader']['type'])(
-            config['train_data_loader']['args']['data_dir'],
+            "/Users/leon/Projects/I2T2I/data/",
+            # config['train_data_loader']['args']['data_dir'],
             config['train_data_loader']['args']['dataset_name'],
             which_set=which_set,
             image_size=256,
@@ -76,6 +77,8 @@ def main(config, resume):
             # pred_sentence_2 = convert_back_to_text(pred_captions_greedy, data_loader.dataset.vocab)
             target_sentence = convert_back_to_text((batch_captions.numpy())[0], data_loader.dataset.vocab)
 
+            print("prediction: {}".format(pred_sentence))
+            print("ground truth: {}".format(target_sentence))
             # save sample images, or do something with output here
             gts["{}".format(batch_image_ids[0])] = target_sentence
             res["{}".format(batch_image_ids[0])] = pred_sentence
@@ -107,7 +110,7 @@ def main(config, resume):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='PyTorch Template')
 
-    parser.add_argument('-r', '--resume', default='/Users/leon/Projects/I2T2I/saved/Show-and-Tell-Birds/0206_205028/model_best.pth', type=str,
+    parser.add_argument('-r', '--resume', default='/Users/leon/Projects/I2T2I/saved/Show-and-Tell-Birds/0210_195346/model_best.pth', type=str,
                            help='path to latest checkpoint (default: None)')
     parser.add_argument('-d', '--device', default=None, type=str,
                            help='indices of GPUs to enable (default: all)')
