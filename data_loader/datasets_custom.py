@@ -8,7 +8,7 @@ import nltk
 import numpy as np
 dirname = os.path.dirname(__file__)
 dirname = os.path.dirname(dirname)
-sys.path.append(os.path.join(dirname, '/data/coco/cocoapi/PythonAPI'))
+sys.path.append(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data/coco/cocoapi/PythonAPI'))
 from pycocotools.coco import COCO
 from tqdm import tqdm
 from torch.utils.data import Dataset
@@ -25,11 +25,11 @@ class COCOCaptionDataset(Dataset):
                  which_set,
                  transform,
                  vocab_threshold=4,
-                 vocab_file=os.path.join(dirname, "/data/coco/vocab.pkl"),
+                 vocab_file=os.path.join(dirname, "data/coco/vocab.pkl"),
                  start_word="<start>",
                  end_word="<end>",
                  unk_word="<unk>",
-                 annotations_file=os.path.join(dirname, "/data/coco/annotations/captions_train2017.json"),
+                 annotations_file=os.path.join(dirname, "data/coco/annotations/captions_train2017.json"),
                  vocab_from_file=True):
 
         self.data_dir = data_dir

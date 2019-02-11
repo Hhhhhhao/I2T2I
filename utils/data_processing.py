@@ -8,7 +8,7 @@ import string
 import numpy as np
 dirname = os.path.dirname(__file__)
 dirname = os.path.dirname(dirname)
-sys.path.append(os.path.join(dirname, '/data/coco/cocoapi/PythonAPI'))
+sys.path.append(os.path.join(dirname, 'data/coco/cocoapi/PythonAPI'))
 from pycocotools.coco import COCO
 from tqdm import tqdm
 from collections import Counter
@@ -22,11 +22,11 @@ class COCOVocabulary(object):
 
     def __init__(self,
         vocab_threshold,
-        vocab_file=os.path.join(dirname, "/data/coco/vocab.pkl"),
+        vocab_file=os.path.join(dirname, "data/coco/vocab.pkl"),
         start_word="<start>",
         end_word="<end>",
         unk_word="<unk>",
-        annotations_file=os.path.join(dirname, "/data/coco/annotations/captions_train2017.json"),
+        annotations_file=os.path.join(dirname, "data/coco/annotations/captions_train2017.json"),
         vocab_from_file=False):
 
         """
@@ -126,7 +126,7 @@ class Vocabulary(object):
         end_word="<end>",
         unk_word="<unk>",
         vocab_from_file=False,
-        data_dir=dirname + '/data/',
+        data_dir=os.path.join(dirname, 'data/'),
                  ):
 
         """

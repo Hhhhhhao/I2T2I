@@ -2,10 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b3134c42-5a5c-4eae-8274-2ca6fc32ab15" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/config/birds_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/birds_config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/coco_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/coco_config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/flowers_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/flowers_config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data_loader/data_loaders.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_loader/data_loaders.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data_loader/datasets_custom.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_loader/datasets_custom.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/utils/data_processing.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/data_processing.py" afterDir="false" />
     </list>
@@ -20,7 +16,7 @@
     <SUITE FILE_PATH="coverage/I2T2I$data_processing.coverage" NAME="data_processing Coverage Results" MODIFIED="1549818420387" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/utils" />
     <SUITE FILE_PATH="coverage/I2T2I$test.coverage" NAME="test Coverage Results" MODIFIED="1549877632060" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/I2T2I$train.coverage" NAME="train Coverage Results" MODIFIED="1549895228887" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/I2T2I$datasets_custom.coverage" NAME="datasets_custom Coverage Results" MODIFIED="1549908006037" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/data_loader" />
+    <SUITE FILE_PATH="coverage/I2T2I$datasets_custom.coverage" NAME="datasets_custom Coverage Results" MODIFIED="1549908684340" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/data_loader" />
     <SUITE FILE_PATH="coverage/I2T2I$model.coverage" NAME="model Coverage Results" MODIFIED="1549885566141" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/model" />
     <SUITE FILE_PATH="coverage/I2T2I$data_loaders.coverage" NAME="data_loaders Coverage Results" MODIFIED="1549907332363" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/data_loader" />
   </component>
@@ -29,8 +25,8 @@
       <file leaf-file-name="datasets_custom.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/data_loader/datasets_custom.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="560">
-              <caret line="28" column="38" selection-start-line="27" selection-start-column="73" selection-end-line="28" selection-end-column="38" />
+            <state relative-caret-position="-1122">
+              <caret line="31" column="57" selection-start-line="31" selection-start-column="57" selection-end-line="31" selection-end-column="57" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -97,8 +93,8 @@
       <file leaf-file-name="data_processing.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/utils/data_processing.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2221">
-              <caret line="128" column="34" selection-start-line="128" selection-start-column="34" selection-end-line="128" selection-end-column="34" />
+            <state relative-caret-position="-2323">
+              <caret line="128" column="47" selection-start-line="128" selection-start-column="47" selection-end-line="128" selection-end-column="47" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -219,26 +215,6 @@
             <path>
               <item name="I2T2I" type="b2602c69:ProjectViewProjectNode" />
               <item name="I2T2I" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="I2T2I" type="b2602c69:ProjectViewProjectNode" />
-              <item name="I2T2I" type="462c0819:PsiDirectoryNode" />
-              <item name="base" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="I2T2I" type="b2602c69:ProjectViewProjectNode" />
-              <item name="I2T2I" type="462c0819:PsiDirectoryNode" />
-              <item name="config" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="I2T2I" type="b2602c69:ProjectViewProjectNode" />
-              <item name="I2T2I" type="462c0819:PsiDirectoryNode" />
-              <item name="data_loader" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="I2T2I" type="b2602c69:ProjectViewProjectNode" />
-              <item name="I2T2I" type="462c0819:PsiDirectoryNode" />
-              <item name="model" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="I2T2I" type="b2602c69:ProjectViewProjectNode" />
@@ -420,7 +396,7 @@
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.19871107" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.19871107" />
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Python Console" order="7" />
       <window_info anchor="bottom" id="Terminal" order="7" />
@@ -429,7 +405,7 @@
       <window_info anchor="right" id="Database" order="3" />
       <window_info anchor="right" id="SciView" order="3" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.30827066" />
+      <window_info anchor="bottom" id="Debug" order="3" visible="true" weight="0.30827066" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -535,7 +511,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="92" />
+      <option name="time" value="93" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
@@ -857,8 +833,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/data_loader/datasets_custom.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="560">
-          <caret line="28" column="38" selection-start-line="27" selection-start-column="73" selection-end-line="28" selection-end-column="38" />
+        <state relative-caret-position="-1122">
+          <caret line="31" column="57" selection-start-line="31" selection-start-column="57" selection-end-line="31" selection-end-column="57" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
@@ -867,8 +843,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/utils/data_processing.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2221">
-          <caret line="128" column="34" selection-start-line="128" selection-start-column="34" selection-end-line="128" selection-end-column="34" />
+        <state relative-caret-position="-2323">
+          <caret line="128" column="47" selection-start-line="128" selection-start-column="47" selection-end-line="128" selection-end-column="47" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
