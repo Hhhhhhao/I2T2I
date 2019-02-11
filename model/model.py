@@ -46,7 +46,7 @@ class EncoderCNN(BaseModel):
         self.adaptive_pool = nn.AdaptiveAvgPool2d((encode_image_size, encode_image_size))
         # Resize image to fixed size to allow input images of variable size
         self.linear = nn.Linear(encode_image_size**2 * 512, embed_size)
-        self.bn = nn.BatchNorm1d(embed_size, momentum=0.01)
+        # self.bn = nn.BatchNorm1d(embed_size, momentum=0.01)
         self.init_weights()
         self.fine_tune()
 
@@ -66,7 +66,7 @@ class EncoderCNN(BaseModel):
         features = self.adaptive_pool(features)
         features = features.view(features.size(0), -1)
         features = self.linear(features)
-        features = self.bn(features)  # (batch_size, embed_size)
+        # features = self.bn(features)  # (batch_size, embed_size)
 
         return features
 
@@ -130,7 +130,9 @@ class DecoderRNN(BaseModel):
         packed = pack_padded_sequence(embeddings, caption_lengths, batch_first=True)
         hiddens, _ = self.lstm(packed)
         outputs = self.linear(hiddens[0])
+        print("before softmax:{}".format(outputs))
         outputs = self.softmax(outputs)
+        print("after softmax:{}".format(outputs))
         return outputs
 
     def sample(self, features, states=None, max_len=20):
@@ -271,7 +273,7 @@ if __name__ == '__main__':
 
     # test the whole model
 
-    model = ImageCaptionModel(image_size, embed_size, embed_size, hidden_size, vocab_size)
+    model = ImageCaptionModel(embed_size, embed_size, hidden_size, vocab_size)
     # summary(model, input_size=(3, 256, 256))
     # Move the decoder to GPU if CUDA is available.
     if torch.cuda.is_available():

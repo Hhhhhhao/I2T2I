@@ -25,7 +25,7 @@ def collate_fn_train(data):
 
 def collate_fn_test(data):
     # sort the data in descentding order
-    data.sort(key=lambda  x: len(x[1]), reverse=True)
+    data.sort(key=lambda  x: len(x[2]), reverse=True)
     image_ids, images, captions = zip(*data)
 
     # merge images (from tuple of 1D tensor to 4D tensor)
