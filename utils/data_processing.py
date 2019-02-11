@@ -6,7 +6,9 @@ import h5py
 import sys
 import string
 import numpy as np
-sys.path.append('/Users/leon/Projects/I2T2I/data/coco/cocoapi/PythonAPI')
+dirname = os.path.dirname(__file__)
+dirname = os.path.dirname(dirname)
+sys.path.append(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data/coco/cocoapi/PythonAPI'))
 from pycocotools.coco import COCO
 from tqdm import tqdm
 from collections import Counter
@@ -20,11 +22,11 @@ class COCOVocabulary(object):
 
     def __init__(self,
         vocab_threshold,
-        vocab_file="/Users/leon/Projects/I2T2I/data/coco/vocab.pkl",
+        vocab_file=os.path.join(dirname, "data/coco/vocab.pkl"),
         start_word="<start>",
         end_word="<end>",
         unk_word="<unk>",
-        annotations_file="/Users/leon/Projects/I2T2I/data/coco/annotations/captions_train2017.json",
+        annotations_file=os.path.join(dirname, "data/coco/annotations/captions_train2017.json"),
         vocab_from_file=False):
 
         """
@@ -93,6 +95,7 @@ class COCOVocabulary(object):
         ids = coco.anns.keys()
         for i, id in enumerate(ids):
             caption = str(coco.anns[id]["caption"])
+            caption = text_clean(caption)
             tokens = nltk.tokenize.word_tokenize(caption.lower())
             counter.update(tokens)
 
@@ -104,7 +107,6 @@ class COCOVocabulary(object):
 
         for i, word in enumerate(words):
             self.add_word(word)
-
     def __call__(self, word):
         if not word in self.word2idx:
             return self.word2idx[self.unk_word]
@@ -123,7 +125,7 @@ class Vocabulary(object):
         end_word="<end>",
         unk_word="<unk>",
         vocab_from_file=False,
-        data_dir="/Users/leon/Projects/I2T2I/data/",
+        data_dir=os.path.join(dirname, 'data/'),
                  ):
 
         """
@@ -206,6 +208,7 @@ class Vocabulary(object):
         counter = Counter()
         for i, id in enumerate(tqdm(ids)):
             caption = str(np.array(self.data['train'][id]['txt']))
+            caption = text_clean(caption)
             tokens = nltk.tokenize.word_tokenize(caption.lower())
             # tokens = [word for word in tokens]
             counter.update(tokens)
@@ -239,12 +242,23 @@ def SpellChecker(token):
         return token
 
 
+def remove_punctuation(text_original):
+    translator = str.maketrans('', '', string.punctuation)
+    text_no_punctuation = text_original.translate(translator)
+    return(text_no_punctuation)
+
+
+def text_clean(text_original):
+    text = remove_punctuation(text_original)
+    return text
+
+
 if __name__ == "__main__":
     # import string
 
     # print(list(string.punctuation))
 
-    vocab = Vocabulary(vocab_threshold=5,
+    vocab = Vocabulary(vocab_threshold=4,
                        dataset_name='birds')
 
     word2idx = vocab.word2idx
