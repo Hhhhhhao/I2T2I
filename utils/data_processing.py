@@ -6,7 +6,7 @@ import h5py
 import sys
 import string
 import numpy as np
-sys.path.append('../data/coco/cocoapi/PythonAPI')
+sys.path.append('/Users/leon/Projects/I2T2I/data/coco/cocoapi/PythonAPI')
 from pycocotools.coco import COCO
 from tqdm import tqdm
 from collections import Counter
@@ -20,11 +20,11 @@ class COCOVocabulary(object):
 
     def __init__(self,
         vocab_threshold,
-        vocab_file="../data/coco/vocab.pkl",
+        vocab_file="/Users/leon/Projects/I2T2I/data/coco/vocab.pkl",
         start_word="<start>",
         end_word="<end>",
         unk_word="<unk>",
-        annotations_file="../data/coco/annotations/captions_train2017.json",
+        annotations_file="/Users/leon/Projects/I2T2I/data/coco/annotations/captions_train2017.json",
         vocab_from_file=False):
 
         """

@@ -20,9 +20,10 @@ def main(config, resume):
     if "CoCo" in config["name"]:
         which_set = 'val'
         data_loader = getattr(module_data, config['train_data_loader']['type'])(
-            config['train_data_loader']['args']['data_dir'],
+            "/Users/leon/Projects/I2T2I/data/coco/",
+            # config['train_data_loader']['args']['data_dir'],
             which_set=which_set,
-            image_size=256,
+            image_size=128,
             batch_size=1,
             num_workers=0,
             validation_split=0
@@ -34,7 +35,7 @@ def main(config, resume):
             # config['train_data_loader']['args']['data_dir'],
             config['train_data_loader']['args']['dataset_name'],
             which_set=which_set,
-            image_size=256,
+            image_size=128,
             batch_size=1,
             num_workers=0
         )
@@ -48,7 +49,7 @@ def main(config, resume):
     metric_fns = [getattr(module_metric, met) for met in config['metrics']]
 
     # load state dict
-    checkpoint = torch.load(resume)
+    checkpoint = torch.load(resume, map_location='cpu')
     state_dict = checkpoint['state_dict']
     if config['n_gpu'] > 1:
         model = torch.nn.DataParallel(model)
@@ -71,7 +72,7 @@ def main(config, resume):
             # batch_caption_lengths = [l - 1 for l in batch_caption_lengths]
 
             batch_features = model.encoder(batch_images)
-            pred_captions= model.decoder.sample_beam_search(batch_features)
+            pred_captions= model.decoder.sample_beam_search(batch_features, max_len=20, beam_width=3)
 
             pred_sentence = convert_back_to_text(pred_captions[0], data_loader.dataset.vocab)
             # pred_sentence_2 = convert_back_to_text(pred_captions_greedy, data_loader.dataset.vocab)
@@ -110,7 +111,7 @@ def main(config, resume):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='PyTorch Template')
 
-    parser.add_argument('-r', '--resume', default='/Users/leon/Projects/I2T2I/saved/Show-and-Tell-Birds/0210_195346/model_best.pth', type=str,
+    parser.add_argument('-r', '--resume', default='/Users/leon/Projects/I2T2I/saved/Show-and-Tell-CoCo/0210_195842/model_best.pth', type=str,
                            help='path to latest checkpoint (default: None)')
     parser.add_argument('-d', '--device', default=None, type=str,
                            help='indices of GPUs to enable (default: all)')

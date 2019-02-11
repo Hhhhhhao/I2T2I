@@ -23,11 +23,11 @@ class COCOCaptionDataset(Dataset):
                  which_set,
                  transform,
                  vocab_threshold=5,
-                 vocab_file="../data/coco/vocab.pkl",
+                 vocab_file="/Users/leon/Projects/I2T2I/data/coco/vocab.pkl",
                  start_word="<start>",
                  end_word="<end>",
                  unk_word="<unk>",
-                 annotations_file="../data/coco/annotations/captions_train2017.json",
+                 annotations_file="/Users/leon/Projects/I2T2I/data/coco/annotations/captions_train2017.json",
                  vocab_from_file=True):
 
         self.data_dir = data_dir
