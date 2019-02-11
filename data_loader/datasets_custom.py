@@ -6,7 +6,7 @@ import torch
 import sys
 import nltk
 import numpy as np
-sys.path.append('../data/coco/cocoapi/PythonAPI')
+sys.path.append('/Users/leon/Projects/I2T2I/data/coco/cocoapi/PythonAPI')
 from pycocotools.coco import COCO
 from tqdm import tqdm
 from torch.utils.data import Dataset

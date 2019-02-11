@@ -30,7 +30,8 @@ def main(config, resume):
     else:
         which_set = 'test'
         data_loader = getattr(module_data, config['train_data_loader']['type'])(
-            config['train_data_loader']['args']['data_dir'],
+            "/Users/leon/Projects/I2T2I/data/",
+            #config['train_data_loader']['args']['data_dir'],
             config['train_data_loader']['args']['dataset_name'],
             which_set=which_set,
             image_size=256,
