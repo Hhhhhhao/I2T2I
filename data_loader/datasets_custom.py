@@ -22,7 +22,7 @@ class COCOCaptionDataset(Dataset):
                  data_dir,
                  which_set,
                  transform,
-                 vocab_threshold=5,
+                 vocab_threshold=3,
                  vocab_file="/Users/leon/Projects/I2T2I/data/coco/vocab.pkl",
                  start_word="<start>",
                  end_word="<end>",
@@ -104,7 +104,7 @@ class CaptionDataset(Dataset):
                  dataset_name,
                  which_set,
                  transform,
-                 vocab_threshold=5,
+                 vocab_threshold=3,
                  start_word="<start>",
                  end_word="<end>",
                  unk_word="<unk>",
@@ -231,6 +231,146 @@ class TextEmbeddingDataset(Dataset):
 
 class COCOTextEmbeddingDataset(Dataset):
     pass
+
+
+class TextImageDataset(Dataset):
+    def __init__(self,
+                 data_dir,
+                 dataset_name,
+                 which_set='train',
+                 transform=None,
+                 vocab_threshold=3,
+                 start_word="<start>",
+                 end_word="<end>",
+                 unk_word="<unk>",
+                 vocab_from_file=False
+                 ):
+        """
+            @:param datasetFile (string): path for dataset file
+            @:param which_set (string): "train:, "valid", "test"
+        """
+
+        if os.path.exists(data_dir):
+            assert dataset_name in {'birds', 'flowers'}, "wrong dataset name"
+            self.h5_file = os.path.join(data_dir, '{}/{}.hdf5'.format(dataset_name, dataset_name))
+        else:
+            raise ValueError("data directory not found")
+
+        self.which_set = which_set
+        assert self.which_set in {'train', 'valid', 'test'}
+
+        self.transform = transform
+        self.total_data = h5py.File(self.h5_file, mode='r')
+        self.data = self.total_data[which_set]
+        self.ids = [str(k) for k in self.data.keys()]
+
+        self.vocab = Vocabulary(
+            vocab_threshold=vocab_threshold,
+            dataset_name=dataset_name,
+            start_word=start_word,
+            end_word=end_word,
+            unk_word=unk_word,
+            vocab_from_file=vocab_from_file,
+            data_dir=data_dir)
+
+    def __len__(self):
+        return len(self.ids)
+
+    def __getitem__(self, index):
+
+        img_id = self.ids[index]
+        right_txt = str(np.array(self.data[img_id]['txt']))
+        wrong_txt = str(np.array(self.find_wrong_txt(self.data[img_id]['class'])))
+        right_image_path = bytes(np.array(self.data[img_id]['img']))
+        right_embed = np.array(self.data[img_id]['embeddings'], dtype=float)
+        wrong_image_path = bytes(np.array(self.find_wrong_image(self.data[img_id]['class'])))
+        wrong_embed = np.array(self.find_wrong_embed())
+
+        # Processing images
+        right_image = Image.open(io.BytesIO(right_image_path)).convert("RGB")
+        wrong_image = Image.open(io.BytesIO(wrong_image_path)).convert("RGB")
+
+        right_image_32 = right_image.resize((32, 32))
+        wrong_image_32 = wrong_image.resize((32, 32))
+        right_image_64 = right_image.resize((64, 64))
+        wrong_image_64 = wrong_image.resize((64, 64))
+        right_image_128 = right_image.resize((128, 128))
+        wrong_image_128 = wrong_image.resize((128, 128))
+        right_image_256 = right_image.resize((256, 256))
+        wrong_image_256 = wrong_image.resize((256, 256))
+
+        right_image_32 = self.transform(right_image_32)
+        wrong_image_32 = self.transform(wrong_image_32)
+        right_image_64 = self.transform(right_image_64)
+        wrong_image_64 = self.transform(wrong_image_64)
+        right_image_128 = self.transform(right_image_128)
+        wrong_image_128 = self.transform(wrong_image_128)
+        right_image_256 = self.transform(right_image_256)
+        wrong_image_256 = self.transform(wrong_image_256)
+
+        # Processing txt
+        # Convert caption to tensor of word ids.
+        right_tokens = nltk.tokenize.word_tokenize(str(right_txt).lower())
+        right_caption = []
+        right_caption.append(self.vocab(self.vocab.start_word))
+        right_caption.extend(self.vocab(token) for token in right_tokens)
+        right_caption.append(self.vocab(self.vocab.end_word))
+        right_caption = torch.Tensor(right_caption).long()
+
+        wrong_tokens = nltk.tokenize.word_tokenize(str(wrong_txt).lower())
+        wrong_caption = []
+        wrong_caption.append(self.vocab(self.vocab.start_word))
+        wrong_caption.extend(self.vocab(token) for token in wrong_tokens)
+        wrong_caption.append(self.vocab(self.vocab.end_word))
+        wrong_caption = torch.Tensor(wrong_caption).long()
+
+
+        sample = {
+                'img_id': img_id,
+                'right_image_32': right_image_32,
+                'right_image_64': right_image_64,
+                'right_image_128': right_image_128,
+                'right_image_256': right_image_256,
+                'right_embed': torch.FloatTensor(right_embed),
+                'right_caption': right_caption,
+                'right_txt': right_txt,
+                'wrong_image_32': wrong_image_32,
+                'wrong_image_64': wrong_image_64,
+                'wrong_image_128': wrong_image_128,
+                'wrong_image_256': wrong_image_256,
+                'wrong_embed': torch.FloatTensor(wrong_embed),
+                'wrong_caption': wrong_caption,
+                'wrong_txt': wrong_txt,
+                 }
+
+        return sample
+
+    def find_wrong_image(self, category):
+        idx = np.random.randint(len(self.ids))
+        img_id = self.ids[idx]
+        _category = self.data[img_id]
+
+        if _category != category:
+            return self.data[img_id]['img']
+
+        return self.find_wrong_image(category)
+
+    def find_wrong_embed(self):
+        idx = np.random.randint(len(self.ids))
+        img_id = self.ids[idx]
+        return self.data[img_id]['embeddings']
+
+    def find_wrong_txt(self, category):
+        idx = np.random.randint(len(self.ids))
+        img_id = self.ids[idx]
+
+        _category = self.data[img_id]
+
+        if _category != category:
+            return self.data[img_id]['txt']
+
+        return self.find_wrong_image(category)
+
 
 
 if __name__ == '__main__':

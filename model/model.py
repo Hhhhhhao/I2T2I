@@ -10,25 +10,6 @@ from base import BaseModel
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-class MnistModel(BaseModel):
-    def __init__(self, num_classes=10):
-        super(MnistModel, self).__init__()
-        self.conv1 = nn.Conv2d(1, 10, kernel_size=5)
-        self.conv2 = nn.Conv2d(10, 20, kernel_size=5)
-        self.conv2_drop = nn.Dropout2d()
-        self.fc1 = nn.Linear(320, 50)
-        self.fc2 = nn.Linear(50, num_classes)
-
-    def forward(self, x):
-        x = F.relu(F.max_pool2d(self.conv1(x), 2))
-        x = F.relu(F.max_pool2d(self.conv2_drop(self.conv2(x)), 2))
-        x = x.view(-1, 320)
-        x = F.relu(self.fc1(x))
-        x = F.dropout(x, training=self.training)
-        x = self.fc2(x)
-        return F.log_softmax(x, dim=1)
-
-
 class EncoderCNN(BaseModel):
     """
     Encoder
@@ -46,7 +27,6 @@ class EncoderCNN(BaseModel):
         self.adaptive_pool = nn.AdaptiveAvgPool2d((encode_image_size, encode_image_size))
         # Resize image to fixed size to allow input images of variable size
         self.linear = nn.Linear(encode_image_size**2 * 512, embed_size)
-        self.bn = nn.BatchNorm1d(embed_size, momentum=0.01)
         self.init_weights()
         self.fine_tune()
 
@@ -66,7 +46,6 @@ class EncoderCNN(BaseModel):
         features = self.adaptive_pool(features)
         features = features.view(features.size(0), -1)
         features = self.linear(features)
-        features = self.bn(features)  # (batch_size, embed_size)
 
         return features
 
@@ -104,6 +83,7 @@ class DecoderRNN(BaseModel):
         self.embedding = nn.Embedding(vocab_size, embed_size) # embedding layer
         self.lstm = nn.LSTM(embed_size, hidden_size, num_layers, bias=True, batch_first=True)
         self.linear = nn.Linear(hidden_size, vocab_size)   # linear layer to find scores over vocabulary
+        self.softmax = nn.Softmax(dim=1)
         self.init_weights()
 
     def init_weights(self):
@@ -128,10 +108,8 @@ class DecoderRNN(BaseModel):
         embeddings = torch.cat((features.unsqueeze(1), embeddings), 1)
         packed = pack_padded_sequence(embeddings, caption_lengths, batch_first=True)
         hiddens, _ = self.lstm(packed)
-        # print("hiddens shape:{}", hiddens[0].shape)
         outputs = self.linear(hiddens[0])
-
-        # print("outputs shape {}".format(outputs.shape))
+        outputs = self.softmax(outputs)
         return outputs
 
     def sample(self, features, states=None, max_len=20):
@@ -191,11 +169,11 @@ class DecoderRNN(BaseModel):
         inputs = features.unsqueeze(1)
 
         if torch.cuda.is_available():
-            gen_samples = gen_captions.type(torch.cuda.LongTensor)
+            gen_captions = gen_captions.type(torch.cuda.LongTensor)
         else:
-            gen_samples = gen_captions.type(torch.LongTensor)
+            gen_captions = gen_captions.type(torch.LongTensor)
 
-        prev_inputs = gen_samples[:, :eval_t]
+        prev_inputs = gen_captions[:, :eval_t]
 
         for i in range(eval_t):
             hiddens, states = self.lstm(inputs, states)
@@ -208,11 +186,11 @@ class DecoderRNN(BaseModel):
 
         return predicted_indices, states
 
-    def rollout(self, gen_samples, t, max_len, states=None):
+    def rollout(self, gen_captions, t, max_len, states=None):
         """
             sample caption from a specific time t
 
-        :param gen_samples:
+        :param gen_captions:
         :param t: scalar
         :param max_len: scaler
         :param states: cell states, tuple
@@ -222,11 +200,11 @@ class DecoderRNN(BaseModel):
         sampled_ids = []
 
         if torch.cuda.is_available():
-            gen_samples = gen_samples.type(torch.cuda.LongTensor)
+            gen_captions = gen_captions.type(torch.cuda.LongTensor)
         else:
-            gen_samples = gen_samples.type(torch.LongTensor)
+            gen_captions = gen_captions.type(torch.LongTensor)
 
-        inputs = self.embedding(gen_samples[:, t]).unsqueeze(1)
+        inputs = self.embedding(gen_captions[:, t]).unsqueeze(1)
         for i in range(t, max_len):
             hiddens, states = self.lstm(inputs, states)
             outputs = self.linear(hiddens.squeeze(1))
