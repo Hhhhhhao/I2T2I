@@ -128,7 +128,7 @@ class Trainer(object):
                 fake_loss = criterion(outputs, fake_labels)
                 fake_score = outputs
 
-                d_loss = real_loss + wrong_loss + fake_loss
+                d_loss = real_loss + (wrong_loss + fake_loss)/2.0
 
                 d_loss.backward()
 
@@ -152,9 +152,9 @@ class Trainer(object):
                 # The third term is L1 distance between the generated and real image, this is helpful for the conditional case
                 # because it links the embedding feature vector directly to certain pixel values.
                 # ===========================================
-                g_loss = criterion(outputs, real_labels) \
-                         + self.l2_coef * l2_loss(activation_fake, activation_real.detach()) \
-                         + self.l1_coef * l1_loss(fake_image, right_image)
+                g_loss = criterion(outputs, real_labels)
+                         # + self.l2_coef * l2_loss(activation_fake, activation_real.detach()) \
+                         # + self.l1_coef * l1_loss(fake_image, right_image)
 
                 g_loss.backward()
                 self.optimG.step()
