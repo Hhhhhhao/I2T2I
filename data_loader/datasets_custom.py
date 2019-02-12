@@ -32,7 +32,7 @@ class COCOCaptionDataset(Dataset):
                  start_word="<start>",
                  end_word="<end>",
                  unk_word="<unk>",
-                 annotations_file="/home/s1783480/I2T2I/data/coco/annotations/captions_train2017.json",
+                 annotations_file="/home/s1784380/I2T2I/data/coco/annotations/captions_train2017.json",
                  vocab_from_file=True):
 
         self.data_dir = data_dir

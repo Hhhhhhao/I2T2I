@@ -139,7 +139,7 @@ if __name__ == '__main__':
         dataset_name="flowers",
         which_set="train",
         image_size=64,
-        batch_size=16,
+        batch_size=64,
         num_workers=0
     )
 

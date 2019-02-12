@@ -12,29 +12,19 @@ if __name__ == '__main__':
 
     if args.dataset_name == 'birds':
 
-        train_data_loader = Text2ImageDataLoader(
+        test_data_loader = Text2ImageDataLoader(
             data_dir='/home/s1784380/I2T2I/data/',
             dataset_name="birds",
-            which_set="train",
+            which_set="test",
             image_size=64,
-            batch_size=64,
-            num_workers=0
-        )
-    elif args.dataset_name == 'flowers':
-
-        train_data_loader = Text2ImageDataLoader(
-            data_dir='/home/s1784380/I2T2I/data/',
-            dataset_name="flowers",
-            which_set="train",
-            image_size=64,
-            batch_size=64,
+            batch_size=1,
             num_workers=0
         )
     else:
         raise AssertionError("dataset_name not valid!")
 
     trainer = Trainer(gan_type=args.gan_type,
-                      data_loader=train_data_loader,
+                      data_loader=test_data_loader,
                       num_epochs=args.num_epochs,
                       lr=args.lr,
                       save_path=args.save_path,
@@ -44,4 +34,5 @@ if __name__ == '__main__':
                       pre_trained_gen=args.pre_trained_gen,
                       )
 
-    trainer.train()
+    trainer.predict()
+
