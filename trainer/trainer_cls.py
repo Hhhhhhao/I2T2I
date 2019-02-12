@@ -163,7 +163,7 @@ class Trainer(object):
                     self.logger.info('Train Epoch: {} [{}/{} ({:.0f}%)] G_Loss: {:.6f} D_Loss: {:.6f}'.format(
                         epoch,
                         batch_idx * self.train_data_loader.batch_size,
-                        self.train_data_loader.n_samples,
+                        len(self.train_data_loader.dataset),
                         100.0 * batch_idx / len(self.train_data_loader),
                         g_loss.item(),
                         d_loss.item()))
