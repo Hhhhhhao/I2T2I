@@ -73,11 +73,14 @@ class COCOCaptionDataLoader(BaseDataLoader):
         self.num_workers = num_workers
 
         # transforms.ToTensor convert PIL images in range [0, 255] to a torch in range [0.0, 1.0]
+        mean = torch.tensor([0.485, 0.456, 0.406], dtype=torch.float32)
+        std = torch.tensor([0.229, 0.224, 0.225], dtype=torch.float32)
         self.transform = transforms.Compose([
             transforms.Resize(self.image_size),
-            # transforms.RandomHorizontalFlip(),
+            transforms.RandomHorizontalFlip(),
+            # transforms.CenterCrop(224),
             transforms.ToTensor(),
-            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+            transforms.Normalize(mean=mean.tolist(), std=std.tolist())
         ])
         self.dataset = COCOCaptionDataset(self.data_dir, self.which_set, self.transform, vocab_from_file=False)
         # self.n_samples = len(self.dataset)
@@ -119,7 +122,8 @@ class CaptionDataLoader(DataLoader):
         # transforms.ToTensor convert PIL images in range [0, 255] to a torch in range [0.0, 1.0]
         self.transform = transforms.Compose([
             transforms.Resize(self.image_size),
-            # transforms.RandomHorizontalFlip(),
+            transforms.RandomHorizontalFlip(),
+            # transforms.CenterCrop(224),
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         ])
@@ -145,14 +149,6 @@ class CaptionDataLoader(DataLoader):
 
 
 if __name__ == '__main__':
-    # data_loader = CaptionDataLoader(
-    #     data_dir='/Users/leon/Projects/I2T2I/data/',
-    #     dataset_name="birds",
-    #     which_set='train',
-    #     image_size=256,
-    #     batch_size=16,
-    #     num_workers=0)
-
     data_loader = COCOCaptionDataLoader(
         data_dir='/Users/leon/Projects/I2T2I/data/coco/',
         # dataset_name="flowers",

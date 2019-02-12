@@ -34,19 +34,18 @@ class EncoderCNN(BaseModel):
     Encoder
     """
 
-    def __init__(self, encode_image_size=4, embed_size=256):
+    def __init__(self, image_embed_size=256):
         super(EncoderCNN, self).__init__()
 
+        adaptive_pool_size = 4
         resnet = torchvision.models.resnet34(pretrained=True)
 
-        # Remove linear and pool layers
+        # Remove average pooling layers
         modules = list(resnet.children())[:-2]
         self.resnet = nn.Sequential(*modules)
-
-        self.adaptive_pool = nn.AdaptiveAvgPool2d((encode_image_size, encode_image_size))
-        # Resize image to fixed size to allow input images of variable size
-        self.linear = nn.Linear(encode_image_size**2 * 512, embed_size)
-        # self.bn = nn.BatchNorm1d(embed_size, momentum=0.01)
+        self.adaptive_pool = nn.AdaptiveAvgPool2d((adaptive_pool_size, adaptive_pool_size))
+        self.fc_in_features = 512 * adaptive_pool_size ** 2
+        self.linear = nn.Linear(self.fc_in_features, image_embed_size)
         self.init_weights()
         self.fine_tune()
 
@@ -66,14 +65,12 @@ class EncoderCNN(BaseModel):
         features = self.adaptive_pool(features)
         features = features.view(features.size(0), -1)
         features = self.linear(features)
-        # features = self.bn(features)  # (batch_size, embed_size)
 
         return features
 
     def fine_tune(self, fine_tune=True):
         """
         Allow or prevent the computation of gradients for convolutional blocks 2 through 4 of the encoder.
-
         :param fine_tune:
         """
 
@@ -86,7 +83,7 @@ class EncoderCNN(BaseModel):
 
 
 class DecoderRNN(BaseModel):
-    def __init__(self, embed_size, hidden_size, vocab_size, num_layers=1):
+    def __init__(self, word_embed_size, lstm_hidden_size, vocab_size, num_layers=1):
         """
         Set the hyper-parameters and build the layers.
 
@@ -97,14 +94,13 @@ class DecoderRNN(BaseModel):
         :param dropout: use of drop out
         """
         super(DecoderRNN, self).__init__()
-        self.embed_size = embed_size
-        self.hidden_size = hidden_size
+        self.word_embed_size = word_embed_size
+        self.lstm_hidden_size = lstm_hidden_size
         self.vocab_size = vocab_size
 
-        self.embedding = nn.Embedding(vocab_size, embed_size) # embedding layer
-        self.lstm = nn.LSTM(embed_size, hidden_size, num_layers, bias=True, batch_first=True)
-        self.linear = nn.Linear(hidden_size, vocab_size)   # linear layer to find scores over vocabulary
-        # self.softmax = nn.Softmax(dim=1)
+        self.embedding = nn.Embedding(vocab_size, word_embed_size) # embedding layer
+        self.lstm = nn.LSTM(word_embed_size, lstm_hidden_size, num_layers, bias=True, batch_first=True)
+        self.linear = nn.Linear(lstm_hidden_size, vocab_size)   # linear layer to find scores over vocabulary
         self.init_weights()
 
     def init_weights(self):
@@ -130,15 +126,9 @@ class DecoderRNN(BaseModel):
         packed = pack_padded_sequence(embeddings, caption_lengths, batch_first=True)
         hiddens, _ = self.lstm(packed)
         outputs = self.linear(hiddens[0])
-        # print("before softmax:{}".format(outputs))
-        # print("sum:{}".format(np.sum(outputs.detach().numpy(), axis=-1)))
-        # outputs = self.softmax(outputs)
-        # print("after softmax:{}".format(outputs))
-        # print("sum:{}".format(np.sum(outputs.detach().numpy(), axis=-1)))
-        # print("sum:{}".format(np.sum(outputs.detach().numpy(), axis=-1).shape))
         return outputs
 
-    def sample(self, features, states=None, max_len=20):
+    def sample(self, features, max_len=20, states=None):
         """Accept a pre-processed image tensor (inputs) and return predicted
         sentence (list of tensor ids of length max_len). This is the greedy
         search approach.
@@ -150,13 +140,15 @@ class DecoderRNN(BaseModel):
             outputs = self.linear(hiddens.squeeze(1))  # (batch_size, vocab_size)
             # Get the index (in the vocabulary) of the most likely integer that
             # represents a word
-            predicted = outputs.argmax(1)
-            sampled_ids.append(predicted.item())
+            predicted = outputs.max(1)[1]
+            sampled_ids.append(predicted)
+
             inputs = self.embedding(predicted)
             inputs = inputs.unsqueeze(1)
-        return sampled_ids
+        sampled_ids = torch.stack(sampled_ids, 1)
+        return sampled_ids.squeeze()
 
-    def sample_beam_search(self, features, states=None, max_len=20, beam_width=5):
+    def sample_beam_search(self, features, max_len=20, beam_width=5, states=None):
         """Accept a pre-processed image tensor and return the top predicted
         sentences. This is the beam search approach.
         """
@@ -191,16 +183,15 @@ class DecoderRNN(BaseModel):
 
 
 class ImageCaptionModel(BaseModel):
-    def __init__(self, image_encode_size, image_embed_size, word_embed_size, lstm_hidden_size, vocab_size, lstm_num_layers=1):
+    def __init__(self, image_embed_size, word_embed_size, lstm_hidden_size, vocab_size, lstm_num_layers=1):
         super(ImageCaptionModel, self).__init__()
-        self.image_encode_size = image_encode_size
         self.image_embed_size = image_embed_size
         self.word_embed_size = word_embed_size
         self.lstm_hidden_size = lstm_hidden_size
         self.lstm_num_layers = lstm_num_layers
         self.vocab_size = vocab_size
 
-        self.encoder = EncoderCNN(self.image_encode_size, self.image_embed_size)
+        self.encoder = EncoderCNN(self.image_embed_size)
         self.decoder = DecoderRNN(self.word_embed_size, self.lstm_hidden_size, self.vocab_size, self.lstm_num_layers)
 
     def forward(self, images, captions, caption_lengths):
@@ -208,10 +199,11 @@ class ImageCaptionModel(BaseModel):
         outputs = self.decoder(features, captions, caption_lengths)
         return outputs
 
+    def sample(self, features, max_len=20, states=None):
+        return self.decoder.sample(features, max_len, states)
 
-
-
-
+    def sample_beam_search(self, features, max_len=20, beam_width=5, states=None):
+        return self.decoder.sample_beam_search(features, max_len, beam_width, states)
 
 
 if __name__ == '__main__':

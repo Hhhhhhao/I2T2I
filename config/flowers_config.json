@@ -18,8 +18,8 @@
             "data_dir": "/home/s1786991/I2T2I/data/",
             "dataset_name":"flowers",
             "which_set": "train",
-            "image_size":128,
-            "batch_size":128,
+            "image_size":256,
+            "batch_size":64,
             "num_workers": 0
         }
     },
@@ -29,7 +29,7 @@
             "data_dir": "/home/s1786991/I2T2I/data/",
             "dataset_name":"flowers",
             "which_set": "valid",
-            "image_size":128,
+            "image_size":256,
             "batch_size": 1,
             "num_workers": 0
         }
@@ -51,7 +51,7 @@
         "gamma": 0.5
     }},
     "trainer": {
-        "epochs": 50,
+        "epochs": 30,
         "save_dir": "saved/",
         "save_period": 1,
         "verbosity": 2,

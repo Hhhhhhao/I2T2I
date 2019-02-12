@@ -17,8 +17,8 @@
         "args":{
             "data_dir": "/home/s1786991/I2T2I/data/coco/",
             "which_set": "train",
-            "image_size":128,
-            "batch_size":128,
+            "image_size":256,
+            "batch_size":64,
             "validation_split":0.05,
             "num_workers": 0
         }
@@ -28,7 +28,7 @@
         "args":{
             "data_dir": "/home/s1786991/I2T2I/data/coco/",
             "which_set": "val",
-            "image_size":128,
+            "image_size":256,
             "batch_size": 1,
             "num_workers": 0
         }
@@ -50,13 +50,13 @@
         "gamma": 0.5
     }},
     "trainer": {
-        "epochs": 30,
+        "epochs": 10,
         "save_dir": "saved/",
         "save_period": 1,
         "verbosity": 2,
 
         "monitor": "min val_loss",
-        "early_stop": 3,
+        "early_stop": 2,
 
         "tensorboardX": true,
         "log_dir": "saved/runs"

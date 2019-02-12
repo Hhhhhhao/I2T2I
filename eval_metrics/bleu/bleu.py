@@ -29,10 +29,10 @@ class Bleu:
             ref = gts[id]
 
             # Sanity check.
-            assert(type(hypo) is list)
-            assert(len(hypo) == 1)
-            assert(type(ref) is list)
-            assert(len(ref) >= 1)
+            assert(type(hypo) is list), "hypo type is {}".format(type(hypo))
+            assert(len(hypo) == 1), "hypo list length is {}".format(len(hypo))
+            assert(type(ref) is list), "ref type is {}".format(type(ref))
+            assert(len(ref) >= 1), "ref length is {}".format(len(ref))
 
             bleu_scorer += (hypo[0], ref)
 

@@ -12,6 +12,7 @@ from train import get_instance
 from utils.util import convert_back_to_text
 from eval_metrics.eval import compute_score
 from torch.nn.utils.rnn import pack_padded_sequence
+from torchvision import transforms
 
 
 def main(config, resume):
@@ -48,7 +49,7 @@ def main(config, resume):
     metric_fns = [getattr(module_metric, met) for met in config['metrics']]
 
     # load state dict
-    checkpoint = torch.load(resume)
+    checkpoint = torch.load(resume, map_location='cpu')
     state_dict = checkpoint['state_dict']
     if config['n_gpu'] > 1:
         model = torch.nn.DataParallel(model)
@@ -65,17 +66,35 @@ def main(config, resume):
     gts = {}
     res = {}
 
+    mean = torch.tensor([0.485, 0.456, 0.406], dtype=torch.float32)
+    std = torch.tensor([0.229, 0.224, 0.225], dtype=torch.float32)
+
+    transform = transforms.Compose([
+            transforms.Normalize(mean=(-mean/std).tolist(), std=(1.0/std).tolist()),
+            transforms.ToPILImage()]
+            )
+
     with torch.no_grad():
         for i, (batch_image_ids, batch_images, batch_captions, batch_caption_lengths) in enumerate(tqdm(data_loader)):
             batch_images, batch_captions = batch_images.to(device), batch_captions.to(device)
             # batch_caption_lengths = [l - 1 for l in batch_caption_lengths]
 
             batch_features = model.encoder(batch_images)
-            pred_captions= model.decoder.sample_beam_search(batch_features)
+            pred_captions= model.decoder.sample(batch_features)
 
-            pred_sentence = convert_back_to_text(pred_captions[0], data_loader.dataset.vocab)
+            if not torch.cuda.is_available():
+                if i % 5 == 0:
+                    image = batch_images[0]
+                    image = transform(image)
+                    image.show()
+
+            pred_sentence = convert_back_to_text(list(pred_captions[0]), data_loader.dataset.vocab)
+            pred_sentence = [pred_sentence]
             # pred_sentence_2 = convert_back_to_text(pred_captions_greedy, data_loader.dataset.vocab)
-            target_sentence = convert_back_to_text((batch_captions.numpy())[0], data_loader.dataset.vocab)
+            target_sentence = []
+            for sen in batch_captions.cpu().numpy():
+                target_sentence.append(convert_back_to_text(list(sen), data_loader.dataset.vocab))
+            # target_sentence = convert_back_to_text((batch_captions.cpu().numpy()), data_loader.dataset.vocab)
 
             # save sample images, or do something with output here
             gts["{}".format(batch_image_ids[0])] = target_sentence
@@ -108,7 +127,7 @@ def main(config, resume):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='PyTorch Template')
 
-    parser.add_argument('-r', '--resume', default='/Users/leon/Projects/I2T2I/saved/Show-and-Tell-Birds/0206_205028/model_best.pth', type=str,
+    parser.add_argument('-r', '--resume', default='/Users/leon/Projects/I2T2I/saved/Show-and-Tell-Birds/0211_233702/checkpoint-epoch6.pth', type=str,
                            help='path to latest checkpoint (default: None)')
     parser.add_argument('-d', '--device', default=None, type=str,
                            help='indices of GPUs to enable (default: all)')
