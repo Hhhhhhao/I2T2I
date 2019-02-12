@@ -4,7 +4,7 @@ import pickle
 import h5py
 import sys
 import numpy as np
-sys.path.append('/Users/leon/Projects/I2T2I/data/coco/cocoapi/PythonAPI')
+sys.path.append('home/s1784380/I2T2I/data/coco/cocoapi/PythonAPI')
 from pycocotools.coco import COCO
 from collections import Counter
 
@@ -13,11 +13,11 @@ class Vocabulary(object):
 
     def __init__(self,
         vocab_threshold,
-        vocab_file="/Users/leon/Projects/I2T2I/data/coco/vocab.pkl",
+        vocab_file="/home/s1784380/I2T2I/data/coco/vocab.pkl",
         start_word="<start>",
         end_word="<end>",
         unk_word="<unk>",
-        annotations_file="/Users/leon/Projects/I2T2I/data/coco/annotations/captions_train2017.json",
+        annotations_file="/home/s1784380/I2T2I/data/coco/annotations/captions_train2017.json",
         vocab_from_file=False):
 
         """

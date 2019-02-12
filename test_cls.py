@@ -1,5 +1,6 @@
 from trainer.trainer_cls import Trainer
-from data_loader.data_loaders import Text2ImageDataLoader
+from torch.utils.data import DataLoader
+from data_loader.txt2image_dataset import Text2ImageDataset_Origin
 import argparse
 from PIL import Image
 import os
@@ -12,19 +13,39 @@ if __name__ == '__main__':
 
     if args.dataset_name == 'birds':
 
-        test_data_loader = Text2ImageDataLoader(
-            data_dir='/home/s1784380/I2T2I/data/',
-            dataset_name="birds",
-            which_set="test",
-            image_size=64,
-            batch_size=1,
+        test_data_loader = DataLoader(
+
+            Text2ImageDataset_Origin(
+                data_dir='/home/s1784380/I2T2I/data/',
+                dataset_name="flowers",
+                which_set="test"
+            ),
+
+            batch_size=64,
+            shuffle=True,
             num_workers=0
         )
+    elif args.dataset_name == 'flowers':
+
+        test_data_loader = DataLoader(
+
+            Text2ImageDataset_Origin(
+                data_dir='/home/s1784380/I2T2I/data/',
+                dataset_name="flowers",
+                which_set="test"
+            ),
+
+            batch_size=64,
+            shuffle=True,
+            num_workers=0
+        )
+
     else:
         raise AssertionError("dataset_name not valid!")
 
     trainer = Trainer(gan_type=args.gan_type,
-                      data_loader=test_data_loader,
+                      train_data_loader=None,
+                      valid_data_loader=None,
                       num_epochs=args.num_epochs,
                       lr=args.lr,
                       save_path=args.save_path,
@@ -34,5 +55,5 @@ if __name__ == '__main__':
                       pre_trained_gen=args.pre_trained_gen,
                       )
 
-    trainer.predict()
+    trainer.predict(test_data_loader)
 

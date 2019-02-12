@@ -1,5 +1,6 @@
 from trainer.trainer_cls import Trainer
-from data_loader.data_loaders import Text2ImageDataLoader
+from torch.utils.data import DataLoader
+from data_loader.txt2image_dataset import Text2ImageDataset_Origin
 import argparse
 from PIL import Image
 import os
@@ -12,29 +13,67 @@ if __name__ == '__main__':
 
     if args.dataset_name == 'birds':
 
-        train_data_loader = Text2ImageDataLoader(
-            data_dir='/home/s1784380/I2T2I/data/',
-            dataset_name="birds",
-            which_set="train",
-            image_size=64,
+        train_data_loader = DataLoader(
+
+            Text2ImageDataset_Origin(
+                data_dir='/home/s1784380/I2T2I/data/',
+                dataset_name="birds",
+                which_set="train"
+            ),
+
             batch_size=64,
+            shuffle=True,
             num_workers=0
         )
+
+        valid_data_loader = DataLoader(
+
+            Text2ImageDataset_Origin(
+                data_dir='/home/s1784380/I2T2I/data/',
+                dataset_name="birds",
+                which_set="valid"
+            ),
+
+            batch_size=64,
+            shuffle=True,
+            num_workers=0
+        )
+
     elif args.dataset_name == 'flowers':
 
-        train_data_loader = Text2ImageDataLoader(
-            data_dir='/home/s1784380/I2T2I/data/',
-            dataset_name="flowers",
-            which_set="train",
-            image_size=64,
+        train_data_loader = DataLoader(
+
+            Text2ImageDataset_Origin(
+                data_dir='/home/s1784380/I2T2I/data/',
+                dataset_name="flowers",
+                which_set="train"
+            ),
+
             batch_size=64,
+            shuffle=True,
             num_workers=0
         )
+
+        valid_data_loader = DataLoader(
+
+            Text2ImageDataset_Origin(
+                data_dir='/home/s1784380/I2T2I/data/',
+                dataset_name="birds",
+                which_set="valid"
+            ),
+
+            batch_size=64,
+            shuffle=True,
+            num_workers=0
+        )
+
+
     else:
         raise AssertionError("dataset_name not valid!")
 
     trainer = Trainer(gan_type=args.gan_type,
-                      data_loader=train_data_loader,
+                      train_data_loader=train_data_loader,
+                      valid_data_loader=valid_data_loader,
                       num_epochs=args.num_epochs,
                       lr=args.lr,
                       save_path=args.save_path,

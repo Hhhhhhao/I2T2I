@@ -127,7 +127,7 @@ class Text2ImageDataLoader(DataLoader):
         else:
             super(Text2ImageDataLoader, self).__init__(
                 dataset=self.dataset,
-                batch_size=1,
+                batch_size=self.batch_size,
                 shuffle=False,
                 num_workers=0)
 
