@@ -69,7 +69,7 @@ class Text2ImageDataset_Origin(Dataset):
                  }
 
         sample['right_images'] = sample['right_images'].sub_(127.5).div_(127.5)
-        sample['wrong_images'] =sample['wrong_images'].sub_(127.5).div_(127.5)
+        sample['wrong_images'] = sample['wrong_images'].sub_(127.5).div_(127.5)
 
         return sample
 

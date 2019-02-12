@@ -85,16 +85,16 @@ class Trainer(object):
         for epoch in range(self.num_epochs):
 
             for batch_idx, sample in enumerate(self.train_data_loader):
-                right_image = sample['right_image']
+                right_images = sample['right_images']
                 right_embed = sample['right_embed']
-                wrong_image = sample['wrong_image']
+                wrong_images = sample['wrong_images']
 
-                right_image = Variable(right_image.float()).to(self.device)
+                right_images = Variable(right_images.float()).to(self.device)
                 right_embed = Variable(right_embed.float()).to(self.device)
-                wrong_image = Variable(wrong_image.float()).to(self.device)
+                wrong_images = Variable(wrong_images.float()).to(self.device)
 
-                real_labels = torch.ones(right_image.size(0))
-                fake_labels = torch.zeros(right_image.size(0))
+                real_labels = torch.ones(right_images.size(0))
+                fake_labels = torch.zeros(right_images.size(0))
 
                 # ======== One sided label smoothing ==========
                 # Helps preventing the discriminator from overpowering the
@@ -110,17 +110,17 @@ class Trainer(object):
                 self.discriminator.zero_grad()
 
                 # real image, right text
-                outputs, activation_real = self.discriminator(right_image, right_embed)
+                outputs, activation_real = self.discriminator(right_images, right_embed)
                 real_loss = criterion(outputs, smoothed_real_labels)
                 real_score = outputs
 
                 # wrong image, right text
-                outputs, _ = self.discriminator(wrong_image, right_embed)
+                outputs, _ = self.discriminator(wrong_images, right_embed)
                 wrong_loss = criterion(outputs, fake_labels)
                 wrong_score = outputs
 
                 # fake image, right text
-                noise = Variable(torch.randn(right_image.size(0), self.noise_dim)).to(self.device)
+                noise = Variable(torch.randn(right_images.size(0), self.noise_dim)).to(self.device)
                 noise = noise.view(noise.size(0), self.noise_dim, 1, 1)
                 fake_image = self.generator(right_embed, noise)
                 outputs, _ = self.discriminator(fake_image, right_embed)
@@ -135,7 +135,7 @@ class Trainer(object):
 
                 # Train the generator
                 self.generator.zero_grad()
-                noise = Variable(torch.randn(right_image.size(0), self.noise_dim)).to(self.device)
+                noise = Variable(torch.randn(right_images.size(0), self.noise_dim)).to(self.device)
                 noise = noise.view(noise.size(0), self.noise_dim, 1, 1)
 
                 fake_image = self.generator(right_embed, noise)
@@ -153,7 +153,7 @@ class Trainer(object):
                 # ===========================================
                 g_loss = criterion(outputs, real_labels)
                 # + self.l2_coef * l2_loss(activation_fake, activation_real.detach()) \
-                # + self.l1_coef * l1_loss(fake_image, right_image)
+                # + self.l1_coef * l1_loss(fake_image, right_images)
 
                 g_loss.backward()
                 self.optimG.step()
@@ -178,17 +178,17 @@ class Trainer(object):
 
         if valid:
             for sample in data_loader:
-                right_image = sample['right_image']
+                right_images = sample['right_images']
                 right_embed = sample['right_embed']
                 txt = sample['txt']
 
                 if not os.path.exists('{0}/results/epoch_{1}'.format(self.save_path, epoch)):
                     os.makedirs('{0}/results/epoch_{1}'.format(self.save_path, epoch))
 
-                right_image = Variable(right_image.float()).to(self.device)
+                right_images = Variable(right_images.float()).to(self.device)
                 right_embed = Variable(right_embed.float()).to(self.device)
 
-                noise = Variable(torch.randn(right_image.size(0), self.noise_dim)).to(self.device)
+                noise = Variable(torch.randn(right_images.size(0), self.noise_dim)).to(self.device)
                 noise = noise.view(noise.size(0), self.noise_dim, 1, 1)
 
                 fake_images = self.generator(right_embed, noise)
@@ -201,17 +201,17 @@ class Trainer(object):
         else:
 
             for sample in data_loader:
-                right_image = sample['right_image']
+                right_images = sample['right_images']
                 right_embed = sample['right_embed']
                 txt = sample['txt']
 
                 if not os.path.exists('{0}/results/test'.format(self.save_path)):
                     os.makedirs('{0}/results/test'.format(self.save_path))
 
-                right_image = Variable(right_image.float()).to(self.device)
+                right_images = Variable(right_images.float()).to(self.device)
                 right_embed = Variable(right_embed.float()).to(self.device)
 
-                noise = Variable(torch.randn(right_image.size(0), self.noise_dim)).to(self.device)
+                noise = Variable(torch.randn(right_images.size(0), self.noise_dim)).to(self.device)
                 noise = noise.view(noise.size(0), self.noise_dim, 1, 1)
 
                 fake_images = self.generator(right_embed, noise)
