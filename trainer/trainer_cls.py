@@ -45,7 +45,7 @@ class Trainer(object):
 
             start = pre_trained_gen.find("gen_") + 4
             end = pre_trained_gen.find(".pth")
-            self.pre_epoch = int(pre_trained_disc[start:end]) + 1
+            self.pre_epoch = int(pre_trained_gen[start:end]) + 1
 
             self.generator.load_state_dict(torch.load(pre_trained_gen, map_location='cpu'))
         else:
