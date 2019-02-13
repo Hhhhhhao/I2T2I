@@ -47,7 +47,10 @@ def main(config, resume):
     metric_fns = [getattr(module_metric, met) for met in config['metrics']]
 
     # load state dict
-    checkpoint = torch.load(resume, map_location='cpu')
+    if torch.cuda.is_available():
+        checkpoint = torch.load(resume)
+    else:
+        checkpoint = torch.load(resume, map_location='cpu')
     state_dict = checkpoint['state_dict']
     if config['n_gpu'] > 1:
         model = torch.nn.DataParallel(model)
@@ -82,13 +85,13 @@ def main(config, resume):
             batch_features = model.encoder(batch_images)
             pred_captions = model.decoder.sample_beam_search(batch_features)
 
-            if not torch.cuda.is_available():
-                if i % 5 == 0:
-                    image = batch_images[0]
-                    image = transform(image)
-                    image.show()
-                elif i == 6:
-                    break
+            # if not torch.cuda.is_available():
+            #     if i % 5 == 0:
+            #         image = batch_images[0]
+            #         image = transform(image)
+            #         image.show()
+            #     elif i == 6:
+            #         break
 
             pred_sentence = convert_back_to_text(list(pred_captions[0]), data_loader.dataset.vocab)
             target_sentence = convert_back_to_text(batch_captions.cpu().tolist()[0], data_loader.dataset.vocab)
@@ -138,7 +141,10 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.resume:
-        config = torch.load(args.resume)['config']
+        if torch.cuda.is_available():
+            config = torch.load(args.resume)['config']
+        else:
+            config = torch.load(args.resume, map_location='cpu')['config']
     if args.device:
         os.environ["CUDA_VISIBLE_DEVICES"]=args.device
     _,  _, save_dir = main(config, args.resume)
