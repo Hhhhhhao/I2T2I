@@ -5,9 +5,9 @@
     "arch": {
         "type": "ImageCaptionModel",
         "args": {
-            "image_embed_size":256,
-            "word_embed_size": 256,
-            "lstm_hidden_size":512,
+            "image_embed_size":512,
+            "word_embed_size": 512,
+            "lstm_hidden_size":1024,
             "vocab_size":1302
         }
     },

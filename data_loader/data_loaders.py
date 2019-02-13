@@ -75,13 +75,23 @@ class COCOCaptionDataLoader(BaseDataLoader):
         # transforms.ToTensor convert PIL images in range [0, 255] to a torch in range [0.0, 1.0]
         mean = torch.tensor([0.485, 0.456, 0.406], dtype=torch.float32)
         std = torch.tensor([0.229, 0.224, 0.225], dtype=torch.float32)
-        self.transform = transforms.Compose([
-            transforms.Resize(self.image_size),
-            transforms.RandomHorizontalFlip(),
-            # transforms.CenterCrop(224),
-            transforms.ToTensor(),
-            transforms.Normalize(mean=mean.tolist(), std=std.tolist())
-        ])
+
+        if which_set == 'val' or which_set == 'test':
+            self.transform = transforms.Compose([
+                transforms.Resize(self.image_size),
+                # transforms.RandomHorizontalFlip(),
+                # transforms.CenterCrop(224),
+                transforms.ToTensor(),
+                transforms.Normalize(mean=mean.tolist(), std=std.tolist())
+            ])
+        else:
+            self.transform = transforms.Compose([
+                transforms.Resize(self.image_size),
+                transforms.RandomHorizontalFlip(),
+                transforms.ToTensor(),
+                transforms.Normalize(mean=mean.tolist(), std=std.tolist())
+            ])
+
         self.dataset = COCOCaptionDataset(self.data_dir, self.which_set, self.transform, vocab_from_file=False)
         # self.n_samples = len(self.dataset)
 
@@ -120,13 +130,19 @@ class CaptionDataLoader(DataLoader):
         self.num_workers = num_workers
 
         # transforms.ToTensor convert PIL images in range [0, 255] to a torch in range [0.0, 1.0]
-        self.transform = transforms.Compose([
-            transforms.Resize(self.image_size),
-            transforms.RandomHorizontalFlip(),
-            # transforms.CenterCrop(224),
-            transforms.ToTensor(),
-            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-        ])
+        if which_set == 'valid' or which_set == 'test':
+            self.transform = transforms.Compose([
+                transforms.Resize(self.image_size),
+                transforms.ToTensor(),
+                transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+            ])
+        else:
+            self.transform = transforms.Compose([
+                transforms.Resize(self.image_size),
+                transforms.RandomHorizontalFlip(),
+                transforms.ToTensor(),
+                transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+            ])
 
         self.dataset = CaptionDataset(self.data_dir, self.dataset_name, self.which_set, self.transform, vocab_from_file=False)
         self.n_samples = len(self.dataset)
