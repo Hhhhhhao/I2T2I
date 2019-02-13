@@ -190,7 +190,6 @@ class Trainer(object):
             for batch_idx, sample in enumerate(data_loader):
                 if batch_idx != 0:
                     break
-                sample = data_loader[0]
                 right_images = sample['right_images']
                 right_embed = sample['right_embed']
                 txt = sample['txt']
