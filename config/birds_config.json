@@ -1,6 +1,8 @@
 {
   "gan_type":"gan_cls",
   "dataset_name": "birds",
-  "save_path": "/home/s1784380/lala/I2T2I/saved/gan_cls/birds"
+  "save_path": "/home/s1784380/lala/I2T2I/saved/gan_cls/birds",
+  "pre_trained_disc": "/home/s1784380/lala/I2T2I/saved/gan_cls/birds/checkpoints/disc_40.pth",
+  "pre_trained_gen": "/home/s1784380/lala/I2T2I/saved/gan_cls/birds/checkpoints/gen_40.pth"
 }
 
