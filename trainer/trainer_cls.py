@@ -177,26 +177,25 @@ class Trainer(object):
     def predict(self, data_loader, valid=False, epoch=None):
 
         if valid:
-            for sample in data_loader:
-                right_images = sample['right_images']
-                right_embed = sample['right_embed']
-                txt = sample['txt']
+            sample = data_loader[0]
+            right_images = sample['right_images']
+            right_embed = sample['right_embed']
+            txt = sample['txt']
 
-                if not os.path.exists('{0}/results/epoch_{1}'.format(self.save_path, epoch)):
-                    os.makedirs('{0}/results/epoch_{1}'.format(self.save_path, epoch))
+            if not os.path.exists('{0}/results/epoch_{1}'.format(self.save_path, epoch)):
+                os.makedirs('{0}/results/epoch_{1}'.format(self.save_path, epoch))
 
-                right_images = Variable(right_images.float()).to(self.device)
-                right_embed = Variable(right_embed.float()).to(self.device)
+            right_images = Variable(right_images.float()).to(self.device)
+            right_embed = Variable(right_embed.float()).to(self.device)
 
-                noise = Variable(torch.randn(right_images.size(0), self.noise_dim)).to(self.device)
-                noise = noise.view(noise.size(0), self.noise_dim, 1, 1)
+            noise = Variable(torch.randn(right_images.size(0), self.noise_dim)).to(self.device)
+            noise = noise.view(noise.size(0), self.noise_dim, 1, 1)
 
-                fake_images = self.generator(right_embed, noise)
+            fake_images = self.generator(right_embed, noise)
 
-                for image, t in zip(fake_images, txt):
-                    im = Image.fromarray(image.data.mul_(127.5).add_(127.5).byte().permute(1, 2, 0).cpu().numpy())
-                    im.save('{0}/results/epoch_{1}/{2}.jpg'.format(self.save_path, epoch, t.replace("/", "")[:100]))
-                    print(t)
+            for image, t in zip(fake_images, txt):
+                im = Image.fromarray(image.data.mul_(127.5).add_(127.5).byte().permute(1, 2, 0).cpu().numpy())
+                im.save('{0}/results/epoch_{1}/{2}.jpg'.format(self.save_path, epoch, t.replace("/", "")[:100]))
 
         else:
 
