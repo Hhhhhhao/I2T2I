@@ -252,6 +252,16 @@ class ConditionalGenerator(BaseModel):
         else:
             return features
 
+    def init_states_from_features(self, features):
+        _, states = self.decoder.lstm(features)
+
+        if torch.cuda.is_available():
+            return states.cuda()
+        else:
+            return states
+
+        return states
+
     def forward(self, images, captions, caption_lengths):
         image_features = self.encoder(images)
         features = self.get_feature_linear_output(image_features)
@@ -259,12 +269,25 @@ class ConditionalGenerator(BaseModel):
         return image_features, outputs
 
     def reward_forward(self, image_features, evaluator, monte_carlo_count=18):
-        self.decoder.lstm.flatten_parameters()
+        '''
+
+        :param image_features: image features from image encoder linear layer
+        :param evaluator: evaluator model
+        :param monte_carlo_count: monte carlo count
+        :return:
+        '''
+        # self.decoder.lstm.flatten_parameters()
         batch_size = image_features.size(0)
         features = self.get_feature_linear_output(image_features)
-        # embed the start symbol
-        inputs = self.decoder.embedding(torch.Tensor([0] * batch_size).long()).unsqueeze(1)
+        # initialize hiddens states of lstm
+        states = self.init_states_from_features(features.unsqueeze(1))
+        # initialize inputs of start symbol
+        inputs = torch.zeros((batch_size, 1)).long()
+        inputs = self.decoder.embedding(inputs)
 
+        # # # embed the start symbol
+        # # inputs = self.decoder.embedding(torch.Tensor([0] * batch_size).long()).unsqueeze(1)
+        #
         if torch.cuda.is_available():
             inputs = inputs.cuda()
 
@@ -275,17 +298,21 @@ class ConditionalGenerator(BaseModel):
 
         for i in range(self.max_sentence_length):
 
-            # TODO figure out
-            _, hidden = self.decoder.lstm(inputs, features)
-            outputs = self.decoder.linear(hidden[0]).squeeze(0)
+            hiddens, states = self.decoder.lstm(inputs, states)
+            # squeeze the hidden output size from (batch_siz, 1, hidden_size) to (batch_size, hidden_size)
+            outputs = self.decoder.linear(hiddens.squeeze(1))
             outputs = F.softmax(outputs, -1)
+
+            # use multinomial to random sample
             predicted = outputs.multinomial(1)
+            predicted = predicted.long()
             prop = torch.gather(outputs, 1, predicted)
+            # prop is a 1D tensor
             props[:, i] = prop.view(-1)
             # embed the next inputs, unsqueeze is required cause of shape (batch_size, 1, embedding_size)
             inputs = self.decoder.embedding(predicted)
             current_generated = torch.cat([current_generated, inputs], dim=1)
-            reward = self.rollout.reward(current_generated, image_features, hidden, monte_carlo_count, evaluator)
+            reward = self.rollout.reward(current_generated, image_features, states, monte_carlo_count, evaluator)
             rewards[:, i] = reward.view(-1)
         return rewards, props
 
@@ -336,6 +363,19 @@ class Evaluator(BaseModel):
         sentence_features = self.sentence_encoder(captions, caption_lengths)
         dot_product = torch.bmm(image_features.unsqueeze(1), sentence_features.unsqueeze(1).transpose(2,1)).squeeze()
 
+        return self.sigmoid(dot_product)
+
+    def forward_given_image_features(self, image_features, embeddings):
+        '''
+
+        :param image_features: image features from encoder
+        :param embeddings: word embeddings
+        :return:
+        '''
+        batch_size = image_features.size(0)
+        hiddens, _ = self.sentence_encoder.lstm(embeddings)
+        hiddens = hiddens.view(batch_size, -1)
+        dot_product = torch.bmm(image_features.unsqueeze(1), sentence_features.unsqueeze(1).transpose(2, 1)).squeeze()
         return self.sigmoid(dot_product)
 
     def freeze(self):
