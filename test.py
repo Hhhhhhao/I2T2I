@@ -147,7 +147,9 @@ if __name__ == '__main__':
             config = torch.load(args.resume, map_location='cpu')['config']
     if args.device:
         os.environ["CUDA_VISIBLE_DEVICES"]=args.device
-    _,  _, save_dir = main(config, args.resume)
+
+    #  _,  _, save_dir = main(config, args.resume)
+    save_dir = save_dir = os.path.dirname(args.resume)
 
     with open(os.path.join(save_dir, 'gts.json'), 'r') as f:
         gts = json.load(f)

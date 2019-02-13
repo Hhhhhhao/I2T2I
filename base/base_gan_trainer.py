@@ -8,28 +8,34 @@ from utils.util import ensure_dir
 from utils.visualization import WriterTensorboardX
 
 
-class BaseTrainer:
+class BaseGANTrainer:
     """
     Base class for all trainers
     """
 
-    def __init__(self, model, loss, metrics, optimizer, resume, config, train_logger=None):
+    def __init__(self, generator, discriminator, generator_optimizer, discriminator_optimizer,
+                 losses, metrics, resume, config, train_logger=None):
         self.config = config
         self.logger = logging.getLogger(self.__class__.__name__)
 
         # setup GPU device if available, move model into configured device
         self.device, device_ids = self._prepare_device(config['n_gpu'])
-        self.model = model.to(self.device)
+        self.generator = generator.to(self.device)
+        self.discriminator = discriminator.to(self.device)
         if len(device_ids) > 1:
-            self.model = torch.nn.DataParallel(model, device_ids=device_ids)
+            self.generator = torch.nn.DataParallel(self.generator, device_ids=device_ids)
+            self.discriminator = torch.nn.DataParallel(self.discriminator, device_ids=device_ids)
 
-        self.loss = loss
+        self.losses = losses
         self.metrics = metrics
-        self.optimizer = optimizer
         self.train_logger = train_logger
+        self.generator_optimizer = generator_optimizer
+        self.discriminator_optimizer = discriminator_optimizer
 
         cfg_trainer = config['trainer']
         self.epochs = cfg_trainer['epochs']
+        self.generator_pre_train_epochs = cfg_trainer['generator_pre_train_epochs']
+        self.discriminator_pre_train_epochs = cfg_trainer['discriminator_pre_train_epochs']
         self.save_period = cfg_trainer['save_period']
         self.verbosity = cfg_trainer['verbosity']
         self.monitor = cfg_trainer.get('monitor', 'off')
@@ -56,7 +62,7 @@ class BaseTrainer:
 
         # Save configuration file into checkpoint directory:
         ensure_dir(self.checkpoint_dir)
-        config_save_path = os.path.join(self.checkpoint_dir, 'birds_config.json')
+        config_save_path = os.path.join(self.checkpoint_dir, 'config.json')
         with open(config_save_path, 'w') as handle:
             json.dump(config, handle, indent=4, sort_keys=False)
 
@@ -81,15 +87,51 @@ class BaseTrainer:
         list_ids = list(range(n_gpu_use))
         return device, list_ids
 
+    def pre_train(self):
+        self.pretrain_epochs = max([self.discriminator_pre_train_epochs, self.generator_pre_train_epochs])
+        for epoch in range(self.start_epoch, self.pretrain_epochs+1):
+
+            log = {'epoch': epoch}
+
+            if epoch < self.generator_pre_train_epochs + 1:
+                result = self._pre_train_generator(epoch)
+                for key, value in result.items():
+                    if key == 'metrics':
+                        log.update({mtr.__name__: value[i] for i, mtr in enumerate(self.metrics)})
+                    elif key == 'val_metrics':
+                        log.update({'val_' + mtr.__name__: value[i] for i, mtr in enumerate(self.metrics)})
+                    else:
+                        log[key] = value
+
+            if epoch < self.discriminator_pre_train_epochs + 1:
+                result = self._pre_train_discriminator(epoch)
+                for key, value in result.items():
+                    if key == 'metrics':
+                        log.update({mtr.__name__: value[i] for i, mtr in enumerate(self.metrics)})
+                    elif key == 'val_metrics':
+                        log.update({'val_' + mtr.__name__: value[i] for i, mtr in enumerate(self.metrics)})
+                    else:
+                        log[key] = value
+
+            # print logged informations to the screen
+            if self.train_logger is not None:
+                self.train_logger.add_entry(log)
+                if self.verbosity >= 1:
+                    for key, value in log.items():
+                        self.logger.info('    {:15s}: {}'.format(str(key), value))
+
     def train(self):
         """
         Full training logic
         """
+        if self.pretrain_epochs is not None:
+            self.start_epoch = self.pretrain_epochs + 1
+
         for epoch in range(self.start_epoch, self.epochs + 1):
-            result = self._train_epoch(epoch)
 
             # save logged informations into log dict
             log = {'epoch': epoch}
+            result = self._train_epoch(epoch)
             for key, value in result.items():
                 if key == 'metrics':
                     log.update({mtr.__name__: value[i] for i, mtr in enumerate(self.metrics)})
@@ -135,6 +177,12 @@ class BaseTrainer:
             if epoch % self.save_period == 0:
                 self._save_checkpoint(epoch, save_best=best)
 
+    def _pre_train_generator(self, epoch):
+        raise NotImplementedError
+
+    def _pre_train_discriminator(self, epoch):
+        raise NotImplementedError
+
     def _train_epoch(self, epoch):
         """
         Training logic for an epoch
@@ -149,13 +197,17 @@ class BaseTrainer:
         :param log: logging information of the epoch
         :param save_best: if True, rename the saved checkpoint to 'model_best.pth'
         """
-        arch = type(self.model).__name__
+        generator_arch = type(self.generator).__name__
+        discriminator_arch = type(self.discriminator).__name__
         state = {
-            'arch': arch,
+            'generator_arch': generator_arch,
+            'discriminator_arch': discriminator_arch,
             'epoch': epoch,
             'logger': self.train_logger,
-            'state_dict': self.model.state_dict(),
-            'optimizer': self.optimizer.state_dict(),
+            'generator_state_dict': self.generator.state_dict(),
+            'generator_optimizer': self.generator_optimizer.state_dict(),
+            'discriminator_state_dict': self.discriminator.state_dict(),
+            'discriminator_optimizer': self.discriminator_optimizer.state_dict(),
             'monitor_best': self.mnt_best,
             'config': self.config
         }
@@ -178,18 +230,22 @@ class BaseTrainer:
         self.mnt_best = checkpoint['monitor_best']
 
         # load architecture params from checkpoint.
-        if checkpoint['config']['arch'] != self.config['arch']:
+        if checkpoint['config']['generator_arch'] != self.config['generator_arch'] or\
+           checkpoint['config']['discriminator_arch'] != self.config['discriminator_arch']:
             self.logger.warning(
                 'Warning: Architecture configuration given in config file is different from that of checkpoint. ' + \
                 'This may yield an exception while state_dict is being loaded.')
-        self.model.load_state_dict(checkpoint['state_dict'])
+        self.generator.load_state_dict(checkpoint['generator_state_dict'])
+        self.discriminator.load_state_dict(checkpoint['discriminator_state_dict'])
 
         # load optimizer state from checkpoint only when optimizer type is not changed.
-        if checkpoint['config']['optimizer']['type'] != self.config['optimizer']['type']:
+        if checkpoint['config']['generator_optimizer']['type'] != self.config['generator_optimizer']['type'] \
+            or checkpoint['config']['discriminator_optimizer']['type'] != self.config['discriminator_optimizer']['type']:
             self.logger.warning('Warning: Optimizer type given in config file is different from that of checkpoint. ' + \
                                 'Optimizer parameters not being resumed.')
         else:
-            self.optimizer.load_state_dict(checkpoint['optimizer'])
+            self.generator_optimizer.load_state_dict(checkpoint['generator_optimizer'])
+            self.discriminator_optimizer.load_state_dict(checkpoint['discriminator_optimizer'])
 
         self.train_logger = checkpoint['logger']
         self.logger.info("Checkpoint '{}' (epoch {}) loaded".format(resume_path, self.start_epoch))

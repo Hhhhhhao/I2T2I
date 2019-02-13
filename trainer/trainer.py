@@ -50,13 +50,14 @@ class Trainer(BaseTrainer):
         total_loss = 0
         total_metrics = np.zeros(len(self.metrics))
         for batch_idx, (batch_images, batch_captions, batch_caption_lengths) in enumerate(self.data_loader):
+
             batch_images = batch_images.to(self.device)
             batch_captions = batch_captions.to(self.device)
-            batch_caption_lengths = [l-1 for l in batch_caption_lengths]
+            # batch_caption_lengths = [l-1 for l in batch_caption_lengths]
 
             self.optimizer.zero_grad()
-            outputs = self.model(batch_images, batch_captions[:, :-1], batch_caption_lengths)
-            targets = pack_padded_sequence(batch_captions[:, 1:], batch_caption_lengths, batch_first=True)[0]
+            outputs = self.model(batch_images, batch_captions, batch_caption_lengths)
+            targets = pack_padded_sequence(batch_captions, batch_caption_lengths, batch_first=True)[0]
             loss = self.loss(outputs, targets)
             loss.backward()
             self.optimizer.step()
@@ -103,10 +104,9 @@ class Trainer(BaseTrainer):
             for batch_idx, (batch_images, batch_captions, batch_caption_lengths) in enumerate(self.valid_data_loader):
                 batch_images = batch_images.to(self.device)
                 batch_captions = batch_captions.to(self.device)
-                batch_caption_lengths = [l - 1 for l in batch_caption_lengths]
 
-                outputs = self.model(batch_images, batch_captions[:, :-1], batch_caption_lengths)
-                targets = pack_padded_sequence(batch_captions[:, 1:], batch_caption_lengths, batch_first=True)[0]
+                outputs = self.model(batch_images, batch_captions, batch_caption_lengths)
+                targets = pack_padded_sequence(batch_captions, batch_caption_lengths, batch_first=True)[0]
                 loss = self.loss(outputs, targets)
 
                 self.writer.set_step((epoch - 1) * len(self.valid_data_loader) + batch_idx, 'valid')
@@ -119,5 +119,3 @@ class Trainer(BaseTrainer):
             'val_loss': total_val_loss / len(self.valid_data_loader),
             'val_metrics': (total_val_metrics / len(self.valid_data_loader)).tolist()
         }
-
-

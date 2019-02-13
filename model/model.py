@@ -6,12 +6,9 @@ from torch.distributions import Normal
 from torch.autograd import Variable
 from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 from base import BaseModel
-from rollout import Rollout
-
-
+from model.rollout import Rollout
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
 
 class EncoderCNN(BaseModel):
     """
@@ -152,7 +149,7 @@ class DecoderRNN(BaseModel):
         self.linear.bias.data.fill_(0)
         self.linear.weight.data.uniform_(-0.1, 0.1)
 
-    def forward(self, features, captions, lengths):
+    def forward(self, features, captions, caption_lengths):
         # Embedding
         embeddings = self.embedding(captions)  # (batch_size, max_caption_length, embed_dim)
         embeddings = torch.cat((features.unsqueeze(1), embeddings), 1)
@@ -179,7 +176,7 @@ class DecoderRNN(BaseModel):
             inputs = inputs.unsqueeze(1)
         return sampled_ids
 
-    def sample_beam_search(self, features, states=None, max_len=20, beam_width=5):
+    def sample_beam_search(self, features, max_len=20, beam_width=5, states=None):
         """Accept a pre-processed image tensor and return the top predicted
         sentences. This is the beam search approach.
         """
@@ -240,7 +237,7 @@ class ConditionalGenerator(BaseModel):
             nn.LeakyReLU(0.2)
         )
         self.decoder = DecoderRNN(self.word_embed_size, self.lstm_hidden_size, self.vocab_size, self.lstm_num_layers)
-        self.rollout = Rollout(max_sentence_length, self.decoder.embedding)
+        self.rollout = Rollout(max_sentence_length)
 
     def get_feature_linear_output(self, image_features):
         rand = self.distribution.sample((image_features.shape[0],))
@@ -259,7 +256,6 @@ class ConditionalGenerator(BaseModel):
             return states.cuda()
         else:
             return states
-
         return states
 
     def forward(self, images, captions, caption_lengths):
@@ -268,7 +264,7 @@ class ConditionalGenerator(BaseModel):
         outputs = self.decoder(features, captions, caption_lengths)
         return image_features, outputs
 
-    def reward_forward(self, image_features, evaluator, monte_carlo_count=18):
+    def reward_forward(self, images, evaluator, monte_carlo_count=18):
         '''
 
         :param image_features: image features from image encoder linear layer
@@ -277,23 +273,21 @@ class ConditionalGenerator(BaseModel):
         :return:
         '''
         # self.decoder.lstm.flatten_parameters()
-        batch_size = image_features.size(0)
+        batch_size = images.size(0)
+        image_features = self.encoder(images)
         features = self.get_feature_linear_output(image_features)
         # initialize hiddens states of lstm
         states = self.init_states_from_features(features.unsqueeze(1))
         # initialize inputs of start symbol
         inputs = torch.zeros((batch_size, 1)).long()
+        current_generated_captions = inputs
         inputs = self.decoder.embedding(inputs)
 
-        # # # embed the start symbol
-        # # inputs = self.decoder.embedding(torch.Tensor([0] * batch_size).long()).unsqueeze(1)
-        #
         if torch.cuda.is_available():
             inputs = inputs.cuda()
 
         rewards = torch.zeros(batch_size, self.max_sentence_length)
         props = torch.zeros(batch_size, self.max_sentence_length)
-        current_generated = inputs
         self.rollout.update(self)
 
         for i in range(self.max_sentence_length):
@@ -310,9 +304,9 @@ class ConditionalGenerator(BaseModel):
             # prop is a 1D tensor
             props[:, i] = prop.view(-1)
             # embed the next inputs, unsqueeze is required cause of shape (batch_size, 1, embedding_size)
+            current_generated_captions = torch.cat([current_generated_captions, predicted], dim=1)
             inputs = self.decoder.embedding(predicted)
-            current_generated = torch.cat([current_generated, inputs], dim=1)
-            reward = self.rollout.reward(current_generated, image_features, states, monte_carlo_count, evaluator)
+            reward = self.rollout.reward(images, current_generated_captions, states, monte_carlo_count, evaluator)
             rewards[:, i] = reward.view(-1)
         return rewards, props
 
@@ -320,7 +314,7 @@ class ConditionalGenerator(BaseModel):
         return self.decoder.sample(features, states, self.max_sentence_length)
 
     def sample_beam_search(self, features, beam_width=5, states=None):
-        return self.decoder.sample_beam_search(features, states, self.max_sentence_length, beam_width)
+        return self.decoder.sample_beam_search(features, self.max_sentence_length, beam_width, states)
 
     def freeze(self):
         for param in self.parameters():
@@ -358,25 +352,16 @@ class Evaluator(BaseModel):
 
     def forward(self, images, captions, caption_lengths):
         """ Calculate reward score: r = logistic(dot_prod(f, h))"""
-
         image_features = self.image_encoder(images)
+
+        if image_features.size(0) != captions.size(0):
+            monte_carlo_count = int(captions.size(0) / image_features.size(0))
+            image_features = image_features.repeat(monte_carlo_count, 1)
+
         sentence_features = self.sentence_encoder(captions, caption_lengths)
         dot_product = torch.bmm(image_features.unsqueeze(1), sentence_features.unsqueeze(1).transpose(2,1)).squeeze()
-
         return self.sigmoid(dot_product)
 
-    def forward_given_image_features(self, image_features, embeddings):
-        '''
-
-        :param image_features: image features from encoder
-        :param embeddings: word embeddings
-        :return:
-        '''
-        batch_size = image_features.size(0)
-        hiddens, _ = self.sentence_encoder.lstm(embeddings)
-        hiddens = hiddens.view(batch_size, -1)
-        dot_product = torch.bmm(image_features.unsqueeze(1), sentence_features.unsqueeze(1).transpose(2, 1)).squeeze()
-        return self.sigmoid(dot_product)
 
     def freeze(self):
         for param in self.parameters():
@@ -410,6 +395,8 @@ if __name__ == '__main__':
 
     print('images.shape:', images.shape)
     print('captions.shape:', captions.shape)
+    print(caption_lengths)
+    print([0] * 5)
 
 
     generator = ConditionalGenerator(
@@ -428,7 +415,8 @@ if __name__ == '__main__':
 
     image_features, outputs = generator(images, captions, caption_lengths)
     score = discriminator(images, captions, caption_lengths)
-    rewards, props = generator.reward_forward(image_features, discriminator)
+    # rewards, props = generator.reward_forward(image_features, discriminator)
+    rewards, props = generator.reward(images, discriminator)
     print('type(features):', type(outputs))
     print('features.shape:', outputs.shape)
     print('type(features):', type(score))

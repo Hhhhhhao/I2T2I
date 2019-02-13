@@ -1,4 +1,5 @@
 import os
+import torch
 
 
 def ensure_dir(path):
@@ -45,3 +46,20 @@ def convert_back_to_text(word_idx_array, vocab):
 
     sentence = ' '.join(sampled_caption)
     return sentence
+
+
+def get_end_symbol_index(caption_list):
+    if 1 in caption_list:
+        return caption_list.index(1) + 1
+    else:
+        return len(caption_list)
+
+
+def get_caption_lengths(captions_list):
+    caption_lengths = [get_end_symbol_index(caption) for caption in captions_list]
+    caption_lengths.sort(reverse=True)
+    batch_captions = torch.zeros(len(captions_list), max(caption_lengths)).long()
+    for i, cap in enumerate(captions_list):
+        end = caption_lengths[i]
+        batch_captions[i, :end] = torch.tensor(cap[:end]).long()
+    return batch_captions, caption_lengths

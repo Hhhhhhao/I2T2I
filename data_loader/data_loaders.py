@@ -89,8 +89,7 @@ class TextImageDataLoader(DataLoader):
 
         # transforms.ToTensor convert PIL images in range [0, 255] to a torch in range [0.0, 1.0]
         self.transform = transforms.Compose([
-            # transforms.Resize(self.image_size),
-            # transforms.RandomHorizontalFlip(),
+            transforms.RandomHorizontalFlip(),
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         ])
@@ -113,8 +112,6 @@ class TextImageDataLoader(DataLoader):
                 shuffle=False,
                 num_workers=0,
                 collate_fn=collate_fn)
-
-
 
 
 if __name__ == '__main__':
