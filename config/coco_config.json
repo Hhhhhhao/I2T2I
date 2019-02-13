@@ -5,7 +5,6 @@
     "arch": {
         "type": "ImageCaptionModel",
         "args": {
-            "image_encode_size":4,
             "image_embed_size":512,
             "word_embed_size": 512,
             "lstm_hidden_size":1024,
