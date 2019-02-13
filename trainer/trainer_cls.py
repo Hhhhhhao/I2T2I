@@ -84,6 +84,13 @@ class Trainer(object):
 
         for epoch in range(self.num_epochs):
 
+            ##########
+            if epoch % 10 == 0:
+                print("predict first batch for valid")
+                self.predict(data_loader=self.valid_data_loader, valid=True, epoch=epoch)
+
+            ###########
+
             for batch_idx, sample in enumerate(self.train_data_loader):
                 right_images = sample['right_images']
                 right_embed = sample['right_embed']
@@ -169,33 +176,39 @@ class Trainer(object):
                         d_loss.item()))
 
             if epoch % 5 == 0:
+                print("save checkpoints")
                 Utils.save_checkpoint(self.discriminator, self.generator, self.save_path, self.checkpoints_path, epoch)
 
             if epoch % 10 == 0:
+                print("predict first batch for valid")
                 self.predict(data_loader=self.valid_data_loader, valid=True, epoch=epoch)
 
     def predict(self, data_loader, valid=False, epoch=None):
 
         if valid:
-            sample = data_loader[0]
-            right_images = sample['right_images']
-            right_embed = sample['right_embed']
-            txt = sample['txt']
 
-            if not os.path.exists('{0}/results/epoch_{1}'.format(self.save_path, epoch)):
-                os.makedirs('{0}/results/epoch_{1}'.format(self.save_path, epoch))
+            for batch_idx, sample in enumerate(data_loader):
+                if batch_idx != 0:
+                    break
+                sample = data_loader[0]
+                right_images = sample['right_images']
+                right_embed = sample['right_embed']
+                txt = sample['txt']
 
-            right_images = Variable(right_images.float()).to(self.device)
-            right_embed = Variable(right_embed.float()).to(self.device)
+                if not os.path.exists('{0}/results/epoch_{1}'.format(self.save_path, epoch)):
+                    os.makedirs('{0}/results/epoch_{1}'.format(self.save_path, epoch))
 
-            noise = Variable(torch.randn(right_images.size(0), self.noise_dim)).to(self.device)
-            noise = noise.view(noise.size(0), self.noise_dim, 1, 1)
+                right_images = Variable(right_images.float()).to(self.device)
+                right_embed = Variable(right_embed.float()).to(self.device)
 
-            fake_images = self.generator(right_embed, noise)
+                noise = Variable(torch.randn(right_images.size(0), self.noise_dim)).to(self.device)
+                noise = noise.view(noise.size(0), self.noise_dim, 1, 1)
 
-            for image, t in zip(fake_images, txt):
-                im = Image.fromarray(image.data.mul_(127.5).add_(127.5).byte().permute(1, 2, 0).cpu().numpy())
-                im.save('{0}/results/epoch_{1}/{2}.jpg'.format(self.save_path, epoch, t.replace("/", "")[:100]))
+                fake_images = self.generator(right_embed, noise)
+
+                for image, t in zip(fake_images, txt):
+                    im = Image.fromarray(image.data.mul_(127.5).add_(127.5).byte().permute(1, 2, 0).cpu().numpy())
+                    im.save('{0}/results/epoch_{1}/{2}.jpg'.format(self.save_path, epoch, t.replace("/", "")[:100]))
 
         else:
 
