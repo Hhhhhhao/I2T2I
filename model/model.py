@@ -18,19 +18,20 @@ class EncoderCNN(BaseModel):
     Encoder
     """
 
-    def __init__(self, encode_image_size=4, image_embed_size=512):
+    def __init__(self, image_embed_size=512):
         super(EncoderCNN, self).__init__()
 
+        adaptive_pool_size = 4
         resnet = torchvision.models.resnet34(pretrained=True)
 
         # Remove linear and pool layers
         modules = list(resnet.children())[:-2]
         self.resnet = nn.Sequential(*modules)
 
-        self.adaptive_pool = nn.AdaptiveAvgPool2d((encode_image_size, encode_image_size))
-        self.cnn_output_size = encode_image_size**2 * 512
+        self.adaptive_pool = nn.AdaptiveAvgPool2d((adaptive_pool_size, adaptive_pool_size))
+        self.fc_in_features = 512 * adaptive_pool_size ** 2
         # Resize image to fixed size to allow input images of variable size
-        self.linear = nn.Linear(encode_image_size**2 * 512, image_embed_size)
+        self.linear = nn.Linear(self.fc_in_features, image_embed_size)
         self.activation = nn.LeakyReLU(0.2)
         # self.bn = nn.BatchNorm1d(embed_size, momentum=0.01)
         self.init_weights()
@@ -71,7 +72,7 @@ class EncoderCNN(BaseModel):
 
 
 class EncoderRNN(BaseModel):
-    def __init__(self, word_embed_size, hidden_size, vocab_size, output_feature_size, num_layers=1):
+    def __init__(self, word_embed_size, sentence_embed_size, lstm_hidden_size, vocab_size, num_layers=1):
         """
         Set the hyper-parameters and build the layers.
         :param embed_size: word embedding size
@@ -82,13 +83,13 @@ class EncoderRNN(BaseModel):
         """
         super(EncoderRNN, self).__init__()
         self.word_embed_size = word_embed_size
-        self.hidden_size = hidden_size
+        self.lstm_hidden_size = lstm_hidden_size
         self.vocab_size = vocab_size
-        self.output_feature_size = output_feature_size
+        self.sentence_embed_size = sentence_embed_size
 
         self.embedding = nn.Embedding(vocab_size, word_embed_size)  # embedding layer
-        self.lstm = nn.LSTM(word_embed_size, hidden_size, num_layers, bias=True, batch_first=True)
-        self.linear = nn.Linear(hidden_size, output_feature_size)  # linear layer to find scores over vocabulary
+        self.lstm = nn.LSTM(word_embed_size, lstm_hidden_size, num_layers, bias=True, batch_first=True)
+        self.linear = nn.Linear(lstm_hidden_size, sentence_embed_size)  # linear layer to find scores over vocabulary
         self.activation = nn.LeakyReLU(0.2)
         self.init_weights()
 
@@ -110,7 +111,6 @@ class EncoderRNN(BaseModel):
         """
         # Embedding
         embeddings = self.embedding(captions)  # (batch_size, max_caption_length, embed_dim)
-        # embeddings = torch.cat((features.unsqueeze(1), embeddings), 1)
 
         packed = pack_padded_sequence(embeddings, caption_lengths, batch_first=True)
         hiddens, _ = self.lstm(packed)
@@ -120,11 +120,12 @@ class EncoderRNN(BaseModel):
         hidden_outputs = padded[0][range(captions.size(0)), last_padded_indices, :]
         # print("hidden_outputs shape:{}".format(hidden_outputs.shape))
         outputs = self.linear(hidden_outputs)
+        outputs = self.activation(outputs)
         return outputs
 
 
 class DecoderRNN(BaseModel):
-    def __init__(self, embed_size, hidden_size, vocab_size, noise_dim=128, num_layers=1):
+    def __init__(self, word_embed_size, lstm_hidden_size, vocab_size, num_layers=1):
         """
         Set the hyper-parameters and build the layers.
         :param embed_size: word embedding size
@@ -134,14 +135,13 @@ class DecoderRNN(BaseModel):
         :param dropout: use of drop out
         """
         super(DecoderRNN, self).__init__()
-        self.embed_size = embed_size
-        self.hidden_size = hidden_size
+        self.word_embed_size = word_embed_size
+        self.lstm_hidden_size = lstm_hidden_size
         self.vocab_size = vocab_size
 
-        self.distribution = Normal(Variable(torch.zeros(noise_dim)), Variable(torch.ones(noise_dim)))
-        self.embedding = nn.Embedding(vocab_size, embed_size) # embedding layer
-        self.lstm = nn.LSTM(embed_size, hidden_size, num_layers, bias=True, batch_first=True)
-        self.linear = nn.Linear(hidden_size, vocab_size)   # linear layer to find scores over vocabulary
+        self.embedding = nn.Embedding(vocab_size, word_embed_size) # embedding layer
+        self.lstm = nn.LSTM(word_embed_size, lstm_hidden_size, num_layers, bias=True, batch_first=True)
+        self.linear = nn.Linear(lstm_hidden_size, vocab_size)   # linear layer to find scores over vocabulary
         self.init_weights()
 
     def init_weights(self):
@@ -216,8 +216,7 @@ class DecoderRNN(BaseModel):
 class ConditionalGenerator(BaseModel):
 
     def __init__(self,
-                 image_encode_size=4,
-                 image_feature_size=512,
+                 image_embed_size=512,
                  word_embed_size=512,
                  lstm_hidden_size=1024,
                  noise_dim=128,
@@ -225,8 +224,7 @@ class ConditionalGenerator(BaseModel):
                  lstm_num_layers=1,
                  max_sentence_length=20):
         super(ConditionalGenerator, self).__init__()
-        self.image_encode_size = image_encode_size
-        self.image_feature_size =image_feature_size
+        self.image_embed_size =image_embed_size
         self.word_embed_size = word_embed_size
         self.lstm_hidden_size = lstm_hidden_size
         self.lstm_num_layers = lstm_num_layers
@@ -236,9 +234,9 @@ class ConditionalGenerator(BaseModel):
         self.distribution = Normal(Variable(torch.zeros(noise_dim)), Variable(torch.ones(noise_dim)))
 
         # image feature encoder
-        self.encoder = EncoderCNN(self.image_encode_size, self.image_feature_size)
+        self.encoder = EncoderCNN(self.image_embed_size)
         self.features_linear = nn.Sequential(
-            nn.Linear(image_feature_size + noise_dim, image_feature_size),
+            nn.Linear(self.image_embed_size + noise_dim, self.image_embed_size),
             nn.LeakyReLU(0.2)
         )
         self.decoder = DecoderRNN(self.word_embed_size, self.lstm_hidden_size, self.vocab_size, self.lstm_num_layers)
@@ -276,6 +274,8 @@ class ConditionalGenerator(BaseModel):
         self.rollout.update(self)
 
         for i in range(self.max_sentence_length):
+
+            # TODO figure out
             _, hidden = self.decoder.lstm(inputs, features)
             outputs = self.decoder.linear(hidden[0]).squeeze(0)
             outputs = F.softmax(outputs, -1)
@@ -306,25 +306,27 @@ class ConditionalGenerator(BaseModel):
 
 class Evaluator(BaseModel):
     def __init__(self,
-                 image_encode_size,
-                 word_embed_size,
-                 lstm_hidden_size,
-                 vocab_size,
-                 image_feature_size,
-                 sentence_feature_size,
+                 word_embed_size=512,
+                 image_embed_size=512,
+                 sentence_embed_size=512,
+                 lstm_hidden_size=1024,
+                 vocab_size=100000,
                  lstm_num_layers=1):
         super(Evaluator, self).__init__()
-        self.image_encode_size = image_encode_size
-        self.image_feature_size = image_feature_size
-        self.sentence_feature_size = sentence_feature_size
+        self.image_embed_size = image_embed_size
+        self.sentence_embed_size = sentence_embed_size
         self.word_embed_size = word_embed_size
         self.lstm_hidden_size = lstm_hidden_size
         self.vocab_size = vocab_size
         self.lstm_num_layers = lstm_num_layers
 
         # image encoder
-        self.image_encoder = EncoderCNN(self.image_encode_size)
-        self.sentence_encoder = EncoderRNN(self.word_embed_size, self.lstm_hidden_size, self.vocab_size, self.sentence_feature_size, self.lstm_num_layers)
+        self.image_encoder = EncoderCNN(self.image_embed_size)
+        self.sentence_encoder = EncoderRNN(self.word_embed_size,
+                                           self.sentence_embed_size,
+                                           self.lstm_hidden_size,
+                                           self.vocab_size,
+                                           self.lstm_num_layers)
         self.sigmoid = nn.Sigmoid()
 
     def forward(self, images, captions, caption_lengths):
@@ -371,19 +373,17 @@ if __name__ == '__main__':
 
 
     generator = ConditionalGenerator(
-        image_encode_size=4,
         word_embed_size=512,
-        image_feature_size=512,
+        image_embed_size=512,
         lstm_hidden_size=1024,
         vocab_size=len(data_loader.dataset.vocab)
     )
 
     discriminator = Evaluator(
-        image_encode_size=4,
         word_embed_size=512,
+        image_embed_size=512,
+        sentence_embed_size=512,
         lstm_hidden_size=1024,
-        image_feature_size=512,
-        sentence_feature_size=512,
         vocab_size=len(data_loader.dataset.vocab))
 
     image_features, outputs = generator(images, captions, caption_lengths)
