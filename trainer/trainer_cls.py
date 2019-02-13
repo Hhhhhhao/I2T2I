@@ -84,13 +84,6 @@ class Trainer(object):
 
         for epoch in range(self.num_epochs):
 
-            ##########
-            if epoch % 10 == 0:
-                print("predict first batch for valid")
-                self.predict(data_loader=self.valid_data_loader, valid=True, epoch=epoch)
-
-            ###########
-
             for batch_idx, sample in enumerate(self.train_data_loader):
                 right_images = sample['right_images']
                 right_embed = sample['right_embed']
@@ -176,11 +169,11 @@ class Trainer(object):
                         d_loss.item()))
 
             if epoch % 5 == 0:
-                print("save checkpoints")
+                self.logger.info("save checkpoints")
                 Utils.save_checkpoint(self.discriminator, self.generator, self.save_path, self.checkpoints_path, epoch)
 
             if epoch % 10 == 0:
-                print("predict first batch for valid")
+                self.logger.info("predict first batch for valid")
                 self.predict(data_loader=self.valid_data_loader, valid=True, epoch=epoch)
 
     def predict(self, data_loader, valid=False, epoch=None):
