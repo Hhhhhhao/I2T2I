@@ -34,12 +34,19 @@ class Trainer(object):
         self.generator = torch.nn.DataParallel(gan_factory.generator_factory(gan_type).to(self.device))
         self.discriminator = torch.nn.DataParallel(gan_factory.discriminator_factory(gan_type).to(self.device))
 
+        self.pre_epoch = 0
+
         if pre_trained_disc:
             self.discriminator.load_state_dict(torch.load(pre_trained_disc, map_location='cpu'))
         else:
             self.discriminator.apply(Utils.weights_init)
 
         if pre_trained_gen:
+
+            start = pre_trained_gen.find("gen_") + 4
+            end = pre_trained_gen.find(".pth")
+            self.pre_epoch = int(pre_trained_disc[start:end]) + 1
+
             self.generator.load_state_dict(torch.load(pre_trained_gen, map_location='cpu'))
         else:
             self.generator.apply(Utils.weights_init)
@@ -82,7 +89,7 @@ class Trainer(object):
         l2_loss = nn.MSELoss()
         l1_loss = nn.L1Loss()
 
-        for epoch in range(self.num_epochs):
+        for epoch in range(self.pre_epoch, self.num_epochs + self.pre_epoch):
 
             for batch_idx, sample in enumerate(self.train_data_loader):
                 right_images = sample['right_images']
