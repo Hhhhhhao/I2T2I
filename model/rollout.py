@@ -5,7 +5,7 @@ import copy
 import torch
 import torch.nn.functional as F
 from utils import get_caption_lengths
-
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class Rollout:
     """Roll-out policy"""
@@ -46,6 +46,7 @@ class Rollout:
                 caption_list = current_captions.data.clone()
                 caption_list = caption_list.tolist()
                 captions, caption_lengths = get_caption_lengths(caption_list)
+                captions.to(device)
                 # caption_lengths = [self.max_sentence_length] * current_captions.size(0)
                 # captions = current_captions
                 reward = evaluator.forward(images, captions, caption_lengths)

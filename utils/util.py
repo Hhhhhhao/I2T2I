@@ -62,4 +62,8 @@ def get_caption_lengths(captions_list):
     for i, cap in enumerate(captions_list):
         end = caption_lengths[i]
         batch_captions[i, :end] = torch.tensor(cap[:end]).long()
+
+    if torch.cuda.is_available():
+        batch_captions = batch_captions.cuda()
+
     return batch_captions, caption_lengths
