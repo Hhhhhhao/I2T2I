@@ -400,10 +400,10 @@ if __name__ == '__main__':
 
     dataset = CaptionDataset(
         data_dir="/Users/leon/Projects/I2T2I/data/",
-        dataset_name="birds",
+        dataset_name="flowers",
         which_set='train',
         transform=transform,
-        vocab_threshold=5,
+        vocab_threshold=3,
         start_word="<start>",
         end_word="<end>",
         unk_word="<unk>",

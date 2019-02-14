@@ -257,7 +257,7 @@ class ConditionalGenerator(BaseModel):
         _, states = self.decoder.lstm(features)
 
         if torch.cuda.is_available():
-            return states.cuda()
+            return (states[0].cuda(), states[1].cuda())
         else:
             return states
         return states
