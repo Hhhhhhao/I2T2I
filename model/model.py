@@ -241,6 +241,10 @@ class ConditionalGenerator(BaseModel):
 
     def get_feature_linear_output(self, image_features):
         rand = self.distribution.sample((image_features.shape[0],))
+
+        if torch.cuda.is_available():
+            rand = rand.cuda()
+
         inputs = torch.cat((image_features, rand), 1)
         features = self.features_linear(inputs)
 
