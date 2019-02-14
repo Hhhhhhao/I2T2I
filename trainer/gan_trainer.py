@@ -193,13 +193,9 @@ class Trainer(BaseGANTrainer):
             self.discriminator.freeze()
             self.generator_optimizer.zero_grad()
 
-            if self.lambda_1 != 0:
-                image_features, outputs = self.generator(batch_images, batch_captions, batch_caption_lengths)
-                targets = pack_padded_sequence(batch_captions, batch_caption_lengths, batch_first=True)[0]
-                generator_cce_loss = self.losses["Generator_CrossEntropyLoss"](outputs, targets)
-            else:
-                image_features, _ = self.generator(batch_images, batch_captions, batch_caption_lengths)
-                generator_cce_loss = 0
+            image_features, outputs = self.generator(batch_images, batch_captions, batch_caption_lengths)
+            targets = pack_padded_sequence(batch_captions, batch_caption_lengths, batch_first=True)[0]
+            generator_cce_loss = self.losses["Generator_CrossEntropyLoss"](outputs, targets)
 
             rewards, props = self.generator.reward_forward(batch_images, self.discriminator, monte_carlo_count=16)
             generator_rl_loss = self.losses["Generator_RLLoss"](rewards, props)
@@ -284,14 +280,10 @@ class Trainer(BaseGANTrainer):
                 other_captions = data["wrong_captions"].to(self.device)
                 other_caption_lengths = data["wrong_caption_lengths"]
 
-                if self.lambda_1 != 0:
-                    image_features, outputs = self.generator(batch_images, batch_captions, batch_caption_lengths)
-                    targets = pack_padded_sequence(batch_captions, batch_caption_lengths, batch_first=True)[0]
-                    generator_cce_loss = self.losses["Generator_CrossEntropyLoss"](outputs, targets)
-                else:
-                    image_features, _ = self.generator(batch_images, batch_captions, batch_caption_lengths)
-                    generator_cce_loss = 0
-
+                image_features, outputs = self.generator(batch_images, batch_captions, batch_caption_lengths)
+                targets = pack_padded_sequence(batch_captions, batch_caption_lengths, batch_first=True)[0]
+                generator_cce_loss = self.losses["Generator_CrossEntropyLoss"](outputs, targets)
+                
                 rewards, props = self.generator.reward_forward(batch_images, self.discriminator, monte_carlo_count=16)
                 generator_rl_loss = self.losses["Generator_RLLoss"](rewards, props)
                 generator_loss = self.lambda_1 * generator_cce_loss + self.lambda_2 * generator_rl_loss
