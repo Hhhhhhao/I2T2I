@@ -332,10 +332,9 @@ if __name__ == '__main__':
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
     ])
 
-
     dataset = COCOCaptionDataset(
         data_dir="/Users/leon/Projects/I2T2I/data/coco",
-        which_set='val',
+        which_set='train',
         transform=transform,
         vocab_threshold=4,
         start_word="<start>",
