@@ -41,3 +41,6 @@ class WriterTensorboardX():
             except AttributeError:
                 raise AttributeError("type object 'WriterTensorboardX' has no attribute '{}'".format(name))
             return attr
+
+
+

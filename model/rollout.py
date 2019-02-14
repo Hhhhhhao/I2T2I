@@ -32,6 +32,10 @@ class Rollout:
             for _ in range(steps):
                 states = (h.repeat(1, monte_carlo_count, 1), c.repeat(1, monte_carlo_count, 1))
                 inputs = generated_captions[:, -1].unsqueeze(1)
+
+                if torch.cuda.is_available():
+                    inputs = inputs.cuda()
+
                 inputs = self.embedding(inputs)
                 current_captions = generated_captions
                 for i in range(remaining):
