@@ -285,13 +285,15 @@ class ConditionalGenerator(BaseModel):
         # initialize inputs of start symbol
         inputs = torch.zeros((batch_size, 1)).long()
         current_generated_captions = inputs
-        inputs = self.decoder.embedding(inputs)
+        rewards = torch.zeros(batch_size, self.max_sentence_length)
+        props = torch.zeros(batch_size, self.max_sentence_length)
 
         if torch.cuda.is_available():
             inputs = inputs.cuda()
+            rewards = rewards.cuda()
+            props = props.cuda()
 
-        rewards = torch.zeros(batch_size, self.max_sentence_length)
-        props = torch.zeros(batch_size, self.max_sentence_length)
+        inputs = self.decoder.embedding(inputs)
         self.rollout.update(self)
 
         for i in range(self.max_sentence_length):
