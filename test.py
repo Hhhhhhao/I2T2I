@@ -11,6 +11,8 @@ from train import get_instance
 from utils.util import convert_back_to_text
 from eval_metrics.eval import compute_score
 from torchvision import transforms
+main_dir = os.path.dirname(__file__)
+example_dir = os.path.join(main_dir, 'examples')
 
 
 def main(config, resume):
@@ -85,16 +87,14 @@ def main(config, resume):
             batch_features = model.encoder(batch_images)
             pred_captions = model.decoder.sample_beam_search(batch_features)
 
-            # if not torch.cuda.is_available():
-            #     if i % 5 == 0:
-            #         image = batch_images[0]
-            #         image = transform(image)
-            #         image.show()
-            #     elif i == 6:
-            #         break
-
             pred_sentence = convert_back_to_text(list(pred_captions[0]), data_loader.dataset.vocab)
             target_sentence = convert_back_to_text(batch_captions.cpu().tolist()[0], data_loader.dataset.vocab)
+
+            if not torch.cuda.is_available():
+                if i % 50 == 0:
+                    image = batch_images[0]
+                    image = transform(image)
+                    image.save(os.path.join(example_dir, config["name"], '{}_{}.png'.format(img_id, pred_sentence)))
 
             # save sample images, or do something with output here
             if img_id not in gts.keys() and img_id not in res.keys():
@@ -146,10 +146,8 @@ if __name__ == '__main__':
         else:
             config = torch.load(args.resume, map_location='cpu')['config']
     if args.device:
-        os.environ["CUDA_VISIBLE_DEVICES"]=args.device
-
-    #  _,  _, save_dir = main(config, args.resume)
-    save_dir = save_dir = os.path.dirname(args.resume)
+        os.environ["CUDA_VISIBLE_DEVICES"] = args.device
+    _, _, save_dir = main(config, args.resume)
 
     with open(os.path.join(save_dir, 'gts.json'), 'r') as f:
         gts = json.load(f)
