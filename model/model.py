@@ -307,6 +307,10 @@ class ConditionalGenerator(BaseModel):
             # use multinomial to random sample
             predicted = outputs.multinomial(1)
             predicted = predicted.long()
+
+            if torch.cuda.is_available():
+                predicted = predicted.cuda()
+
             prop = torch.gather(outputs, 1, predicted)
             # prop is a 1D tensor
             props[:, i] = prop.view(-1)
