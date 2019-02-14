@@ -1,7 +1,8 @@
 import torch
 from torch.utils.data import DataLoader
 from torchvision import transforms
-from data_loader.datasets_custom import TextImageDataset
+from data_loader.datasets_custom import TextImageDataset, CaptionDataset, COCOCaptionDataset
+from base import BaseDataLoader
 
 
 def collate_fn(data):
@@ -74,6 +75,151 @@ def collate_fn(data):
     collate_data['wrong_images_256'] = torch.stack(wrong_images_256, 0)
 
     return collate_data
+
+
+def collate_fn_train(data):
+    # sort the data in descentding order
+    data.sort(key=lambda  x: len(x[1]), reverse=True)
+    images, captions = zip(*data)
+
+    # merge images (from tuple of 1D tensor to 4D tensor)
+    batch_images = torch.stack(images, 0)
+
+    # merge captions (from tuple of 1D tensor to 2D tensor)
+    batch_caption_lengths = [len(cap) for cap in captions]
+    batch_captions = torch.zeros(len(captions), max(batch_caption_lengths)).long()
+    for i, cap in enumerate(captions):
+        end = batch_caption_lengths[i]
+        batch_captions[i, :end] = cap[:end]
+
+    return batch_images, batch_captions, batch_caption_lengths
+
+
+def collate_fn_test(data):
+    # sort the data in descentding order
+    data.sort(key=lambda  x: len(x[2]), reverse=True)
+    image_ids, images, captions = zip(*data)
+
+    # merge images (from tuple of 1D tensor to 4D tensor)
+    batch_images = torch.stack(images, 0)
+    # batch_image_ids = torch.stack(image_ids, 0)
+    batch_image_ids = image_ids
+
+    # merge captions (from tuple of 1D tensor to 2D tensor)
+    batch_caption_lengths = [len(cap) for cap in captions]
+    batch_captions = torch.zeros(len(captions), max(batch_caption_lengths)).long()
+    for i, cap in enumerate(captions):
+        end = batch_caption_lengths[i]
+        batch_captions[i, :end] = cap[:end]
+
+    return batch_image_ids, batch_images, batch_captions, batch_caption_lengths
+
+
+class COCOCaptionDataLoader(BaseDataLoader):
+    """
+    COCO Image Caption Model Data Loader
+    """
+    def __init__(self, data_dir, which_set, image_size, batch_size, validation_split, num_workers):
+
+        self.data_dir = data_dir
+        self.which_set = which_set
+        self.validation_split = validation_split
+        assert self.which_set in {'train', 'val', 'test'}
+
+        self.image_size = (image_size, image_size)
+        self.batch_size = batch_size
+        self.num_workers = num_workers
+
+        # transforms.ToTensor convert PIL images in range [0, 255] to a torch in range [0.0, 1.0]
+        mean = torch.tensor([0.485, 0.456, 0.406], dtype=torch.float32)
+        std = torch.tensor([0.229, 0.224, 0.225], dtype=torch.float32)
+
+        if which_set == 'val' or which_set == 'test':
+            self.transform = transforms.Compose([
+                transforms.Resize(self.image_size),
+                # transforms.RandomHorizontalFlip(),
+                # transforms.CenterCrop(224),
+                transforms.ToTensor(),
+                transforms.Normalize(mean=mean.tolist(), std=std.tolist())
+            ])
+        else:
+            self.transform = transforms.Compose([
+                transforms.Resize(self.image_size),
+                transforms.RandomHorizontalFlip(),
+                transforms.ToTensor(),
+                transforms.Normalize(mean=mean.tolist(), std=std.tolist())
+            ])
+
+        self.dataset = COCOCaptionDataset(self.data_dir, self.which_set, self.transform, vocab_from_file=False)
+        # self.n_samples = len(self.dataset)
+
+        if self.which_set == 'train':
+            super(COCOCaptionDataLoader, self).__init__(
+                dataset=self.dataset,
+                batch_size=self.batch_size,
+                shuffle=True,
+                validation_split=validation_split,
+                num_workers=self.num_workers,
+                collate_fn=collate_fn_train
+            )
+        else:
+            super(COCOCaptionDataLoader, self).__init__(
+                dataset=self.dataset,
+                batch_size=self.batch_size,
+                shuffle=False,
+                validation_split=0,
+                num_workers=self.num_workers,
+                collate_fn=collate_fn_test)
+
+
+class CaptionDataLoader(DataLoader):
+    """
+    CUB (Birds) Image Captioning Data Loader
+    """
+    def __init__(self, data_dir, dataset_name, which_set, image_size, batch_size, num_workers):
+
+        self.data_dir = data_dir
+        self.which_set = which_set
+        self.dataset_name = dataset_name
+        assert self.which_set in {'train', 'valid', 'test'}
+
+        self.image_size = (image_size, image_size)
+        self.batch_size = batch_size
+        self.num_workers = num_workers
+
+        # transforms.ToTensor convert PIL images in range [0, 255] to a torch in range [0.0, 1.0]
+        if which_set == 'valid' or which_set == 'test':
+            self.transform = transforms.Compose([
+                transforms.Resize(self.image_size),
+                transforms.ToTensor(),
+                transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+            ])
+        else:
+            self.transform = transforms.Compose([
+                transforms.Resize(self.image_size),
+                transforms.RandomHorizontalFlip(),
+                transforms.ToTensor(),
+                transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+            ])
+
+        self.dataset = CaptionDataset(self.data_dir, self.dataset_name, self.which_set, self.transform, vocab_from_file=False)
+        self.n_samples = len(self.dataset)
+
+        if self.which_set == 'train' or self.which_set == 'valid':
+            super(CaptionDataLoader, self).__init__(
+                dataset=self.dataset,
+                batch_size=self.batch_size,
+                shuffle=True,
+                num_workers=self.num_workers,
+                collate_fn=collate_fn_train
+            )
+        else:
+            super(CaptionDataLoader, self).__init__(
+                dataset=self.dataset,
+                batch_size=self.batch_size,
+                shuffle=False,
+                num_workers=0,
+                collate_fn=collate_fn_test)
 
 
 class TextImageDataLoader(DataLoader):
