@@ -287,14 +287,15 @@ class ConditionalGenerator(BaseModel):
         current_generated_captions = inputs
         rewards = torch.zeros(batch_size, self.max_sentence_length)
         props = torch.zeros(batch_size, self.max_sentence_length)
-        inputs = self.decoder.embedding(inputs)
-        self.rollout.update(self)
 
         if torch.cuda.is_available():
             inputs = inputs.cuda()
             rewards = rewards.cuda()
             props = props.cuda()
             current_generated_captions.cuda()
+
+        inputs = self.decoder.embedding(inputs)
+        self.rollout.update(self)
 
         for i in range(self.max_sentence_length):
 
@@ -309,6 +310,7 @@ class ConditionalGenerator(BaseModel):
 
             if torch.cuda.is_available():
                 predicted = predicted.cuda()
+                inputs = inputs.cuda()
 
             prop = torch.gather(outputs, 1, predicted)
             # prop is a 1D tensor

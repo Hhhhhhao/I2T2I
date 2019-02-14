@@ -334,8 +334,8 @@ if __name__ == '__main__':
 
     dataset = TextImageDataset(
         data_dir="/Users/leon/Projects/I2T2I/data/",
-        dataset_name="birds",
-        which_set='valid',
+        dataset_name="flowers",
+        which_set='test',
         transform=transform,
         vocab_threshold=4,
         start_word="<start>",
