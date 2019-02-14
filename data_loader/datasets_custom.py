@@ -174,7 +174,7 @@ class TextImageDataset(Dataset):
                  dataset_name,
                  which_set='train',
                  transform=None,
-                 vocab_threshold=3,
+                 vocab_threshold=4,
                  start_word="<start>",
                  end_word="<end>",
                  unk_word="<unk>",
@@ -312,6 +312,15 @@ class TextImageDataset(Dataset):
 
         return self.find_wrong_image(category)
 
+    def compute_image_size(self):
+        ids = []
+        for i, id in enumerate(tqdm(self.ids)):
+
+            if id[:-2] not in ids:
+                ids.append(id[:-2])
+        return len(ids)
+
+
 
 if __name__ == '__main__':
     from torchvision import transforms
@@ -326,7 +335,7 @@ if __name__ == '__main__':
     dataset = TextImageDataset(
         data_dir="/Users/leon/Projects/I2T2I/data/",
         dataset_name="birds",
-        which_set='train',
+        which_set='valid',
         transform=transform,
         vocab_threshold=4,
         start_word="<start>",
@@ -334,5 +343,8 @@ if __name__ == '__main__':
         unk_word="<unk>",
         vocab_from_file=False)
 
+    size = dataset.compute_image_size()
+
+    print(size)
     print(len(dataset.vocab))
     print(dataset.vocab.word2idx)
