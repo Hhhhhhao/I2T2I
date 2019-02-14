@@ -11,6 +11,8 @@ from train import get_instance
 from utils.util import convert_back_to_text
 from eval_metrics.eval import compute_score
 from torchvision import transforms
+main_dir = os.path.dirname(__file__)
+example_dir = os.path.join(main_dir, 'examples')
 
 
 def main(config, resume):
@@ -19,7 +21,8 @@ def main(config, resume):
     if "CoCo" in config["name"]:
         which_set = 'val'
         data_loader = getattr(module_data, config['train_data_loader']['type'])(
-            config['train_data_loader']['args']['data_dir'],
+            "/Users/leon/Projects/I2T2I/data/coco/",
+            #config['train_data_loader']['args']['data_dir'],
             which_set=which_set,
             image_size=256,
             batch_size=1,
@@ -29,8 +32,8 @@ def main(config, resume):
     else:
         which_set = 'test'
         data_loader = getattr(module_data, config['train_data_loader']['type'])(
-            # "/Users/leon/Projects/I2T2I/data/",
-            config['train_data_loader']['args']['data_dir'],
+            "/Users/leon/Projects/I2T2I/data/",
+            # config['train_data_loader']['args']['data_dir'],
             config['train_data_loader']['args']['dataset_name'],
             which_set=which_set,
             image_size=256,
@@ -85,16 +88,13 @@ def main(config, resume):
             batch_features = model.encoder(batch_images)
             pred_captions = model.decoder.sample_beam_search(batch_features)
 
-            # if not torch.cuda.is_available():
-            #     if i % 5 == 0:
-            #         image = batch_images[0]
-            #         image = transform(image)
-            #         image.show()
-            #     elif i == 6:
-            #         break
-
             pred_sentence = convert_back_to_text(list(pred_captions[0]), data_loader.dataset.vocab)
             target_sentence = convert_back_to_text(batch_captions.cpu().tolist()[0], data_loader.dataset.vocab)
+
+            if i % 100 == 0:
+                image = batch_images[0]
+                image = transform(image)
+                image.save(os.path.join(save_dir, 'examples', '{}_{}.png'.format(img_id, pred_sentence)))
 
             # save sample images, or do something with output here
             if img_id not in gts.keys() and img_id not in res.keys():
@@ -133,7 +133,7 @@ def main(config, resume):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='PyTorch Template')
 
-    parser.add_argument('-r', '--resume', default='/Users/leon/Projects/I2T2I/saved/Show-and-Tell-Birds/0212_192726/checkpoint-epoch6.pth', type=str,
+    parser.add_argument('-r', '--resume', default='/Users/leon/Projects/I2T2I/saved/Show-and-Tell-Flowers/0212_233922/model_best.pth', type=str,
                            help='path to latest checkpoint (default: None)')
     parser.add_argument('-d', '--device', default=None, type=str,
                            help='indices of GPUs to enable (default: all)')
@@ -146,8 +146,8 @@ if __name__ == '__main__':
         else:
             config = torch.load(args.resume, map_location='cpu')['config']
     if args.device:
-        os.environ["CUDA_VISIBLE_DEVICES"]=args.device
-    _,  _, save_dir = main(config, args.resume)
+        os.environ["CUDA_VISIBLE_DEVICES"] = args.device
+    _, _, save_dir = main(config, args.resume)
 
     with open(os.path.join(save_dir, 'gts.json'), 'r') as f:
         gts = json.load(f)
@@ -159,5 +159,4 @@ if __name__ == '__main__':
 
     with open(os.path.join(save_dir, 'metrics.json'), 'w') as f:
         json.dump(results, f)
-
 
