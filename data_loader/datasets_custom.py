@@ -198,10 +198,6 @@ class TextImageDataset(Dataset):
         self.total_data = h5py.File(self.h5_file, mode='r')
         self.data = self.total_data[which_set]
         self.ids = [str(k) for k in self.data.keys()]
-        all_tokens = [nltk.tokenize.word_tokenize(
-                      text_clean(str(np.array(self.data[index]['txt']))).lower())
-                        for index in tqdm(self.ids)]
-        self.caption_lengths = [len(token) for token in all_tokens]
 
         self.vocab = Vocabulary(
             vocab_threshold=vocab_threshold,
@@ -211,6 +207,11 @@ class TextImageDataset(Dataset):
             unk_word=unk_word,
             vocab_from_file=vocab_from_file,
             data_dir=data_dir)
+
+        all_tokens = [nltk.tokenize.word_tokenize(
+                      text_clean(str(np.array(self.data[index]['txt']))).lower())
+                        for index in tqdm(self.ids)]
+        self.caption_lengths = [len(token) for token in all_tokens]
 
     def __len__(self):
         return len(self.ids)
@@ -264,7 +265,6 @@ class TextImageDataset(Dataset):
         wrong_caption.extend(self.vocab(token) for token in wrong_tokens)
         wrong_caption.append(self.vocab(self.vocab.end_word))
         wrong_caption = torch.Tensor(wrong_caption).long()
-
 
         sample = {
                 'img_id': img_id,
