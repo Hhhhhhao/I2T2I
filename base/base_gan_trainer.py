@@ -93,8 +93,8 @@ class BaseGANTrainer:
 
             log = {'epoch': epoch}
 
-            if epoch < self.discriminator_pre_train_epochs + 1:
-                result = self._pre_train_discriminator(epoch)
+            if epoch < self.generator_pre_train_epochs + 1:
+                result = self._pre_train_generator(epoch)
                 for key, value in result.items():
                     if key == 'metrics':
                         log.update({mtr.__name__: value[i] for i, mtr in enumerate(self.metrics)})
@@ -103,8 +103,8 @@ class BaseGANTrainer:
                     else:
                         log[key] = value
 
-            if epoch < self.generator_pre_train_epochs + 1:
-                result = self._pre_train_generator(epoch)
+            if epoch < self.discriminator_pre_train_epochs + 1:
+                result = self._pre_train_discriminator(epoch)
                 for key, value in result.items():
                     if key == 'metrics':
                         log.update({mtr.__name__: value[i] for i, mtr in enumerate(self.metrics)})

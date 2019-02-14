@@ -134,7 +134,7 @@ class CaptionDataset(Dataset):
         self.ids = [str(k) for k in self.data.keys()]
         print("Obtaining caption lengths...")
         all_tokens = [nltk.tokenize.word_tokenize(
-                      str(np.array(self.data[index]['txt'])).lower())
+                      text_clean(str(np.array(self.data[index]['txt']))).lower())
                         for index in tqdm(self.ids)]
         self.caption_lengths = [len(token) for token in all_tokens]
 
@@ -189,6 +189,11 @@ class TextEmbeddingDataset(Dataset):
         self.total_data = h5py.File(self.h5_file, mode='r')
         self.data = self.total_data[which_set]
         self.ids = [str(k) for k in self.data.keys()]
+        print("Obtaining caption lengths...")
+        all_tokens = [nltk.tokenize.word_tokenize(
+                      text_clean(str(np.array(self.data[index]['txt']))).lower())
+                        for index in tqdm(self.ids)]
+        self.caption_lengths = [len(token) for token in all_tokens]
 
     def __len__(self):
         return len(self.ids)
@@ -267,6 +272,10 @@ class TextImageDataset(Dataset):
         self.total_data = h5py.File(self.h5_file, mode='r')
         self.data = self.total_data[which_set]
         self.ids = [str(k) for k in self.data.keys()]
+        all_tokens = [nltk.tokenize.word_tokenize(
+                      text_clean(str(np.array(self.data[index]['txt']))).lower())
+                        for index in tqdm(self.ids)]
+        self.caption_lengths = [len(token) for token in all_tokens]
 
         self.vocab = Vocabulary(
             vocab_threshold=vocab_threshold,
@@ -314,6 +323,7 @@ class TextImageDataset(Dataset):
 
         # Processing txt
         # Convert caption to tensor of word ids.
+        right_txt = text_clean(right_txt)
         right_tokens = nltk.tokenize.word_tokenize(str(right_txt).lower())
         right_caption = []
         right_caption.append(self.vocab(self.vocab.start_word))
@@ -321,6 +331,7 @@ class TextImageDataset(Dataset):
         right_caption.append(self.vocab(self.vocab.end_word))
         right_caption = torch.Tensor(right_caption).long()
 
+        wrong_txt = text_clean(wrong_txt)
         wrong_tokens = nltk.tokenize.word_tokenize(str(wrong_txt).lower())
         wrong_caption = []
         wrong_caption.append(self.vocab(self.vocab.start_word))

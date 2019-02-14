@@ -10,7 +10,7 @@
                 "word_embed_size": 512,
                 "lstm_hidden_size":1024,
                 "noise_dim":128,
-                "vocab_size":1273,
+                "vocab_size":1302,
                 "lstm_num_layers":1,
                 "max_sentence_length":20
             },
@@ -47,7 +47,7 @@
             "data_dir": "/Users/leon/Projects/I2T2I/data/",
             "dataset_name":"flowers",
             "which_set": "train",
-            "image_size":128,
+            "image_size":256,
             "batch_size":128,
             "num_workers": 0
         }
@@ -58,7 +58,7 @@
             "data_dir": "/Users/leon/Projects/I2T2I/data/",
             "dataset_name":"flowers",
             "which_set": "valid",
-            "image_size":128,
+            "image_size":256,
             "batch_size": 1,
             "num_workers": 0
         }
@@ -66,9 +66,9 @@
     "loss": "cross_entropy_loss",
     "metrics": [],
     "trainer": {
-        "epochs": 100,
+        "epochs": 50,
         "generator_pre_train_epochs":2,
-        "discriminator_pre_train_epochs":2,
+        "discriminator_pre_train_epochs":1,
         "lambda_1": 0,
         "lambda_2": 1,
         "save_dir": "saved/",

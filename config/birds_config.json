@@ -47,7 +47,7 @@
             "data_dir": "/Users/leon/Projects/I2T2I/data/",
             "dataset_name":"birds",
             "which_set": "train",
-            "image_size":128,
+            "image_size":256,
             "batch_size":128,
             "num_workers": 0
         }
@@ -58,7 +58,7 @@
             "data_dir": "/Users/leon/Projects/I2T2I/data/",
             "dataset_name":"birds",
             "which_set": "valid",
-            "image_size":128,
+            "image_size":256,
             "batch_size": 1,
             "num_workers": 0
         }
@@ -67,7 +67,7 @@
     "metrics": [],
     "trainer": {
         "epochs": 50,
-        "generator_pre_train_epochs":1,
+        "generator_pre_train_epochs":2,
         "discriminator_pre_train_epochs":1,
         "lambda_1": 0.5,
         "lambda_2": 0.5,
