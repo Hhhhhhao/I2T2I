@@ -210,6 +210,30 @@ class DecoderRNN(BaseModel):
         return [idx_seq[0] for idx_seq in idx_sequences]
 
 
+class ImageCaptionModel(BaseModel):
+    def __init__(self, image_embed_size, word_embed_size, lstm_hidden_size, vocab_size, lstm_num_layers=1):
+        super(ImageCaptionModel, self).__init__()
+        self.image_embed_size = image_embed_size
+        self.word_embed_size = word_embed_size
+        self.lstm_hidden_size = lstm_hidden_size
+        self.lstm_num_layers = lstm_num_layers
+        self.vocab_size = vocab_size
+
+        self.encoder = EncoderCNN(self.image_embed_size)
+        self.decoder = DecoderRNN(self.word_embed_size, self.lstm_hidden_size, self.vocab_size, self.lstm_num_layers)
+
+    def forward(self, images, captions, caption_lengths):
+        features = self.encoder(images)
+        outputs = self.decoder(features, captions, caption_lengths)
+        return outputs
+
+    def sample(self, features, max_len=20, states=None):
+        return self.decoder.sample(features, max_len, states)
+
+    def sample_beam_search(self, features, max_len=20, beam_width=5, states=None):
+        return self.decoder.sample_beam_search(features, max_len, beam_width, states)
+
+
 class ConditionalGenerator(BaseModel):
 
     def __init__(self,
