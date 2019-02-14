@@ -292,6 +292,7 @@ class ConditionalGenerator(BaseModel):
             inputs = inputs.cuda()
             rewards = rewards.cuda()
             props = props.cuda()
+            current_generated_captions.cuda()
 
         inputs = self.decoder.embedding(inputs)
         self.rollout.update(self)

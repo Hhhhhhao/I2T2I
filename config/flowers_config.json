@@ -10,7 +10,7 @@
                 "word_embed_size": 512,
                 "lstm_hidden_size":1024,
                 "noise_dim":128,
-                "vocab_size":1570,
+                "vocab_size":1302,
                 "lstm_num_layers":1,
                 "max_sentence_length":20
             },
@@ -29,7 +29,7 @@
                 "word_embed_size": 512,
                 "sentence_embed_size": 512,
                 "lstm_hidden_size": 1024,
-                "vocab_size": 1570,
+                "vocab_size": 1302,
                 "lstm_num_layers": 1
             },
             "optimizer":{
