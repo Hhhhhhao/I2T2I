@@ -4,6 +4,6 @@
   "save_path": "/home/s1784380/lala/I2T2I/saved/gan_cls/nol1l2loss/flowers",
   "l1_coef": 0,
   "l2_coef": 0,
-  "pre_trained_disc": "/home/s1784380/lala/I2T2I/saved/gan_cls/nol1l2loss/flowers/checkpoints/disc_90.pth",
-  "pre_trained_gen": "/home/s1784380/lala/I2T2I/saved/gan_cls/nol1l2loss/flowers/checkpoints/gen_90.pth"
+  "pre_trained_disc": "/home/s1784380/lala/I2T2I/saved/gan_cls/nol1l2loss/flowers/checkpoints/disc_130.pth",
+  "pre_trained_gen": "/home/s1784380/lala/I2T2I/saved/gan_cls/nol1l2loss/flowers/checkpoints/gen_130.pth"
 }
