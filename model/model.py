@@ -292,7 +292,7 @@ class ConditionalGenerator(BaseModel):
             inputs = inputs.cuda()
             rewards = rewards.cuda()
             props = props.cuda()
-            current_generated_captions.cuda()
+            # current_generated_captions.cuda()
 
         inputs = self.decoder.embedding(inputs)
         if torch.cuda.is_available():
@@ -310,8 +310,8 @@ class ConditionalGenerator(BaseModel):
             predicted = outputs.multinomial(1)
             predicted = predicted.long()
 
-            if torch.cuda.is_available():
-                predicted = predicted.cuda()
+            # if torch.cuda.is_available():
+            #   predicted = predicted.cuda()
 
             prop = torch.gather(outputs, 1, predicted)
             # prop is a 1D tensor
