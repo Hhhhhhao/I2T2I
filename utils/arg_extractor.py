@@ -12,7 +12,7 @@ def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--gan_type", default=None, help="GAN type (str): 'gan_cls' ")
     parser.add_argument("--dataset_name", default="birds", help="dataset name (str): default 'birds', 'flowers' ")
-    parser.add_argument('--num_epochs', default=200, type=int, help="num of ephochs for training (int): default 200 ")
+    parser.add_argument('--num_epochs', default=600, type=int, help="num of ephochs for training (int): default 200 ")
     parser.add_argument("--lr", default=0.0002, type=float, help="learning rate (float): 0.0002")
     parser.add_argument("--l1_coef", default=50, type=float, help="l1 coefficient for discriminator loss")
     parser.add_argument("--l2_coef", default=100, type=float, help="l2 coefficient for discriminator loss")

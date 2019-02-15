@@ -89,7 +89,7 @@ class Trainer(object):
         l2_loss = nn.MSELoss()
         l1_loss = nn.L1Loss()
 
-        for epoch in range(self.pre_epoch, self.num_epochs + self.pre_epoch):
+        for epoch in range(self.pre_epoch, self.num_epochs + self.pre_epoch+1):
 
             for batch_idx, sample in enumerate(self.train_data_loader):
                 right_images = sample['right_images']
@@ -134,7 +134,7 @@ class Trainer(object):
                 fake_loss = criterion(outputs, fake_labels)
                 fake_score = outputs
 
-                d_loss = real_loss + (wrong_loss + fake_loss) / 2.0
+                d_loss = real_loss + wrong_loss + fake_loss
 
                 d_loss.backward()
 
