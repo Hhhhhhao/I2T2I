@@ -41,7 +41,7 @@ def main(config, resume):
         )
 
     # build model architecture
-    model = get_instance(module_arch, 'arch', config)
+    model=get_instance(module_arch, 'Generator', config["models"])
     model.summary()
 
     # get function handles of loss and metrics
