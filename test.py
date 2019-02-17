@@ -53,7 +53,7 @@ def main(config, resume):
         checkpoint = torch.load(resume)
     else:
         checkpoint = torch.load(resume, map_location='cpu')
-    state_dict = checkpoint['state_dict']
+    state_dict = checkpoint['generator_state_dict']
     if config['n_gpu'] > 1:
         model = torch.nn.DataParallel(model)
     model.load_state_dict(state_dict)
