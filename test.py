@@ -12,7 +12,7 @@ from utils.util import convert_back_to_text
 from eval_metrics.eval import compute_score
 from torchvision import transforms
 main_dir = os.path.dirname(__file__)
-example_dir = os.path.join(main_dir, 'examples')
+
 
 
 def main(config, resume):
@@ -67,6 +67,9 @@ def main(config, resume):
     total_metrics = torch.zeros(len(metric_fns))
 
     save_dir = os.path.dirname(resume)
+    example_dir = os.path.join(save_dir, 'examples')
+    if not os.path.exists(example_dir):
+        os.mkdir(example_dir)
     gts = {}
     res = {}
 
@@ -90,11 +93,10 @@ def main(config, resume):
             pred_sentence = convert_back_to_text(list(pred_captions[0]), data_loader.dataset.vocab)
             target_sentence = convert_back_to_text(batch_captions.cpu().tolist()[0], data_loader.dataset.vocab)
 
-            if not torch.cuda.is_available():
-                if i % 50 == 0:
-                    image = batch_images[0]
-                    image = transform(image)
-                    image.save(os.path.join(example_dir, config["name"], '{}_{}.png'.format(img_id, pred_sentence)))
+            if i % 500 == 0:
+                image = batch_images[0]
+                image = transform(image)
+                image.save(os.path.join(example_dir, config["name"], '{}_{}.png'.format(img_id, pred_sentence)))
 
             # save sample images, or do something with output here
             if img_id not in gts.keys() and img_id not in res.keys():
