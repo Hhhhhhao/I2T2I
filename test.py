@@ -82,11 +82,15 @@ def main(config, resume):
             )
 
     with torch.no_grad():
-        for i, (batch_image_ids, batch_images, batch_captions, batch_caption_lengths) in enumerate(tqdm(data_loader)):
+        for i, data in enumerate(tqdm(data_loader)):
+            batch_images = data["right_image_256"]
+            batch_captions = data["right_captions"]
+            batch_caption_lengths = data["right_caption_lengths"]
+
             batch_images, batch_captions = batch_images.to(device), batch_captions.to(device)
             # batch_caption_lengths = [l - 1 for l in batch_caption_lengths]
 
-            img_id = batch_image_ids[0][:-2]
+            img_id = data["img_id"][0][:-2]
             batch_features = model.encoder(batch_images)
             pred_captions = model.decoder.sample_beam_search(batch_features)
 
