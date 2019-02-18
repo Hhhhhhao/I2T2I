@@ -2,6 +2,8 @@
 /saved/*
 /examples/*
 /cluster_experiment_scripts/*.out
+cluster_experiment_scripts/slurm-257954.out
+cluster_experiment_scripts/slurm-257955.out
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
