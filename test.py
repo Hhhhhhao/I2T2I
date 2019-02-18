@@ -21,8 +21,8 @@ def main(config, resume):
     if "CoCo" in config["name"]:
         which_set = 'val'
         data_loader = getattr(module_data, config['train_data_loader']['type'])(
-            "/Users/leon/Projects/I2T2I/data/coco/",
-            #config['train_data_loader']['args']['data_dir'],
+            # "/Users/leon/Projects/I2T2I/data/coco/",
+            config['train_data_loader']['args']['data_dir'],
             which_set=which_set,
             image_size=256,
             batch_size=1,
@@ -32,8 +32,8 @@ def main(config, resume):
     else:
         which_set = 'test'
         data_loader = getattr(module_data, config['train_data_loader']['type'])(
-            "/Users/leon/Projects/I2T2I/data/",
-            # config['train_data_loader']['args']['data_dir'],
+            # "/Users/leon/Projects/I2T2I/data/",
+            config['train_data_loader']['args']['data_dir'],
             config['train_data_loader']['args']['dataset_name'],
             which_set=which_set,
             image_size=256,
@@ -68,6 +68,11 @@ def main(config, resume):
     total_metrics = torch.zeros(len(metric_fns))
 
     save_dir = os.path.dirname(resume)
+    save_dir = os.path.dirname(resume)
+    example_dir = os.path.join(save_dir, 'examples')
+    if not os.path.exists(example_dir):
+        os.mkdir(example_dir)
+
     gts = {}
     res = {}
 
@@ -83,24 +88,21 @@ def main(config, resume):
         for i, (batch_image_ids, batch_images, batch_captions, batch_caption_lengths) in enumerate(tqdm(data_loader)):
             batch_images, batch_captions = batch_images.to(device), batch_captions.to(device)
             # batch_caption_lengths = [l - 1 for l in batch_caption_lengths]
-
-
             if "Flowers" in config["name"] or "Birds" in config["name"]:
                 img_id = batch_image_ids[0][:-2]
             elif "CoCo" in config["name"]:
-                pass
+                img_id = batch_image_ids[0]
+
             batch_features = model.encoder(batch_images)
             pred_captions = model.decoder.sample_beam_search(batch_features)
 
             pred_sentence = convert_back_to_text(list(pred_captions[0]), data_loader.dataset.vocab)
-            # pred_sentence_1 = convert_back_to_text(list(pred_captions[1]), data_loader.dataset.vocab)
-            # pred_sentence_2 = convert_back_to_text(list(pred_captions[2]), data_loader.dataset.vocab)
             target_sentence = convert_back_to_text(batch_captions.cpu().tolist()[0], data_loader.dataset.vocab)
 
-            if i % 100 == 0:
+            if i % 500 == 0:
                 image = batch_images[0]
-                image = transform(image)
-                image.save(os.path.join(save_dir, 'examples', '{}_{}.png'.format(img_id, pred_sentence)))
+                image = transform(image.cpu())
+                image.save(os.path.join(example_dir, '{}_{}.png'.format(img_id, pred_sentence)))
 
             # save sample images, or do something with output here
             if img_id not in gts.keys() and img_id not in res.keys():
