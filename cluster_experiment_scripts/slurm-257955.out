@@ -243,3 +243,8 @@ Discriminator Pre-Train Epoch: 1 [8480/29390 (29%)] Evaluator Loss: 2.328323
 Discriminator Pre-Train Epoch: 1 [8640/29390 (29%)] Evaluator Loss: 2.260505
 Discriminator Pre-Train Epoch: 1 [8800/29390 (30%)] Evaluator Loss: 2.263220
 Discriminator Pre-Train Epoch: 1 [8960/29390 (30%)] Evaluator Loss: 2.347794
+Discriminator Pre-Train Epoch: 1 [9120/29390 (31%)] Evaluator Loss: 2.290981
+Discriminator Pre-Train Epoch: 1 [9280/29390 (32%)] Evaluator Loss: 2.245382
+Discriminator Pre-Train Epoch: 1 [9440/29390 (32%)] Evaluator Loss: 2.263660
+Discriminator Pre-Train Epoch: 1 [9600/29390 (33%)] Evaluator Loss: 2.276189
+Discriminator Pre-Train Epoch: 1 [9760/29390 (33%)] Evaluator Loss: 2.291039
