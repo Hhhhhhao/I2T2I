@@ -97,6 +97,7 @@ def main(config, resume):
             pred_captions = model.decoder.sample_beam_search(batch_features)
 
             pred_sentence = convert_back_to_text(list(pred_captions[0]), data_loader.dataset.vocab)
+            # pred_sentence = convert_back_to_text(list(pred_captions), data_loader.dataset.vocab)
             target_sentence = convert_back_to_text(batch_captions.cpu().tolist()[0], data_loader.dataset.vocab)
 
             if i % 500 == 0:
@@ -141,7 +142,7 @@ def main(config, resume):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='PyTorch Template')
 
-    parser.add_argument('-r', '--resume', default='/Users/leon/Projects/I2T2I/saved/Show-and-Tell-Flowers/0212_233922/checkpoint-epoch5.pth', type=str,
+    parser.add_argument('-r', '--resume', default='/Users/leon/Projects/I2T2I/saved/Show-and-Tell-Flowers/0212_233922/checkpoint-epoch2.pth', type=str,
                            help='path to latest checkpoint (default: None)')
     parser.add_argument('-d', '--device', default=None, type=str,
                            help='indices of GPUs to enable (default: all)')
