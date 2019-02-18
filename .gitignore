@@ -1,6 +1,7 @@
 /data/*
 /saved/*
 /examples/*
+/cluster_experiment_scripts/*.out
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
