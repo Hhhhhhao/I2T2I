@@ -83,7 +83,7 @@ def main(config, resume):
 
     with torch.no_grad():
         for i, data in enumerate(tqdm(data_loader)):
-            batch_images = data["right_image_256"]
+            batch_images = data["right_images_256"]
             batch_captions = data["right_captions"]
             batch_caption_lengths = data["right_caption_lengths"]
 
@@ -99,7 +99,7 @@ def main(config, resume):
 
             if i % 500 == 0:
                 image = batch_images[0]
-                image = transform(image)
+                image = transform(image.cpu())
                 image.save(os.path.join(example_dir, config["name"], '{}_{}.png'.format(img_id, pred_sentence)))
 
             # save sample images, or do something with output here
