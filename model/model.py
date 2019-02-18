@@ -329,7 +329,6 @@ class ConditionalGenerator(BaseModel):
             # squeeze the hidden output size from (batch_siz, 1, hidden_size) to (batch_size, hidden_size)
             outputs = self.decoder.linear(hiddens.squeeze(1))
             outputs = F.softmax(outputs, -1)
-
             # use multinomial to random sample
             predicted = outputs.multinomial(1)
             predicted = predicted.long()
