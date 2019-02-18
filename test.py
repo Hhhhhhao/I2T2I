@@ -84,11 +84,17 @@ def main(config, resume):
             batch_images, batch_captions = batch_images.to(device), batch_captions.to(device)
             # batch_caption_lengths = [l - 1 for l in batch_caption_lengths]
 
-            img_id = batch_image_ids[0][:-2]
+
+            if "Flowers" in config["name"] or "Birds" in config["name"]:
+                img_id = batch_image_ids[0][:-2]
+            elif "CoCo" in config["name"]:
+                pass
             batch_features = model.encoder(batch_images)
             pred_captions = model.decoder.sample_beam_search(batch_features)
 
             pred_sentence = convert_back_to_text(list(pred_captions[0]), data_loader.dataset.vocab)
+            # pred_sentence_1 = convert_back_to_text(list(pred_captions[1]), data_loader.dataset.vocab)
+            # pred_sentence_2 = convert_back_to_text(list(pred_captions[2]), data_loader.dataset.vocab)
             target_sentence = convert_back_to_text(batch_captions.cpu().tolist()[0], data_loader.dataset.vocab)
 
             if i % 100 == 0:
@@ -133,7 +139,7 @@ def main(config, resume):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='PyTorch Template')
 
-    parser.add_argument('-r', '--resume', default='/Users/leon/Projects/I2T2I/saved/Show-and-Tell-Flowers/0212_233922/model_best.pth', type=str,
+    parser.add_argument('-r', '--resume', default='/Users/leon/Projects/I2T2I/saved/Show-and-Tell-Flowers/0212_233922/checkpoint-epoch5.pth', type=str,
                            help='path to latest checkpoint (default: None)')
     parser.add_argument('-d', '--device', default=None, type=str,
                            help='indices of GPUs to enable (default: all)')
