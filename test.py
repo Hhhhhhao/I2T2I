@@ -83,7 +83,7 @@ def main(config, resume):
 
     with torch.no_grad():
         for i, data in enumerate(tqdm(data_loader)):
-            batch_images = data["right_image_256"]
+            batch_images = data["right_images_256"]
             batch_captions = data["right_captions"]
             batch_caption_lengths = data["right_caption_lengths"]
 
