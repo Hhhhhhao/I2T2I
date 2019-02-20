@@ -37,7 +37,7 @@ class EncoderCNN(BaseModel):
     def __init__(self, image_embed_size=256):
         super(EncoderCNN, self).__init__()
 
-        adaptive_pool_size = 4
+        adaptive_pool_size = 8
         resnet = torchvision.models.resnet34(pretrained=True)
 
         # Remove average pooling layers
