@@ -129,24 +129,30 @@ class DecoderRNN(BaseModel):
         return outputs
 
     def sample(self, features, max_len=20, states=None):
-        """Accept a pre-processed image tensor (inputs) and return predicted
-        sentence (list of tensor ids of length max_len). This is the greedy
-        search approach.
         """
-        sampled_ids = []
+        Sample from Recurrent network using greedy decoding
+        :param features: features from CNN feature extractor
+        :returns: predicted image captions
+        """
+        output_ids = []
         inputs = features.unsqueeze(1)
-        for i in range(max_len):
-            hiddens, states = self.lstm(inputs, states) # (batch_size, 1, hidden_size)
-            outputs = self.linear(hiddens.squeeze(1))  # (batch_size, vocab_size)
-            # Get the index (in the vocabulary) of the most likely integer that
-            # represents a word
-            predicted = outputs.max(1)[1]
-            sampled_ids.append(predicted)
 
+        for i in range(max_len):
+            # pass data through recurrent network
+            hiddens, states = self.lstm(inputs, states)
+            outputs = self.linear(hiddens.squeeze(1))
+
+            # find maximal predictions
+            predicted = outputs.max(1)[1]
+
+            # append results from given step to global results
+            output_ids.append(predicted)
+
+            # prepare chosen words for next decoding step
             inputs = self.embedding(predicted)
             inputs = inputs.unsqueeze(1)
-        sampled_ids = torch.stack(sampled_ids, 1)
-        return sampled_ids.squeeze()
+        output_ids = torch.stack(output_ids, 1)
+        return output_ids.squeeze()
 
     def sample_beam_search(self, features, max_len=20, beam_width=5, states=None):
         """Accept a pre-processed image tensor and return the top predicted
@@ -213,47 +219,49 @@ if __name__ == '__main__':
     image_size = 128
     batch_size = 16
 
-    data_loader = COCOCaptionDataLoader(
-        data_dir='/Users/leon/Projects/I2T2I/data/coco/',
-        which_set='val',
-        image_size=image_size,
-        batch_size=batch_size,
-        num_workers=0,
-        validation_split=0)
-
-    for i, (image_ids, images, captions, caption_lengths) in enumerate(data_loader):
-        print("done")
-        break
-
-    print('images.shape:', images.shape)
-    print('captions.shape:', captions.shape)
-
-    # Test Encoder
-    embed_size = 256   # dimensionality of the image embedding.
-
-    # Move the last batch of images from Step 2 to GPU if CUDA is available
-    if torch.cuda.is_available():
-        images = images.cuda()
-
-    # Test Decoder
+    # data_loader = COCOCaptionDataLoader(
+    #     data_dir='/Users/leon/Projects/I2T2I/data/coco/',
+    #     which_set='val',
+    #     image_size=image_size,
+    #     batch_size=batch_size,
+    #     num_workers=0,
+    #     validation_split=0)
+    #
+    # for i, (image_ids, images, captions, caption_lengths) in enumerate(data_loader):
+    #     print("done")
+    #     break
+    #
+    # print('images.shape:', images.shape)
+    # print('captions.shape:', captions.shape)
+    #
+    # # Test Encoder
+    # embed_size = 256   # dimensionality of the image embedding.
+    #
+    # # Move the last batch of images from Step 2 to GPU if CUDA is available
+    # if torch.cuda.is_available():
+    #     images = images.cuda()
+    #
+    # # Test Decoder
+    # hidden_size = 512
+    # vocab_size = len(data_loader.dataset.vocab)
+    #
+    # # Move the last batch of captions (from Step 1) to GPU if cuda is availble
+    # if torch.cuda.is_available():
+    #     captions = captions.cuda()
+    #
+    # # test the whole model
+    embed_size = 256
     hidden_size = 512
-    vocab_size = len(data_loader.dataset.vocab)
-
-    # Move the last batch of captions (from Step 1) to GPU if cuda is availble
-    if torch.cuda.is_available():
-        captions = captions.cuda()
-
-    # test the whole model
-
+    vocab_size = 10330
     model = ImageCaptionModel(4, embed_size, embed_size, hidden_size, vocab_size)
     # summary(model, input_size=(3, 256, 256))
     # Move the decoder to GPU if CUDA is available.
     if torch.cuda.is_available():
         model = model.cuda()
-
-    outputs = model(images, captions, caption_lengths)
-    print('type(features):', type(outputs))
-    print('features.shape:', outputs.shape)
+    #
+    # outputs = model(images, captions, caption_lengths)
+    # print('type(features):', type(outputs))
+    # print('features.shape:', outputs.shape)
 
 
 
