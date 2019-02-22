@@ -315,4 +315,8 @@ class Trainer(BaseGANTrainer):
             'val_metrics': (total_val_metrics / len(self.valid_data_loader)).tolist()
         }
 
+    def load_pre_trained_generator(self, path):
+        checkpoint = torch.load(path)
+        self.generator.load_state_dict(checkpoint['state_dict'])
+
 

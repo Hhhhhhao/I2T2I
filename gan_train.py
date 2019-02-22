@@ -60,6 +60,7 @@ def main(config, resume):
                       valid_data_loader=valid_data_loader,
                       train_logger=train_logger)
 
+
     trainer.pre_train()
     trainer.train()
 
