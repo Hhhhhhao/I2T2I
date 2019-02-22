@@ -9,6 +9,9 @@ import model.model as module_arch
 from trainer.gan_trainer import Trainer
 from utils import Logger
 from model.loss import RLLoss, EvaluatorLoss
+dirname = os.path.dirname(__file__)
+BIRD_PATH = os.path.join(dirname, 'saved/Show-and-Tell-Birds/0218_112224/model_best.pth')
+FLOWER_PATH = os.path.join(dirname, 'saved/Show-and-Tell-Flowers/0218_112128/model_best.pth')
 
 
 def get_instance(module, name, config, *args):
@@ -60,7 +63,7 @@ def main(config, resume):
                       valid_data_loader=valid_data_loader,
                       train_logger=train_logger)
 
-
+    trainer.load_pre_trained_generator('/home/s1786991/')
     trainer.pre_train()
     trainer.train()
 
