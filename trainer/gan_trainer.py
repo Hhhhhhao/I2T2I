@@ -127,7 +127,7 @@ class Trainer(BaseGANTrainer):
             image_features, generator_outputs = self.generator(batch_images, batch_captions, batch_caption_lengths)
             generator_captions = []
             for image_feature in image_features:
-                generator_captions.append(self.generator.sample_beam_search(image_feature.unsqueeze(0), beam_width=5)[0])
+                generator_captions.append(self.generator.sample(image_feature.unsqueeze(0), beam_width=5)[0])
             generator_captions, generator_caption_lengths = get_caption_lengths(generator_captions)
             generator_captions.to(self.device)
 
@@ -209,7 +209,7 @@ class Trainer(BaseGANTrainer):
             self.discriminator_optimizer.zero_grad()
             generator_captions = []
             for image_feature in image_features:
-                generator_captions.append(self.generator.sample_beam_search(image_feature.unsqueeze(0), beam_width=5)[0])
+                generator_captions.append(self.generator.sample(image_feature.unsqueeze(0), beam_width=5)[0])
             generator_captions, generator_caption_lengths = get_caption_lengths(generator_captions)
             generator_captions.to(self.device)
 
@@ -291,7 +291,7 @@ class Trainer(BaseGANTrainer):
                 generator_captions = []
                 for image_feature in image_features:
                     generator_captions.append(
-                        self.generator.sample_beam_search(image_feature.unsqueeze(0), beam_width=5)[0])
+                        self.generator.sample(image_feature.unsqueeze(0), beam_width=5)[0])
                 generator_captions, generator_caption_lengths = get_caption_lengths(generator_captions)
                 generator_captions.to(self.device)
 
