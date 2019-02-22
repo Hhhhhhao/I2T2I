@@ -6,9 +6,10 @@ from torch.distributions import Normal
 from torch.autograd import Variable
 from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 from base import BaseModel
-from model.rollout import Rollout
+from rollout import Rollout
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 
 class EncoderCNN(BaseModel):
     """
@@ -18,7 +19,7 @@ class EncoderCNN(BaseModel):
     def __init__(self, image_embed_size=512):
         super(EncoderCNN, self).__init__()
 
-        adaptive_pool_size = 4
+        adaptive_pool_size = 8
         resnet = torchvision.models.resnet34(pretrained=True)
 
         # Remove linear and pool layers
@@ -29,7 +30,7 @@ class EncoderCNN(BaseModel):
         self.fc_in_features = 512 * adaptive_pool_size ** 2
         # Resize image to fixed size to allow input images of variable size
         self.linear = nn.Linear(self.fc_in_features, image_embed_size)
-        self.activation = nn.LeakyReLU(0.2)
+        # self.activation = nn.LeakyReLU(0.2)
         # self.bn = nn.BatchNorm1d(embed_size, momentum=0.01)
         self.init_weights()
         self.fine_tune()
@@ -49,7 +50,7 @@ class EncoderCNN(BaseModel):
         features = self.adaptive_pool(features)
         features = features.view(features.size(0), -1)
         features = self.linear(features)
-        features = self.activation(features)
+        # features = self.activation(features)
         # features = self.bn(features)  # (batch_size, embed_size)
 
         return features
@@ -63,7 +64,7 @@ class EncoderCNN(BaseModel):
         for p in self.resnet.parameters():
             p.requires_grad = False
         # If fine-tuning, only fine tune convolutional blocks 2 through 4
-        for c in list(self.resnet.children())[8:]:
+        for c in list(self.resnet.children())[7:]:
             for p in c.parameters():
                 p.requires_grad = fine_tune
 
@@ -87,7 +88,7 @@ class EncoderRNN(BaseModel):
         self.embedding = nn.Embedding(vocab_size, word_embed_size)  # embedding layer
         self.lstm = nn.LSTM(word_embed_size, lstm_hidden_size, num_layers, bias=True, batch_first=True)
         self.linear = nn.Linear(lstm_hidden_size, sentence_embed_size)  # linear layer to find scores over vocabulary
-        self.activation = nn.LeakyReLU(0.2)
+        # self.activation = nn.LeakyReLU(0.2)
         self.init_weights()
 
     def init_weights(self):
@@ -117,7 +118,7 @@ class EncoderRNN(BaseModel):
         hidden_outputs = padded[0][range(captions.size(0)), last_padded_indices, :]
         # print("hidden_outputs shape:{}".format(hidden_outputs.shape))
         outputs = self.linear(hidden_outputs)
-        outputs = self.activation(outputs)
+        # outputs = self.activation(outputs)
         return outputs
 
 
@@ -284,7 +285,6 @@ class ConditionalGenerator(BaseModel):
             return (states[0].cuda(), states[1].cuda())
         else:
             return states
-        return states
 
     def forward(self, images, captions, caption_lengths):
         image_features = self.encoder(images)
@@ -295,7 +295,7 @@ class ConditionalGenerator(BaseModel):
     def reward_forward(self, images, evaluator, monte_carlo_count=18):
         '''
 
-        :param image_features: image features from image encoder linear layer
+        :param image: image features from image encoder linear layer
         :param evaluator: evaluator model
         :param monte_carlo_count: monte carlo count
         :return:
@@ -329,9 +329,10 @@ class ConditionalGenerator(BaseModel):
             # squeeze the hidden output size from (batch_siz, 1, hidden_size) to (batch_size, hidden_size)
             outputs = self.decoder.linear(hiddens.squeeze(1))
             outputs = F.softmax(outputs, -1)
+
             # use multinomial to random sample
-            predicted = outputs.multinomial(1)
-            predicted = predicted.long()
+            predicted = outputs.argmax(1)
+            predicted = (predicted.unsqueeze(1)).long()
 
             # if torch.cuda.is_available():
             #   predicted = predicted.cuda()
@@ -398,7 +399,6 @@ class Evaluator(BaseModel):
         dot_product = torch.bmm(image_features.unsqueeze(1), sentence_features.unsqueeze(1).transpose(2,1)).squeeze()
         return self.sigmoid(dot_product)
 
-
     def freeze(self):
         for param in self.parameters():
             param.requires_grad = False
@@ -452,7 +452,7 @@ if __name__ == '__main__':
     image_features, outputs = generator(images, captions, caption_lengths)
     score = discriminator(images, captions, caption_lengths)
     # rewards, props = generator.reward_forward(image_features, discriminator)
-    rewards, props = generator.reward(images, discriminator)
+    rewards, props = generator.reward_forward(images, discriminator)
     print('type(features):', type(outputs))
     print('features.shape:', outputs.shape)
     print('type(features):', type(score))

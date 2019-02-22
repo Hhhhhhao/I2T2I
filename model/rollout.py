@@ -7,6 +7,7 @@ import torch.nn.functional as F
 from utils import get_caption_lengths
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+
 class Rollout:
     """Roll-out policy"""
 

@@ -168,6 +168,151 @@ class CaptionDataset(Dataset):
         return len(self.ids)
 
 
+class COCOTextImageDataset(Dataset):
+    def __init__(self,
+                 data_dir,
+                 which_set,
+                 transform,
+                 vocab_threshold=4,
+                 vocab_file=os.path.join(dirname, "data/coco/vocab.pkl"),
+                 start_word="<start>",
+                 end_word="<end>",
+                 unk_word="<unk>",
+                 annotations_file=os.path.join(dirname, "data/coco/annotations/captions_train2017.json"),
+                 vocab_from_file=True
+                 ):
+        """
+            @:param datasetFile (string): path for dataset file
+            @:param which_set (string): "train:, "valid", "test"
+        """
+
+        self.data_dir = data_dir
+        self.which_set = which_set
+        assert self.which_set in {'train', 'val', 'test'}
+        self.vocab = COCOVocabulary(vocab_threshold, vocab_file, start_word,
+                                    end_word, unk_word, annotations_file, vocab_from_file)
+        self.transform = transform
+
+        if self.which_set == 'train' or self.which_set == 'val':
+            self.coco = COCO(os.path.join(data_dir, 'annotations/captions_{}2017.json'.format(which_set)))
+            self.ids = list(self.coco.anns.keys())
+            print("Obtaining caption lengths...")
+            all_tokens = [nltk.tokenize.word_tokenize(
+                text_clean(str(self.coco.anns[self.ids[index]]["caption"])).lower())
+                for index in tqdm(np.arange(len(self.ids)))]
+            self.caption_lengths = [len(token) for token in all_tokens]
+        else:
+            test_info = json.loads(open(os.path.join(data_dir, 'annotations/image_info_test2017')).read())
+            self.paths = [item["file_name"] for item in test_info["images"]]
+
+    def __len__(self):
+        return len(self.ids)
+
+    def __getitem__(self, index):
+
+        ann_id = self.ids[index]
+        z = self.coco.anns[ann_id]
+        right_txt = self.coco.anns[ann_id]["caption"]
+        right_txt = str(np.array(right_txt))
+        img_id = self.coco.anns[ann_id]["image_id"]
+        x = self.coco.loadImgs(img_id)[0]
+        y = self.coco.loadCats(img_id)[0]
+        right_image_path = self.coco.loadImgs(img_id)[0]["file_name"]
+
+
+        wrong_txt = str(np.array(self.find_wrong_txt(self.data[img_id]['class'])))
+
+        right_embed = np.array(self.data[img_id]['embeddings'], dtype=float)
+        wrong_image_path = bytes(np.array(self.find_wrong_image(self.data[img_id]['class'])))
+        wrong_embed = np.array(self.find_wrong_embed())
+
+        # Processing images
+        right_image = Image.open(io.BytesIO(right_image_path)).convert("RGB")
+        wrong_image = Image.open(io.BytesIO(wrong_image_path)).convert("RGB")
+
+        right_image_32 = right_image.resize((32, 32))
+        wrong_image_32 = wrong_image.resize((32, 32))
+        right_image_64 = right_image.resize((64, 64))
+        wrong_image_64 = wrong_image.resize((64, 64))
+        right_image_128 = right_image.resize((128, 128))
+        wrong_image_128 = wrong_image.resize((128, 128))
+        right_image_256 = right_image.resize((256, 256))
+        wrong_image_256 = wrong_image.resize((256, 256))
+
+        right_image_32 = self.transform(right_image_32)
+        wrong_image_32 = self.transform(wrong_image_32)
+        right_image_64 = self.transform(right_image_64)
+        wrong_image_64 = self.transform(wrong_image_64)
+        right_image_128 = self.transform(right_image_128)
+        wrong_image_128 = self.transform(wrong_image_128)
+        right_image_256 = self.transform(right_image_256)
+        wrong_image_256 = self.transform(wrong_image_256)
+
+        # Processing txt
+        # Convert caption to tensor of word ids.
+        right_txt = text_clean(right_txt)
+        right_tokens = nltk.tokenize.word_tokenize(str(right_txt).lower())
+        right_caption = []
+        right_caption.append(self.vocab(self.vocab.start_word))
+        right_caption.extend(self.vocab(token) for token in right_tokens)
+        right_caption.append(self.vocab(self.vocab.end_word))
+        right_caption = torch.Tensor(right_caption).long()
+
+        wrong_txt = text_clean(wrong_txt)
+        wrong_tokens = nltk.tokenize.word_tokenize(str(wrong_txt).lower())
+        wrong_caption = []
+        wrong_caption.append(self.vocab(self.vocab.start_word))
+        wrong_caption.extend(self.vocab(token) for token in wrong_tokens)
+        wrong_caption.append(self.vocab(self.vocab.end_word))
+        wrong_caption = torch.Tensor(wrong_caption).long()
+
+        sample = {
+                'img_id': img_id,
+                'right_image_32': right_image_32,
+                'right_image_64': right_image_64,
+                'right_image_128': right_image_128,
+                'right_image_256': right_image_256,
+                'right_embed': torch.FloatTensor(right_embed),
+                'right_caption': right_caption,
+                'right_txt': right_txt,
+                'wrong_image_32': wrong_image_32,
+                'wrong_image_64': wrong_image_64,
+                'wrong_image_128': wrong_image_128,
+                'wrong_image_256': wrong_image_256,
+                'wrong_embed': torch.FloatTensor(wrong_embed),
+                'wrong_caption': wrong_caption,
+                'wrong_txt': wrong_txt,
+                 }
+
+        return sample
+
+    def find_wrong_image(self, category):
+        idx = np.random.randint(len(self.ids))
+        img_id = self.ids[idx]
+        _category = self.data[img_id]
+
+        if _category != category:
+            return self.data[img_id]['img']
+
+        return self.find_wrong_image(category)
+
+    def find_wrong_embed(self):
+        idx = np.random.randint(len(self.ids))
+        img_id = self.ids[idx]
+        return self.data[img_id]['embeddings']
+
+    def find_wrong_txt(self, category):
+        idx = np.random.randint(len(self.ids))
+        img_id = self.ids[idx]
+
+        _category = self.data[img_id]
+
+        if _category != category:
+            return self.data[img_id]['txt']
+
+        return self.find_wrong_image(category)
+
+
 class TextImageDataset(Dataset):
     def __init__(self,
                  data_dir,
@@ -321,7 +466,6 @@ class TextImageDataset(Dataset):
         return len(ids)
 
 
-
 if __name__ == '__main__':
     from torchvision import transforms
 
@@ -332,9 +476,9 @@ if __name__ == '__main__':
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
     ])
 
-    dataset = COCOCaptionDataset(
+    dataset = COCOTextImageDataset(
         data_dir="/Users/leon/Projects/I2T2I/data/coco",
-        which_set='train',
+        which_set='val',
         transform=transform,
         vocab_threshold=4,
         start_word="<start>",
@@ -352,9 +496,6 @@ if __name__ == '__main__':
     #     end_word="<end>",
     #     unk_word="<unk>",
     #     vocab_from_file=False)
-
-    size = dataset.compute_image_size()
-
-    print(size)
+    dataset.__getitem__(2)
     print(len(dataset.vocab))
     print(dataset.vocab.word2idx)
