@@ -54,7 +54,7 @@ class Trainer(BaseTrainer):
         sent_total_loss_1 = 0
 
         total_metrics = np.zeros(len(self.metrics))
-        for batch_idx, (_, _, batch_images, batch_captions, batch_caption_lengths) in enumerate(self.data_loader):
+        for batch_idx, (_, batch_images, batch_captions, batch_caption_lengths) in enumerate(self.data_loader):
             batch_size = batch_images.size(0)
             batch_images = batch_images.to(self.device)
             batch_captions = batch_captions.to(self.device)
@@ -144,7 +144,7 @@ class Trainer(BaseTrainer):
         sent_total_val_loss_1 = 0
         total_val_metrics = np.zeros(len(self.metrics))
         with torch.no_grad():
-            for batch_idx, (_, _, batch_images, batch_captions, batch_caption_lengths) in enumerate(self.valid_data_loader):
+            for batch_idx, (_, batch_images, batch_captions, batch_caption_lengths) in enumerate(self.valid_data_loader):
                 batch_size = batch_images.size(0)
                 batch_images = batch_images.to(self.device)
                 batch_captions = batch_captions.to(self.device)
