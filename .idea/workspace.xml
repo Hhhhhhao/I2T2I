@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="b3134c42-5a5c-4eae-8274-2ca6fc32ab15" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cluster_experiment_scripts/train_damsm_coco.sh" beforeDir="false" afterPath="$PROJECT_DIR$/cluster_experiment_scripts/train_damsm_coco.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/coco_damsm_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/coco_damsm_config.json" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -16,7 +16,7 @@
     <SUITE FILE_PATH="coverage/I2T2I$data_processing.coverage" NAME="data_processing Coverage Results" MODIFIED="1549922361293" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/utils" />
     <SUITE FILE_PATH="coverage/I2T2I$test.coverage" NAME="test Coverage Results" MODIFIED="1550151635574" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/I2T2I$train.coverage" NAME="train Coverage Results" MODIFIED="1550489675715" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/I2T2I$damsm_train.coverage" NAME="damsm_train Coverage Results" MODIFIED="1551191524896" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/I2T2I$damsm_train.coverage" NAME="damsm_train Coverage Results" MODIFIED="1551203783326" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/I2T2I$datasets_custom.coverage" NAME="datasets_custom Coverage Results" MODIFIED="1551193864959" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/data_loader" />
     <SUITE FILE_PATH="coverage/I2T2I$model.coverage" NAME="model Coverage Results" MODIFIED="1551124598685" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/model" />
     <SUITE FILE_PATH="coverage/I2T2I$data_loaders.coverage" NAME="data_loaders Coverage Results" MODIFIED="1551194336901" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/data_loader" />
@@ -27,8 +27,47 @@
       <file leaf-file-name="flowers_config.json" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/config/flowers_config.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1380">
-              <caret line="69" column="38" selection-start-line="69" selection-start-column="38" selection-end-line="69" selection-end-column="38" />
+            <state relative-caret-position="1280">
+              <caret line="82" selection-start-line="82" selection-end-line="82" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="datasets_custom.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/data_loader/datasets_custom.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-5015">
+              <caret line="203" selection-start-line="203" selection-end-line="203" />
+              <folding>
+                <element signature="e#0#11#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="data_processing.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/utils/data_processing.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="429">
+              <caret line="158" selection-start-line="158" selection-end-line="158" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="birds_damsm_config.json" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/config/birds_damsm_config.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="260">
+              <caret line="13" column="36" lean-forward="true" selection-start-line="13" selection-start-column="36" selection-end-line="13" selection-end-column="36" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="coco_damsm_config.json" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/config/coco_damsm_config.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="93">
+              <caret line="7" column="30" selection-start-line="7" selection-start-column="30" selection-end-line="7" selection-end-column="30" />
             </state>
           </provider>
         </entry>
@@ -42,42 +81,28 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="train_damsm_coco.sh" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/cluster_experiment_scripts/train_damsm_coco.sh">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-8">
-              <caret line="5" column="16" selection-start-line="5" selection-start-column="16" selection-end-line="5" selection-end-column="16" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="coco_damsm_config.json" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/config/coco_damsm_config.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-48" />
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="train_damsm_birds.sh" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/cluster_experiment_scripts/train_damsm_birds.sh">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-128" />
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="train_damsm_flowers.sh" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/cluster_experiment_scripts/train_damsm_flowers.sh">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-128" />
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="coco_config.json" pinned="false" current-in-tab="true">
+      <file leaf-file-name="coco_config.json" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/config/coco_config.json">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="600">
-              <caret line="30" column="28" selection-start-line="30" selection-start-column="28" selection-end-line="30" selection-end-column="28" />
+              <caret line="31" column="28" selection-start-line="31" selection-start-column="28" selection-end-line="31" selection-end-column="28" />
             </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="damsm_trainer.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/trainer/damsm_trainer.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-494">
+              <caret line="73" lean-forward="true" selection-start-line="73" selection-end-line="73" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="damsm_train.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/damsm_train.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-810" />
           </provider>
         </entry>
       </file>
@@ -174,13 +199,13 @@
         <option value="$PROJECT_DIR$/trainer/damsm_trainer.py" />
         <option value="$PROJECT_DIR$/data_loader/datasets_custom.py" />
         <option value="$PROJECT_DIR$/config/flowers_damsm_config.json" />
-        <option value="$PROJECT_DIR$/config/birds_damsm_config.json" />
         <option value="$PROJECT_DIR$/config/coco_config.json" />
-        <option value="$PROJECT_DIR$/config/coco_damsm_config.json" />
         <option value="$PROJECT_DIR$/cluster_experiment_scripts/train_damsm_birds.sh" />
         <option value="$PROJECT_DIR$/cluster_experiment_scripts/train_damsm_flowers.sh" />
         <option value="$PROJECT_DIR$/data_loader/data_loaders.py" />
         <option value="$PROJECT_DIR$/cluster_experiment_scripts/train_damsm_coco.sh" />
+        <option value="$PROJECT_DIR$/config/coco_damsm_config.json" />
+        <option value="$PROJECT_DIR$/config/birds_damsm_config.json" />
       </list>
     </option>
   </component>
@@ -207,18 +232,12 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
             <path>
               <item name="I2T2I" type="b2602c69:ProjectViewProjectNode" />
               <item name="I2T2I" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="I2T2I" type="b2602c69:ProjectViewProjectNode" />
-              <item name="I2T2I" type="462c0819:PsiDirectoryNode" />
-              <item name="cluster_experiment_scripts" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="I2T2I" type="b2602c69:ProjectViewProjectNode" />
@@ -230,10 +249,16 @@
               <item name="I2T2I" type="462c0819:PsiDirectoryNode" />
               <item name="data_loader" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="I2T2I" type="b2602c69:ProjectViewProjectNode" />
+              <item name="I2T2I" type="462c0819:PsiDirectoryNode" />
+              <item name="trainer" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -271,7 +296,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.data_loaders">
+  <component name="RunManager" selected="Python.damsm_train">
     <configuration name="damsm_train" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="I2T2I" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -376,9 +401,9 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.damsm_train" />
         <item itemvalue="Python.data_loaders" />
         <item itemvalue="Python.datasets_custom" />
-        <item itemvalue="Python.damsm_train" />
         <item itemvalue="Python.model" />
         <item itemvalue="Python.gan_train" />
       </list>
@@ -408,7 +433,7 @@
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Python Console" order="7" />
       <window_info anchor="bottom" id="Terminal" order="7" weight="0.17833553" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49915397" visible="true" weight="0.10672269" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49915397" visible="true" weight="0.10840336" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="right" id="Database" order="3" />
       <window_info anchor="right" id="SciView" order="3" />
@@ -427,24 +452,24 @@
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info id="Favorites" order="2" side_tool="true" />
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.15857284" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.21985058" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.32977587" />
-      <window_info anchor="bottom" id="Python Console" order="10" />
+      <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Debug" order="3" visible="true" weight="0.27212682" />
       <window_info anchor="right" id="Database" order="4" />
       <window_info anchor="bottom" id="Terminal" order="11" />
       <window_info anchor="bottom" id="Event Log" order="12" side_tool="true" />
       <window_info anchor="bottom" id="Database Changes" order="9" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="right" id="SciView" order="3" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32977587" />
+      <window_info anchor="bottom" id="Python Console" order="10" />
     </layout-to-restore>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -480,11 +505,6 @@
           <url>file://$PROJECT_DIR$/data_loader/datasets_custom.py</url>
           <line>203</line>
           <option name="timeStamp" value="212" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/data_loader/datasets_custom.py</url>
-          <line>200</line>
-          <option name="timeStamp" value="214" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/trainer/damsm_trainer.py</url>
@@ -541,6 +561,11 @@
           <line>175</line>
           <option name="timeStamp" value="284" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/trainer/damsm_trainer.py</url>
+          <line>82</line>
+          <option name="timeStamp" value="286" />
+        </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
@@ -552,7 +577,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="286" />
+      <option name="time" value="287" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
@@ -655,13 +680,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/utils/data_processing.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1366">
-          <caret line="250" column="14" selection-start-line="250" selection-start-column="4" selection-end-line="250" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/.gitattributes">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -693,23 +711,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/base/base_gan_trainer.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/model/rollout.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="100">
-          <caret line="9" selection-start-line="9" selection-end-line="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/trainer/gan_trainer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="670">
-          <caret line="219" column="37" selection-start-line="219" selection-start-column="37" selection-end-line="219" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/base/base_gan_trainer.py" />
+    <entry file="file://$PROJECT_DIR$/model/rollout.py" />
+    <entry file="file://$PROJECT_DIR$/trainer/gan_trainer.py" />
     <entry file="file://$PROJECT_DIR$/model/__init__.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -762,13 +766,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/gan_train.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="222">
-          <caret line="23" selection-start-line="23" selection-end-line="31" selection-end-column="79" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/gan_train.py" />
     <entry file="file:///anaconda3/envs/I2T2I/lib/python3.6/site-packages/torch/utils/data/dataloader.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="149">
@@ -784,7 +782,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/trainer/damsm_trainer.py" />
     <entry file="file://$PROJECT_DIR$/model/loss.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="687">
@@ -792,28 +789,14 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data_loader/datasets_custom.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2193">
-          <caret line="510" column="10" selection-start-line="510" selection-start-column="10" selection-end-line="510" selection-end-column="10" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-            <element signature="e#2352#3311#0" />
-            <element signature="e#3934#6081#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/config/flowers_config.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1380">
-          <caret line="69" column="38" selection-start-line="69" selection-start-column="38" selection-end-line="69" selection-end-column="38" />
+        <state relative-caret-position="1280">
+          <caret line="82" selection-start-line="82" selection-end-line="82" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/config/flowers_damsm_config.json" />
-    <entry file="file://$PROJECT_DIR$/config/birds_damsm_config.json" />
-    <entry file="file://$PROJECT_DIR$/damsm_train.py" />
     <entry file="file://$PROJECT_DIR$/data_loader/data_loaders.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2700">
@@ -821,32 +804,56 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/cluster_experiment_scripts/train_damsm_birds.sh">
+    <entry file="file://$PROJECT_DIR$/cluster_experiment_scripts/train_damsm_birds.sh" />
+    <entry file="file://$PROJECT_DIR$/cluster_experiment_scripts/train_damsm_flowers.sh" />
+    <entry file="file://$PROJECT_DIR$/cluster_experiment_scripts/train_damsm_coco.sh" />
+    <entry file="file://$PROJECT_DIR$/config/coco_config.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-128" />
+        <state relative-caret-position="600">
+          <caret line="31" column="28" selection-start-line="31" selection-start-column="28" selection-end-line="31" selection-end-column="28" />
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/cluster_experiment_scripts/train_damsm_flowers.sh">
+    <entry file="file://$PROJECT_DIR$/damsm_train.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-128" />
+        <state relative-caret-position="-810" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/cluster_experiment_scripts/train_damsm_coco.sh">
+    <entry file="file://$PROJECT_DIR$/data_loader/datasets_custom.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-8">
-          <caret line="5" column="16" selection-start-line="5" selection-start-column="16" selection-end-line="5" selection-end-column="16" />
+        <state relative-caret-position="-5015">
+          <caret line="203" selection-start-line="203" selection-end-line="203" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/trainer/damsm_trainer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-494">
+          <caret line="73" lean-forward="true" selection-start-line="73" selection-end-line="73" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/utils/data_processing.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="429">
+          <caret line="158" selection-start-line="158" selection-end-line="158" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/config/coco_damsm_config.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-48" />
+        <state relative-caret-position="93">
+          <caret line="7" column="30" selection-start-line="7" selection-start-column="30" selection-end-line="7" selection-end-column="30" />
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/config/coco_config.json">
+    <entry file="file://$PROJECT_DIR$/config/birds_damsm_config.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="600">
-          <caret line="30" column="28" selection-start-line="30" selection-start-column="28" selection-end-line="30" selection-end-column="28" />
+        <state relative-caret-position="260">
+          <caret line="13" column="36" lean-forward="true" selection-start-line="13" selection-start-column="36" selection-end-line="13" selection-end-column="36" />
         </state>
       </provider>
     </entry>

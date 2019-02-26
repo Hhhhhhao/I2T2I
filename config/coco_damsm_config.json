@@ -5,7 +5,7 @@
     "arch": {
         "type": "DAMSM",
         "args": {
-            "vocab_size":10330,
+            "vocab_size":11502,
             "word_embed_size":512,
             "embedding_size":1024
         }
