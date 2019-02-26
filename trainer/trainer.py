@@ -1,9 +1,7 @@
 import numpy as np
 import torch
-from torchvision.utils import make_grid
 from torch.nn.utils.rnn import pack_padded_sequence
 from base import BaseTrainer
-from utils.util import one_hot_embedding
 
 
 class Trainer(BaseTrainer):
@@ -75,7 +73,7 @@ class Trainer(BaseTrainer):
                     self.data_loader.n_samples,
                     100.0 * batch_idx / len(self.data_loader),
                     loss.item()))
-                self.writer.add_image('input', make_grid(batch_images.cpu(), nrow=8, normalize=True))
+                # self.writer.add_image('input', make_grid(batch_images.cpu(), nrow=8, normalize=True))
 
         log = {
             'loss': total_loss / len(self.data_loader),
@@ -114,7 +112,7 @@ class Trainer(BaseTrainer):
                 self.writer.add_scalar('loss', loss.item())
                 total_val_loss += loss.item()
                 total_val_metrics += self._eval_metrics(outputs, targets, batch_caption_lengths)
-                self.writer.add_image('input', make_grid(batch_images.cpu(), nrow=8, normalize=True))
+                # self.writer.add_image('input', make_grid(batch_images.cpu(), nrow=8, normalize=True))
 
         return {
             'val_loss': total_val_loss / len(self.valid_data_loader),
