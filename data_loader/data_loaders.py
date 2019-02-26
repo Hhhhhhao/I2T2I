@@ -84,13 +84,13 @@ def text_image_collate_fn(data):
 def image_caption_collate_fn(data):
     # sort the data in descentding order
     data.sort(key=lambda  x: len(x[-1]), reverse=True)
-    image_ids, class_ids, images, captions = zip(*data)
+    image_ids, images, captions = zip(*data)
 
     # merge images (from tuple of 1D tensor to 4D tensor)
     batch_images = torch.stack(images, 0)
     # batch_image_ids = torch.stack(image_ids, 0)
     batch_image_ids = image_ids
-    batch_class_ids = class_ids
+    # batch_class_ids = class_ids
 
     # merge captions (from tuple of 1D tensor to 2D tensor)
     batch_caption_lengths = [len(cap) for cap in captions]
@@ -99,7 +99,7 @@ def image_caption_collate_fn(data):
         end = batch_caption_lengths[i]
         batch_captions[i, :end] = cap[:end]
 
-    return batch_image_ids, batch_class_ids, batch_images, batch_captions, batch_caption_lengths
+    return batch_image_ids,  batch_images, batch_captions, batch_caption_lengths
 
 
 class COCOCaptionDataLoader(BaseDataLoader):
