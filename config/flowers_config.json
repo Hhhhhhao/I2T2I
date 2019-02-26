@@ -38,7 +38,7 @@
         "args":{
             "lr": 1e-3,
             "weight_decay": 1e-5,
-            "amsgrad": true
+            "amsgrad": false
         }
     },
     "loss": "cross_entropy_loss",
@@ -50,13 +50,13 @@
         "gamma": 0.5
     }},
     "trainer": {
-        "epochs": 10,
+        "epochs": 20,
         "save_dir": "saved/",
         "save_period": 1,
         "verbosity": 2,
 
         "monitor": "min val_loss",
-        "early_stop": 2,
+        "early_stop": 3,
 
         "tensorboardX": true,
         "log_dir": "saved/runs"

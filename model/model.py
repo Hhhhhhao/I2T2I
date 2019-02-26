@@ -37,11 +37,11 @@ class EncoderCNN(BaseModel):
     def __init__(self, image_embed_size=256):
         super(EncoderCNN, self).__init__()
 
-        adaptive_pool_size = 16
+        adaptive_pool_size = 12
         resnet = torchvision.models.resnet34(pretrained=True)
 
         # Remove average pooling layers
-        modules = list(resnet.children())[:-2]
+        modules = list(resnet.children())[:-3]
         self.resnet = nn.Sequential(*modules)
         self.adaptive_pool = nn.AdaptiveAvgPool2d((adaptive_pool_size, adaptive_pool_size))
         self.fc_in_features = 512 * adaptive_pool_size ** 2
@@ -77,7 +77,7 @@ class EncoderCNN(BaseModel):
         for p in self.resnet.parameters():
             p.requires_grad = False
         # If fine-tuning, only fine tune convolutional blocks 2 through 4
-        for c in list(self.resnet.children())[7:]:
+        for c in list(self.resnet.children())[6:]:
             for p in c.parameters():
                 p.requires_grad = fine_tune
 
@@ -219,17 +219,17 @@ if __name__ == '__main__':
     image_size = 128
     batch_size = 16
 
-    # data_loader = COCOCaptionDataLoader(
-    #     data_dir='/Users/leon/Projects/I2T2I/data/coco/',
-    #     which_set='val',
-    #     image_size=image_size,
-    #     batch_size=batch_size,
-    #     num_workers=0,
-    #     validation_split=0)
-    #
-    # for i, (image_ids, images, captions, caption_lengths) in enumerate(data_loader):
-    #     print("done")
-    #     break
+    data_loader = COCOCaptionDataLoader(
+        data_dir='/Users/leon/Projects/I2T2I/data/coco/',
+        which_set='val',
+        image_size=image_size,
+        batch_size=batch_size,
+        num_workers=0,
+        validation_split=0)
+
+    for i, (image_ids, images, captions, caption_lengths) in enumerate(data_loader):
+        print("done")
+        break
     #
     # print('images.shape:', images.shape)
     # print('captions.shape:', captions.shape)
@@ -259,7 +259,7 @@ if __name__ == '__main__':
     if torch.cuda.is_available():
         model = model.cuda()
     #
-    # outputs = model(images, captions, caption_lengths)
+    outputs = model(images, captions, caption_lengths)
     # print('type(features):', type(outputs))
     # print('features.shape:', outputs.shape)
 
