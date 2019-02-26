@@ -43,8 +43,9 @@ class EncoderCNN(BaseModel):
         # Remove average pooling layers
         modules = list(resnet.children())[:-3]
         self.resnet = nn.Sequential(*modules)
+        # print(list(self.resnet.children()))
         self.adaptive_pool = nn.AdaptiveAvgPool2d((adaptive_pool_size, adaptive_pool_size))
-        self.fc_in_features = 512 * adaptive_pool_size ** 2
+        self.fc_in_features = 256 * adaptive_pool_size ** 2
         self.linear = nn.Linear(self.fc_in_features, image_embed_size)
         self.init_weights()
         self.fine_tune()
