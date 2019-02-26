@@ -1,16 +1,17 @@
 import torch
 from torch.utils.data import DataLoader
 from torchvision import transforms
-from data_loader.datasets_custom import TextImageDataset, CaptionDataset, COCOCaptionDataset
+from data_loader.datasets_custom import TextImageDataset, CaptionDataset, COCOCaptionDataset, COCOTextImageDataset
 from base import BaseDataLoader
 
 
-def collate_fn(data):
+def text_image_collate_fn(data):
     collate_data = {}
     # Sort a data list by right caption length (descending order).
     data.sort(key=lambda x: x['right_caption'].size(0), reverse=True)
 
-    collate_data['img_id'] = []
+    collate_data['right_img_id'] = []
+    # collate_data['class_id'] = []
     collate_data['right_txt'] = []
     right_captions = []
     right_embeds = []
@@ -19,6 +20,7 @@ def collate_fn(data):
     right_images_128 = []
     right_images_256 = []
 
+    collate_data['wrong_img_id'] = []
     collate_data['wrong_txt'] = []
     wrong_captions = []
     wrong_embeds = []
@@ -28,7 +30,8 @@ def collate_fn(data):
     wrong_images_256 = []
 
     for i in range(len(data)):
-        collate_data['img_id'].append(data[i]['img_id'])
+        collate_data['right_img_id'].append(data[i]['right_img_id'])
+        # collate_data['class_id'].append(data[i]['right_image_class_id'])
         collate_data['right_txt'].append(data[i]['right_txt'])
         right_captions.append(data[i]['right_caption'])
         right_embeds.append(data[i]['right_embed'])
@@ -37,6 +40,7 @@ def collate_fn(data):
         right_images_128.append(data[i]['right_image_128'])
         right_images_256.append(data[i]['right_image_256'])
 
+        collate_data['wrong_img_id'].append(data[i]['wrong_img_id'])
         collate_data['wrong_txt'].append(data[i]['wrong_txt'])
         wrong_captions.append(data[i]['wrong_caption'])
         wrong_embeds.append(data[i]['wrong_embed'])
@@ -77,33 +81,16 @@ def collate_fn(data):
     return collate_data
 
 
-def collate_fn_train(data):
+def image_caption_collate_fn(data):
     # sort the data in descentding order
-    data.sort(key=lambda  x: len(x[1]), reverse=True)
-    images, captions = zip(*data)
-
-    # merge images (from tuple of 1D tensor to 4D tensor)
-    batch_images = torch.stack(images, 0)
-
-    # merge captions (from tuple of 1D tensor to 2D tensor)
-    batch_caption_lengths = [len(cap) for cap in captions]
-    batch_captions = torch.zeros(len(captions), max(batch_caption_lengths)).long()
-    for i, cap in enumerate(captions):
-        end = batch_caption_lengths[i]
-        batch_captions[i, :end] = cap[:end]
-
-    return batch_images, batch_captions, batch_caption_lengths
-
-
-def collate_fn_test(data):
-    # sort the data in descentding order
-    data.sort(key=lambda  x: len(x[2]), reverse=True)
-    image_ids, images, captions = zip(*data)
+    data.sort(key=lambda  x: len(x[-1]), reverse=True)
+    image_ids, class_ids, images, captions = zip(*data)
 
     # merge images (from tuple of 1D tensor to 4D tensor)
     batch_images = torch.stack(images, 0)
     # batch_image_ids = torch.stack(image_ids, 0)
     batch_image_ids = image_ids
+    batch_class_ids = class_ids
 
     # merge captions (from tuple of 1D tensor to 2D tensor)
     batch_caption_lengths = [len(cap) for cap in captions]
@@ -112,7 +99,7 @@ def collate_fn_test(data):
         end = batch_caption_lengths[i]
         batch_captions[i, :end] = cap[:end]
 
-    return batch_image_ids, batch_images, batch_captions, batch_caption_lengths
+    return batch_image_ids, batch_class_ids, batch_images, batch_captions, batch_caption_lengths
 
 
 class COCOCaptionDataLoader(BaseDataLoader):
@@ -160,7 +147,7 @@ class COCOCaptionDataLoader(BaseDataLoader):
                 shuffle=True,
                 validation_split=validation_split,
                 num_workers=self.num_workers,
-                collate_fn=collate_fn_train
+                collate_fn=image_caption_collate_fn
             )
         else:
             super(COCOCaptionDataLoader, self).__init__(
@@ -169,7 +156,7 @@ class COCOCaptionDataLoader(BaseDataLoader):
                 shuffle=False,
                 validation_split=0,
                 num_workers=self.num_workers,
-                collate_fn=collate_fn_test)
+                collate_fn=image_caption_collate_fn)
 
 
 class CaptionDataLoader(DataLoader):
@@ -211,7 +198,7 @@ class CaptionDataLoader(DataLoader):
                 batch_size=self.batch_size,
                 shuffle=True,
                 num_workers=self.num_workers,
-                collate_fn=collate_fn_train
+                collate_fn=image_caption_collate_fn
             )
         else:
             super(CaptionDataLoader, self).__init__(
@@ -219,7 +206,7 @@ class CaptionDataLoader(DataLoader):
                 batch_size=self.batch_size,
                 shuffle=False,
                 num_workers=0,
-                collate_fn=collate_fn_test)
+                collate_fn=image_caption_collate_fn)
 
 
 class TextImageDataLoader(DataLoader):
@@ -249,7 +236,7 @@ class TextImageDataLoader(DataLoader):
                 batch_size=self.batch_size,
                 shuffle=True,
                 num_workers=self.num_workers,
-                collate_fn=collate_fn
+                collate_fn=text_image_collate_fn
             )
         else:
             super(TextImageDataLoader, self).__init__(
@@ -257,16 +244,79 @@ class TextImageDataLoader(DataLoader):
                 batch_size=self.batch_size,
                 shuffle=False,
                 num_workers=0,
-                collate_fn=collate_fn)
+                collate_fn=text_image_collate_fn)
+
+
+class COCOTextImageDataLoader(BaseDataLoader):
+    """
+    COCO Image Caption Model Data Loader
+    """
+    def __init__(self, data_dir, which_set, image_size, batch_size, validation_split, num_workers):
+
+        self.data_dir = data_dir
+        self.which_set = which_set
+        self.validation_split = validation_split
+        assert self.which_set in {'train', 'val', 'test'}
+
+        self.image_size = (image_size, image_size)
+        self.batch_size = batch_size
+        self.num_workers = num_workers
+
+        # transforms.ToTensor convert PIL images in range [0, 255] to a torch in range [0.0, 1.0]
+        mean = torch.tensor([0.485, 0.456, 0.406], dtype=torch.float32)
+        std = torch.tensor([0.229, 0.224, 0.225], dtype=torch.float32)
+
+        if which_set == 'val' or which_set == 'test':
+            self.transform = transforms.Compose([
+                transforms.RandomHorizontalFlip(),
+                transforms.ToTensor(),
+                transforms.Normalize(mean=mean, std=std)
+            ])
+        else:
+            self.transform = transforms.Compose([
+                # transforms.RandomHorizontalFlip(),
+                transforms.ToTensor(),
+                transforms.Normalize(mean=mean, std=std)
+            ])
+
+        self.dataset = COCOTextImageDataset(self.data_dir, self.which_set, self.transform, vocab_from_file=True)
+        # self.n_samples = len(self.dataset)
+
+        if self.which_set == 'train':
+            super(COCOTextImageDataLoader, self).__init__(
+                dataset=self.dataset,
+                batch_size=self.batch_size,
+                shuffle=True,
+                validation_split=validation_split,
+                num_workers=self.num_workers,
+                collate_fn=text_image_collate_fn
+            )
+        else:
+            super(COCOTextImageDataLoader, self).__init__(
+                dataset=self.dataset,
+                batch_size=self.batch_size,
+                shuffle=False,
+                validation_split=0,
+                num_workers=self.num_workers,
+                collate_fn=text_image_collate_fn)
 
 
 if __name__ == '__main__':
-    data_loader = TextImageDataLoader(
-        data_dir='/Users/leon/Projects/I2T2I/data/',
-        dataset_name="birds",
-        which_set='train',
+    # data_loader = TextImageDataLoader(
+    #     data_dir='/Users/leon/Projects/I2T2I/data/',
+    #     dataset_name="birds",
+    #     which_set='train',
+    #     image_size=256,
+    #     batch_size=16,
+    #     num_workers=0)
+
+    data_loader = COCOTextImageDataLoader(
+        data_dir='/Users/leon/Projects/I2T2I/data/coco/',
+        # dataset_name="birds",
+        which_set='val',
         image_size=256,
         batch_size=16,
+        validation_split=0.05,
         num_workers=0)
 
     print(len(data_loader.dataset.vocab))
@@ -275,7 +325,8 @@ if __name__ == '__main__':
     for i, data in enumerate(data_loader):
         print(i)
 
-        print("img_id:", data['img_id'])
+        print("right_img_id:", data['right_img_id'])
+        # print("class_ids:", data["class_id"])
         print('right images 32 shape:', data['right_images_32'].shape)
         print('right images 64 shape:', data['right_images_64'].shape)
         print('right images 128 shape:', data['right_images_128'].shape)
@@ -285,6 +336,7 @@ if __name__ == '__main__':
         print("right caption lengths:", data['right_caption_lengths'])
         print("right txt:", data["right_txt"])
 
+        print("wrong_img_id:", data['wrong_img_id'])
         print('wrong images 32 shape:', data['wrong_images_32'].shape)
         print('wrong images 64 shape:', data['wrong_images_64'].shape)
         print('wrong images 128 shape:', data['wrong_images_128'].shape)

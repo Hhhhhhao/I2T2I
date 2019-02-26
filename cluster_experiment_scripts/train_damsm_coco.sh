@@ -34,4 +34,4 @@ export DATASET_DIR=${TMP}/datasets/
 
 source /home/${STUDENT_ID}/anaconda3/bin/activate I2T2I
 cd ..
-python gan_train.py --config config/coco_config.json
+python damsm_train.py --config config/coco_damsm_config.json

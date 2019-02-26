@@ -6,6 +6,7 @@ import torch
 import sys
 import nltk
 import numpy as np
+import pandas as pd
 dirname = os.path.dirname(__file__)
 dirname = os.path.dirname(dirname)
 sys.path.append(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data/coco/cocoapi/PythonAPI'))
@@ -41,6 +42,7 @@ class COCOCaptionDataset(Dataset):
 
         if self.which_set == 'train' or self.which_set == 'val':
             self.coco = COCO(os.path.join(data_dir, 'annotations/captions_{}2017.json'.format(which_set)))
+            # self.instances = json.load(open(instances_file))
             self.ids = list(self.coco.anns.keys())
             print("Obtaining caption lengths...")
             all_tokens = [nltk.tokenize.word_tokenize(
@@ -76,10 +78,7 @@ class COCOCaptionDataset(Dataset):
             caption.append(self.vocab(self.vocab.end_word))
             caption = torch.Tensor(caption).long()
 
-            if self.which_set == 'train':
-                return image, caption
-            else:
-                return img_id, image, caption
+            return img_id, image, caption
 
         # Obtain image, caption in test mode
         else:
@@ -141,6 +140,7 @@ class CaptionDataset(Dataset):
     def __getitem__(self, index):
         # Obtain image and caption
         img_id = self.ids[index]
+        # class_id = str(np.array(self.data[img_id]['class']))[:3]
         caption = str(np.array(self.data[img_id]['txt']))
         image_path = bytes(np.array(self.data[img_id]['img']))
         image = Image.open(io.BytesIO(image_path)).convert("RGB")
@@ -158,11 +158,7 @@ class CaptionDataset(Dataset):
         caption.extend(self.vocab(token) for token in tokens)
         caption.append(self.vocab(self.vocab.end_word))
         caption = torch.Tensor(caption).long()
-
-        if self.which_set == 'train' or self.which_set == 'valid':
-            return image, caption
-        else:
-            return img_id, image, caption
+        return img_id, image, caption
 
     def __len__(self):
         return len(self.ids)
@@ -209,26 +205,25 @@ class COCOTextImageDataset(Dataset):
         return len(self.ids)
 
     def __getitem__(self, index):
-
-        ann_id = self.ids[index]
-        z = self.coco.anns[ann_id]
-        right_txt = self.coco.anns[ann_id]["caption"]
+        right_ann_id = self.ids[index]
+        right_txt = self.coco.anns[right_ann_id]["caption"]
         right_txt = str(np.array(right_txt))
-        img_id = self.coco.anns[ann_id]["image_id"]
-        x = self.coco.loadImgs(img_id)[0]
-        y = self.coco.loadCats(img_id)[0]
-        right_image_path = self.coco.loadImgs(img_id)[0]["file_name"]
+        right_img_id = self.coco.anns[right_ann_id]["image_id"]
+        right_image_path = self.coco.loadImgs(right_img_id)[0]["file_name"]
+        # TODO use DAMSM model to get embedding
+        right_embed = 0
 
-
-        wrong_txt = str(np.array(self.find_wrong_txt(self.data[img_id]['class'])))
-
-        right_embed = np.array(self.data[img_id]['embeddings'], dtype=float)
-        wrong_image_path = bytes(np.array(self.find_wrong_image(self.data[img_id]['class'])))
-        wrong_embed = np.array(self.find_wrong_embed())
+        wrong_img_id = self.find_wrong_img_id(right_img_id)
+        wrong_txt = str(np.array(self.find_wrond_txt(right_img_id)))
+        wrong_image_path = self.coco.loadImgs(wrong_img_id)[0]["file_name"]
+        # TODO use DAMSM model to get embedding
+        wrong_embed = 0
 
         # Processing images
-        right_image = Image.open(io.BytesIO(right_image_path)).convert("RGB")
-        wrong_image = Image.open(io.BytesIO(wrong_image_path)).convert("RGB")
+        right_image = Image.open(os.path.join(self.data_dir + 'images/{}/'.format(self.which_set), right_image_path))
+        right_image = right_image.convert("RGB")
+        wrong_image = Image.open(os.path.join(self.data_dir + 'images/{}/'.format(self.which_set), wrong_image_path))
+        wrong_image = wrong_image.convert("RGB")
 
         right_image_32 = right_image.resize((32, 32))
         wrong_image_32 = wrong_image.resize((32, 32))
@@ -267,7 +262,7 @@ class COCOTextImageDataset(Dataset):
         wrong_caption = torch.Tensor(wrong_caption).long()
 
         sample = {
-                'img_id': img_id,
+                'right_img_id': right_img_id,
                 'right_image_32': right_image_32,
                 'right_image_64': right_image_64,
                 'right_image_128': right_image_128,
@@ -275,6 +270,7 @@ class COCOTextImageDataset(Dataset):
                 'right_embed': torch.FloatTensor(right_embed),
                 'right_caption': right_caption,
                 'right_txt': right_txt,
+                'wrong_img_id': wrong_img_id,
                 'wrong_image_32': wrong_image_32,
                 'wrong_image_64': wrong_image_64,
                 'wrong_image_128': wrong_image_128,
@@ -286,31 +282,26 @@ class COCOTextImageDataset(Dataset):
 
         return sample
 
-    def find_wrong_image(self, category):
+    def find_wrong_img_id(self, right_img_id):
         idx = np.random.randint(len(self.ids))
-        img_id = self.ids[idx]
-        _category = self.data[img_id]
+        ann_id = self.ids[idx]
+        img_id = self.coco.anns[ann_id]["image_id"]
 
-        if _category != category:
-            return self.data[img_id]['img']
+        if img_id != right_img_id:
+            return img_id
 
-        return self.find_wrong_image(category)
+        return self.find_wrong_img_id(right_img_id)
 
-    def find_wrong_embed(self):
+    def find_wrond_txt(self, right_img_id):
         idx = np.random.randint(len(self.ids))
-        img_id = self.ids[idx]
-        return self.data[img_id]['embeddings']
+        ann_id = self.ids[idx]
+        img_id = self.coco.anns[ann_id]["image_id"]
 
-    def find_wrong_txt(self, category):
-        idx = np.random.randint(len(self.ids))
-        img_id = self.ids[idx]
+        if img_id != right_img_id:
+            txt = self.coco.anns[ann_id]["caption"]
+            return txt
 
-        _category = self.data[img_id]
-
-        if _category != category:
-            return self.data[img_id]['txt']
-
-        return self.find_wrong_image(category)
+        return self.find_wrond_txt(right_img_id)
 
 
 class TextImageDataset(Dataset):
@@ -332,7 +323,12 @@ class TextImageDataset(Dataset):
 
         if os.path.exists(data_dir):
             assert dataset_name in {'birds', 'flowers'}, "wrong dataset name"
+            self.data_dir = os.path.join(data_dir, dataset_name)
             self.h5_file = os.path.join(data_dir, '{}/{}.hdf5'.format(dataset_name, dataset_name))
+            if dataset_name == "birds":
+                self.bbox = self.load_bounding_box()
+            else:
+                self.bbox = None
         else:
             raise ValueError("data directory not found")
 
@@ -364,16 +360,22 @@ class TextImageDataset(Dataset):
     def __getitem__(self, index):
 
         img_id = self.ids[index]
+        # right_class_id = str(np.array(self.data[img_id]['class']))[:3]
         right_txt = str(np.array(self.data[img_id]['txt']))
         wrong_txt = str(np.array(self.find_wrong_txt(self.data[img_id]['class'])))
         right_image_path = bytes(np.array(self.data[img_id]['img']))
         right_embed = np.array(self.data[img_id]['embeddings'], dtype=float)
-        wrong_image_path = bytes(np.array(self.find_wrong_image(self.data[img_id]['class'])))
+        wrong_image_path, wrong_img_id = self.find_wrong_image(self.data[img_id]['class'])
         wrong_embed = np.array(self.find_wrong_embed())
 
         # Processing images
         right_image = Image.open(io.BytesIO(right_image_path)).convert("RGB")
         wrong_image = Image.open(io.BytesIO(wrong_image_path)).convert("RGB")
+        if self.bbox is not None:
+            right_image_bbox = self.bbox[str(np.array(self.data[img_id]["name"]))]
+            wrong_image_bbox = self.bbox[str(np.array(self.data[wrong_img_id]["name"]))]
+            right_image = self.crop_image(right_image, right_image_bbox)
+            wrong_image = self.crop_image(wrong_image, wrong_image_bbox)
 
         right_image_32 = right_image.resize((32, 32))
         wrong_image_32 = wrong_image.resize((32, 32))
@@ -412,7 +414,8 @@ class TextImageDataset(Dataset):
         wrong_caption = torch.Tensor(wrong_caption).long()
 
         sample = {
-                'img_id': img_id,
+                'right_img_id': img_id,
+                # 'right_image_class_id': right_class_id,
                 'right_image_32': right_image_32,
                 'right_image_64': right_image_64,
                 'right_image_128': right_image_128,
@@ -420,6 +423,7 @@ class TextImageDataset(Dataset):
                 'right_embed': torch.FloatTensor(right_embed),
                 'right_caption': right_caption,
                 'right_txt': right_txt,
+                'wrong_img_id': wrong_img_id,
                 'wrong_image_32': wrong_image_32,
                 'wrong_image_64': wrong_image_64,
                 'wrong_image_128': wrong_image_128,
@@ -437,7 +441,7 @@ class TextImageDataset(Dataset):
         _category = self.data[img_id]
 
         if _category != category:
-            return self.data[img_id]['img']
+            return bytes(np.array(self.data[img_id]['img'])), img_id
 
         return self.find_wrong_image(category)
 
@@ -457,20 +461,54 @@ class TextImageDataset(Dataset):
 
         return self.find_wrong_image(category)
 
-    def compute_image_size(self):
-        ids = []
-        for i, id in enumerate(tqdm(self.ids)):
+    def load_bounding_box(self):
+        bbox_path = os.path.join(self.data_dir, 'CUB_200_2011/bounding_boxes.txt')
+        df_bounding_boxes = pd.read_csv(bbox_path,
+                                        delim_whitespace=True,
+                                        header=None).astype(int)
+        #
+        filepath = os.path.join(self.data_dir, 'CUB_200_2011/images.txt')
+        df_filenames = \
+            pd.read_csv(filepath, delim_whitespace=True, header=None)
+        filenames = df_filenames[1].tolist()
 
-            if id[:-2] not in ids:
-                ids.append(id[:-2])
-        return len(ids)
+        # processing filenames to match data example name
+        for i in range(len(filenames)):
+            filename = filenames[i][:-4]
+            filename = filename.split('/')
+            filename = filename[1]
+            filenames[i] = filename
+        print('Total filenames: ', len(filenames), filenames[0])
+        #
+        filename_bbox = {img_file: [] for img_file in filenames}
+        numImgs = len(filenames)
+        for i in range(numImgs):
+            # bbox = [x-left, y-top, width, height]
+            bbox = df_bounding_boxes.iloc[i][1:].tolist()
+
+            key = filenames[i]
+            filename_bbox[key] = bbox
+        #
+        return filename_bbox
+
+    def crop_image(self, image, bbox):
+        width, height = image.size
+        r = int(np.maximum(bbox[2], bbox[3]) * 0.75)
+        center_x = int((2 * bbox[0] + bbox[2]) / 2)
+        center_y = int((2 * bbox[1] + bbox[3]) / 2)
+        y1 = np.maximum(0, center_y - r)
+        y2 = np.minimum(height, center_y + r)
+        x1 = np.maximum(0, center_x - r)
+        x2 = np.minimum(width, center_x + r)
+        image = image.crop([x1, y1, x2, y2])
+        return image
 
 
 if __name__ == '__main__':
     from torchvision import transforms
 
     transform = transforms.Compose([
-        transforms.Resize(256),
+        # transforms.Resize(256),
         # transforms.RandomHorizontalFlip(),
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
@@ -488,7 +526,7 @@ if __name__ == '__main__':
 
     # dataset = TextImageDataset(
     #     data_dir="/Users/leon/Projects/I2T2I/data/",
-    #     dataset_name="flowers",
+    #     dataset_name="birds",
     #     which_set='test',
     #     transform=transform,
     #     vocab_threshold=4,
@@ -496,6 +534,6 @@ if __name__ == '__main__':
     #     end_word="<end>",
     #     unk_word="<unk>",
     #     vocab_from_file=False)
-    dataset.__getitem__(2)
+
     print(len(dataset.vocab))
     print(dataset.vocab.word2idx)
