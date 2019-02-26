@@ -137,7 +137,7 @@ class COCOCaptionDataLoader(BaseDataLoader):
                 transforms.Normalize(mean=mean.tolist(), std=std.tolist())
             ])
 
-        self.dataset = COCOCaptionDataset(self.data_dir, self.which_set, self.transform, vocab_from_file=False)
+        self.dataset = COCOCaptionDataset(self.data_dir, self.which_set, self.transform, vocab_from_file=True)
         # self.n_samples = len(self.dataset)
 
         if self.which_set == 'train':
