@@ -94,7 +94,7 @@ def main(config, resume):
                 img_id = batch_image_ids[0]
 
             batch_features = model.encoder(batch_images)
-            pred_captions = model.decoder.sample_beam_search(batch_features)
+            pred_captions = model.decoder.sample_beam_search(batch_features, beam_width=3)
 
             pred_sentence = convert_back_to_text(list(pred_captions[0]), data_loader.dataset.vocab)
             # pred_sentence = convert_back_to_text(list(pred_captions), data_loader.dataset.vocab)

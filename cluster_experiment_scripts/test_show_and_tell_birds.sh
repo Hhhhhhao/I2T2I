@@ -2,7 +2,7 @@
 #SBATCH -N 1	  # nodes requested
 #SBATCH -n 1	  # tasks requested
 #SBATCH --partition=Short
-#SBATCH --gres=gpu:2
+#SBATCH --gres=gpu:4
 #SBATCH --mem=48000  # memory in Mb
 #SBATCH --time=0-04:00:00
 
@@ -34,4 +34,4 @@ export DATASET_DIR=${TMP}/datasets/
 
 source /home/${STUDENT_ID}/anaconda3/bin/activate I2T2I
 cd ..
-python test.py -r /home/s1786991/I2T2I/saved/Show-and-Tell-Birds/0212_192726/model_best.pth
+python test.py -r /home/s1786991/I2T2I/saved/Show-and-Tell-Birds/0226_170158/model_best.pth
