@@ -6,7 +6,7 @@ from torch.distributions import Normal
 from torch.autograd import Variable
 from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 from base import BaseModel
-from rollout import Rollout
+from model.rollout import Rollout
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -16,22 +16,18 @@ class EncoderCNN(BaseModel):
     Encoder
     """
 
-    def __init__(self, image_embed_size=512):
+    def __init__(self, image_embed_size=256):
         super(EncoderCNN, self).__init__()
 
-        adaptive_pool_size = 8
+        adaptive_pool_size = 12
         resnet = torchvision.models.resnet34(pretrained=True)
 
-        # Remove linear and pool layers
-        modules = list(resnet.children())[:-2]
+        # Remove average pooling layers
+        modules = list(resnet.children())[:-3]
         self.resnet = nn.Sequential(*modules)
-
         self.adaptive_pool = nn.AdaptiveAvgPool2d((adaptive_pool_size, adaptive_pool_size))
         self.fc_in_features = 512 * adaptive_pool_size ** 2
-        # Resize image to fixed size to allow input images of variable size
         self.linear = nn.Linear(self.fc_in_features, image_embed_size)
-        # self.activation = nn.LeakyReLU(0.2)
-        # self.bn = nn.BatchNorm1d(embed_size, momentum=0.01)
         self.init_weights()
         self.fine_tune()
 
@@ -50,8 +46,6 @@ class EncoderCNN(BaseModel):
         features = self.adaptive_pool(features)
         features = features.view(features.size(0), -1)
         features = self.linear(features)
-        # features = self.activation(features)
-        # features = self.bn(features)  # (batch_size, embed_size)
 
         return features
 
@@ -64,7 +58,7 @@ class EncoderCNN(BaseModel):
         for p in self.resnet.parameters():
             p.requires_grad = False
         # If fine-tuning, only fine tune convolutional blocks 2 through 4
-        for c in list(self.resnet.children())[7:]:
+        for c in list(self.resnet.children())[6:]:
             for p in c.parameters():
                 p.requires_grad = fine_tune
 
@@ -350,7 +344,7 @@ class ConditionalGenerator(BaseModel):
     def sample(self, features, states=None):
         return self.decoder.sample(features, states, self.max_sentence_length)
 
-    def sample_beam_search(self, features, beam_width=5, states=None):
+    def sample_beam_search(self, features, beam_width=3, states=None):
         return self.decoder.sample_beam_search(features, self.max_sentence_length, beam_width, states)
 
     def freeze(self):
