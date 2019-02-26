@@ -1,7 +1,7 @@
 /data/*
 /saved/*
 /eval_metrics/spice/lib/*
-*.out
+cluster_experiment_scripts/*
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
