@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b3134c42-5a5c-4eae-8274-2ca6fc32ab15" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/data_loader/data_loaders.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_loader/data_loaders.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cluster_experiment_scripts/train_damsm_coco.sh" beforeDir="false" afterPath="$PROJECT_DIR$/cluster_experiment_scripts/train_damsm_coco.sh" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -32,16 +33,46 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="data_loaders.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="data_loaders.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/data_loader/data_loaders.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="483">
+            <state relative-caret-position="2700">
               <caret line="139" column="109" selection-start-line="139" selection-start-column="109" selection-end-line="139" selection-end-column="109" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="coco_config.json" pinned="false" current-in-tab="false">
+      <file leaf-file-name="train_damsm_coco.sh" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/cluster_experiment_scripts/train_damsm_coco.sh">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-8">
+              <caret line="5" column="16" selection-start-line="5" selection-start-column="16" selection-end-line="5" selection-end-column="16" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="coco_damsm_config.json" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/config/coco_damsm_config.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-48" />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="train_damsm_birds.sh" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/cluster_experiment_scripts/train_damsm_birds.sh">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-128" />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="train_damsm_flowers.sh" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/cluster_experiment_scripts/train_damsm_flowers.sh">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-128" />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="coco_config.json" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/config/coco_config.json">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="600">
@@ -146,10 +177,10 @@
         <option value="$PROJECT_DIR$/config/birds_damsm_config.json" />
         <option value="$PROJECT_DIR$/config/coco_config.json" />
         <option value="$PROJECT_DIR$/config/coco_damsm_config.json" />
-        <option value="$PROJECT_DIR$/cluster_experiment_scripts/train_damsm_coco.sh" />
         <option value="$PROJECT_DIR$/cluster_experiment_scripts/train_damsm_birds.sh" />
         <option value="$PROJECT_DIR$/cluster_experiment_scripts/train_damsm_flowers.sh" />
         <option value="$PROJECT_DIR$/data_loader/data_loaders.py" />
+        <option value="$PROJECT_DIR$/cluster_experiment_scripts/train_damsm_coco.sh" />
       </list>
     </option>
   </component>
@@ -188,6 +219,11 @@
               <item name="I2T2I" type="b2602c69:ProjectViewProjectNode" />
               <item name="I2T2I" type="462c0819:PsiDirectoryNode" />
               <item name="cluster_experiment_scripts" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="I2T2I" type="b2602c69:ProjectViewProjectNode" />
+              <item name="I2T2I" type="462c0819:PsiDirectoryNode" />
+              <item name="config" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="I2T2I" type="b2602c69:ProjectViewProjectNode" />
@@ -372,7 +408,7 @@
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Python Console" order="7" />
       <window_info anchor="bottom" id="Terminal" order="7" weight="0.17833553" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49915397" visible="true" weight="0.103361346" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49915397" visible="true" weight="0.10672269" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="right" id="Database" order="3" />
       <window_info anchor="right" id="SciView" order="3" />
@@ -745,12 +781,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="283">
           <caret line="26" selection-start-line="26" selection-end-line="26" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
-            <element signature="e#493#635#0" />
-            <element signature="e#678#821#0" />
-            <element signature="e#863#4299#0" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -759,9 +789,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="687">
           <caret line="69" selection-start-line="69" selection-end-line="69" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -786,22 +813,40 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/config/flowers_damsm_config.json" />
     <entry file="file://$PROJECT_DIR$/config/birds_damsm_config.json" />
+    <entry file="file://$PROJECT_DIR$/damsm_train.py" />
+    <entry file="file://$PROJECT_DIR$/data_loader/data_loaders.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2700">
+          <caret line="139" column="109" selection-start-line="139" selection-start-column="109" selection-end-line="139" selection-end-column="109" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cluster_experiment_scripts/train_damsm_birds.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-128" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cluster_experiment_scripts/train_damsm_flowers.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-128" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cluster_experiment_scripts/train_damsm_coco.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-8">
+          <caret line="5" column="16" selection-start-line="5" selection-start-column="16" selection-end-line="5" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config/coco_damsm_config.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-48" />
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/config/coco_config.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="600">
           <caret line="30" column="28" selection-start-line="30" selection-start-column="28" selection-end-line="30" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/config/coco_damsm_config.json" />
-    <entry file="file://$PROJECT_DIR$/damsm_train.py" />
-    <entry file="file://$PROJECT_DIR$/cluster_experiment_scripts/train_damsm_birds.sh" />
-    <entry file="file://$PROJECT_DIR$/cluster_experiment_scripts/train_damsm_coco.sh" />
-    <entry file="file://$PROJECT_DIR$/cluster_experiment_scripts/train_damsm_flowers.sh" />
-    <entry file="file://$PROJECT_DIR$/data_loader/data_loaders.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="483">
-          <caret line="139" column="109" selection-start-line="139" selection-start-column="109" selection-end-line="139" selection-end-column="109" />
         </state>
       </provider>
     </entry>
