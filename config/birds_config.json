@@ -1,5 +1,5 @@
 {
   "gan_type":"gan_cls",
   "dataset_name": "birds",
-  "save_path": "/home/s1784380/lala/I2T2I/saved/gan_cls/l1nl2/birds"
+  "save_path": "/home/s1784380/lala/I2T2I/saved/birds"
 }
