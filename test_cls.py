@@ -17,7 +17,7 @@ if __name__ == '__main__':
 
             Text2ImageDataset_Origin(
                 data_dir='/home/s1784380/I2T2I/data/',
-                dataset_name="flowers",
+                dataset_name="birds",
                 which_set="test"
             ),
 
