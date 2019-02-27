@@ -14,7 +14,7 @@ if __name__ == '__main__':
 
         Text2ImageDataset_Origin(
             data_dir='/home/s1784380/I2T2I/data/',
-            dataset_name="flowers",
+            dataset_name="birds",
             which_set="train"
         ),
 
@@ -31,8 +31,8 @@ if __name__ == '__main__':
                       save_path="/home/s1784380/lala/I2T2I",
                       l1_coef=0,
                       l2_coef=0,
-                      pre_trained_disc="/home/s1784380/lala/I2T2I/saved/gan_cls/l1nl2/flowers/checkpoints/disc_460.pth",
-                      pre_trained_gen="/home/s1784380/lala/I2T2I/saved/gan_cls/l1nl2/flowers/checkpoints/gen_460.pth",
+                      pre_trained_disc="/home/s1784380/lala/I2T2I/saved/gan_cls/l1nl2/birds/checkpoints/disc_485.pth",
+                      pre_trained_gen="/home/s1784380/lala/I2T2I/saved/gan_cls/l1nl2/birds/checkpoints/gen_485.pth",
                       )
 
-    trainer.predict(data_loader=train_data_loader,valid=True,epoch=265)
+    trainer.predict(data_loader=train_data_loader,valid=True,epoch=485)
