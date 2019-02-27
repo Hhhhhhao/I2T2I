@@ -153,8 +153,8 @@ class Trainer(object):
                 # because it links the embedding feature vector directly to certain pixel values.
                 # ===========================================
                 g_loss = criterion(outputs, real_labels)
-                # + self.l2_coef * l2_loss(activation_fake, activation_real.detach()) \
-                # + self.l1_coef * l1_loss(fake_image, right_images)
+                + self.l2_coef * l2_loss(activation_fake, activation_real.detach()) \
+                + self.l1_coef * l1_loss(fake_image, right_images)
 
                 g_loss.backward()
                 self.optimG.step()
