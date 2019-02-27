@@ -103,14 +103,8 @@ class Trainer(object):
                 real_labels = torch.ones(right_images.size(0))
                 fake_labels = torch.zeros(right_images.size(0))
 
-                # ======== One sided label smoothing ==========
-                # Helps preventing the discriminator from overpowering the
-                # generator adding penalty when the discriminator is too confident
-                # =============================================
-                smoothed_real_labels = torch.FloatTensor(Utils.smooth_label(real_labels.numpy(), -0.1))
-
                 real_labels = Variable(real_labels).to(self.device)
-                smoothed_real_labels = Variable(smoothed_real_labels).to(self.device)
+                real_labels = Variable(real_labels).to(self.device)
                 fake_labels = Variable(fake_labels).to(self.device)
 
                 # Train the discriminator
@@ -118,12 +112,12 @@ class Trainer(object):
 
                 # real image, right text
                 outputs, activation_real = self.discriminator(right_images, right_embed)
-                real_loss = criterion(outputs, smoothed_real_labels)
+                real_loss = criterion(outputs, real_labels)
                 real_score = outputs
 
                 # wrong image, right text
                 outputs, _ = self.discriminator(wrong_images, right_embed)
-                wrong_loss = criterion(outputs, fake_labels)
+                wrong_loss = criterion(outputs, fake_labels) * 0.5
                 wrong_score = outputs
 
                 # fake image, right text
@@ -131,7 +125,7 @@ class Trainer(object):
                 noise = noise.view(noise.size(0), self.noise_dim, 1, 1)
                 fake_image = self.generator(right_embed, noise)
                 outputs, _ = self.discriminator(fake_image, right_embed)
-                fake_loss = criterion(outputs, fake_labels)
+                fake_loss = criterion(outputs, fake_labels) * 0.5
                 fake_score = outputs
 
                 d_loss = real_loss + wrong_loss + fake_loss
@@ -159,8 +153,8 @@ class Trainer(object):
                 # because it links the embedding feature vector directly to certain pixel values.
                 # ===========================================
                 g_loss = criterion(outputs, real_labels)
-                + self.l2_coef * l2_loss(activation_fake, activation_real.detach()) \
-                + self.l1_coef * l1_loss(fake_image, right_images)
+                # + self.l2_coef * l2_loss(activation_fake, activation_real.detach()) \
+                # + self.l1_coef * l1_loss(fake_image, right_images)
 
                 g_loss.backward()
                 self.optimG.step()

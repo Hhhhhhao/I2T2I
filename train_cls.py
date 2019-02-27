@@ -31,7 +31,7 @@ if __name__ == '__main__':
             Text2ImageDataset_Origin(
                 data_dir='/home/s1784380/I2T2I/data/',
                 dataset_name="birds",
-                which_set="valid"
+                which_set="train"
             ),
 
             batch_size=64,
@@ -59,7 +59,7 @@ if __name__ == '__main__':
             Text2ImageDataset_Origin(
                 data_dir='/home/s1784380/I2T2I/data/',
                 dataset_name="flowers",
-                which_set="valid"
+                which_set="train"
             ),
 
             batch_size=64,
