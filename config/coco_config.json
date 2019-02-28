@@ -67,7 +67,7 @@
     "metrics": [],
     "trainer": {
         "epochs": 50,
-        "pretrain_generator_epochs":5,
+        "pretrain_generator_epochs":2,
         "pretrain_discriminator_epochs":1,
         "generator_pre_train_epochs":0,
         "discriminator_pre_train_epochs":1,

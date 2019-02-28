@@ -140,6 +140,10 @@ class Trainer(BaseGANTrainer):
                     100.0 * batch_idx / len(self.train_data_loader),
                     loss.item()))
 
+            if batch_idx == int(len(self.train_data_loader) / 4):
+                if "CoCo" in self.config["name"]:
+                    break
+
         log = {
             'Evaluator_Loss': total_loss / len(self.train_data_loader),
             'metrics': (total_metrics / len(self.train_data_loader)).tolist()
