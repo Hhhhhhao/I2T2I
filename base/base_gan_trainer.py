@@ -34,8 +34,6 @@ class BaseGANTrainer:
 
         cfg_trainer = config['trainer']
         self.epochs = cfg_trainer['epochs']
-        self.generator_pre_train_epochs = cfg_trainer['generator_pre_train_epochs']
-        self.discriminator_pre_train_epochs = cfg_trainer['discriminator_pre_train_epochs']
         self.save_period = cfg_trainer['save_period']
         self.verbosity = cfg_trainer['verbosity']
         self.monitor = cfg_trainer.get('monitor', 'off')
@@ -88,45 +86,26 @@ class BaseGANTrainer:
         return device, list_ids
 
     def pre_train(self):
-        self.pretrain_epochs = max([self.discriminator_pre_train_epochs, self.generator_pre_train_epochs])
-        for epoch in range(self.start_epoch, self.pretrain_epochs+1):
+        if not os.path.exists(self.config["models"]["generator"]["pretrain_path"]):
+            print("pre train generator")
+            self.pre_train_generator()
+        else:
+            print("load generator")
+            checkpoint = torch.load(self.config["models"]["generator"]["pretrain_path"])
+            self.generator.load_state_dict(checkpoint['state_dict'])
 
-            log = {'epoch': epoch}
-
-            if epoch < self.generator_pre_train_epochs + 1:
-                result = self._pre_train_generator(epoch)
-                for key, value in result.items():
-                    if key == 'metrics':
-                        log.update({mtr.__name__: value[i] for i, mtr in enumerate(self.metrics)})
-                    elif key == 'val_metrics':
-                        log.update({'val_' + mtr.__name__: value[i] for i, mtr in enumerate(self.metrics)})
-                    else:
-                        log[key] = value
-
-            if epoch < self.discriminator_pre_train_epochs + 1:
-                result = self._pre_train_discriminator(epoch)
-                for key, value in result.items():
-                    if key == 'metrics':
-                        log.update({mtr.__name__: value[i] for i, mtr in enumerate(self.metrics)})
-                    elif key == 'val_metrics':
-                        log.update({'val_' + mtr.__name__: value[i] for i, mtr in enumerate(self.metrics)})
-                    else:
-                        log[key] = value
-
-            # print logged informations to the screen
-            if self.train_logger is not None:
-                self.train_logger.add_entry(log)
-                if self.verbosity >= 1:
-                    for key, value in log.items():
-                        self.logger.info('    {:15s}: {}'.format(str(key), value))
+        if not os.path.exists(self.config["models"]["discriminator"]["pretrain_path"]):
+            print("pre train discriminator")
+            self.pre_train_discriminator()
+        else:
+            print("load discriminator")
+            checkpoint = torch.load(self.config["models"]["discriminator"]["pretrain_path"])
+            self.generator.load_state_dict(checkpoint['state_dict'])
 
     def train(self):
         """
         Full training logic
         """
-        if self.pretrain_epochs is not None:
-            self.start_epoch = self.pretrain_epochs + 1
-
         for epoch in range(self.start_epoch, self.epochs + 1):
 
             # save logged informations into log dict
@@ -177,10 +156,58 @@ class BaseGANTrainer:
             if epoch % self.save_period == 0:
                 self._save_checkpoint(epoch, save_best=best)
 
-    def _pre_train_generator(self, epoch):
+    def pre_train_generator(self):
+        """
+        Pre Generator training logic
+        """
+        for epoch in range(1, self.config["trainer"]["pretrain_generator_epochs"]):
+
+            # save logged informations into log dict
+            log = {'pretrain generator epoch': epoch}
+            result = self._train_generator_epoch(epoch)
+            for key, value in result.items():
+                if key == 'metrics':
+                    log.update({mtr.__name__: value[i] for i, mtr in enumerate(self.metrics)})
+                elif key == 'val_metrics':
+                    log.update({'val_' + mtr.__name__: value[i] for i, mtr in enumerate(self.metrics)})
+                else:
+                    log[key] = value
+
+            # print logged informations to the screen
+            if self.train_logger is not None:
+                self.train_logger.add_entry(log)
+                if self.verbosity >= 1:
+                    for key, value in log.items():
+                        self.logger.info('    {:15s}: {}'.format(str(key), value))
+
+    def pre_train_discriminator(self):
+        """
+        Pre Discriminator training logic
+        """
+        for epoch in range(1, self.config["trainer"]["pretrain_discriminator_epochs"]):
+
+            # save logged informations into log dict
+            log = {'pretrain discriminator epoch': epoch}
+            result = self._train_discriminator_epoch(epoch)
+            for key, value in result.items():
+                if key == 'metrics':
+                    log.update({mtr.__name__: value[i] for i, mtr in enumerate(self.metrics)})
+                elif key == 'val_metrics':
+                    log.update({'val_' + mtr.__name__: value[i] for i, mtr in enumerate(self.metrics)})
+                else:
+                    log[key] = value
+
+            # print logged informations to the screen
+            if self.train_logger is not None:
+                self.train_logger.add_entry(log)
+                if self.verbosity >= 1:
+                    for key, value in log.items():
+                        self.logger.info('    {:15s}: {}'.format(str(key), value))
+
+    def _train_generator_epoch(self, epoch):
         raise NotImplementedError
 
-    def _pre_train_discriminator(self, epoch):
+    def _train_discriminator_epoch(self, epoch):
         raise NotImplementedError
 
     def _train_epoch(self, epoch):

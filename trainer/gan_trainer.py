@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import torch
 from torchvision.utils import make_grid
@@ -50,19 +51,7 @@ class Trainer(BaseGANTrainer):
             self.writer.add_scalar(f'{metric.__name__}', acc_metrics[i])
         return acc_metrics
 
-    def _pre_train_generator(self, epoch):
-        """
-        Pre training logic for an epoch
-        :param epoch: Current training epoch
-        :return: A log that contrains all information you want to save
-        Note:
-        If you have additional information to record, for example:
-                > additional_log = {"x": x, "y": y}
-            merge it with log before return. i.e.
-                > log = {**log, **additional_log}
-                > return log
-            The metrics in log must have the key 'metrics'.
-        """
+    def _train_generator_epoch(self, epoch):
         self.generator.train()
         total_loss = 0
         total_metrics = np.zeros(len(self.metrics))
@@ -91,7 +80,6 @@ class Trainer(BaseGANTrainer):
                     100.0 * batch_idx / len(self.train_data_loader),
                     loss.item()))
 
-
         log = {
             'Generator_CrossEntropyLoss': total_loss / len(self.train_data_loader),
             'metrics': (total_metrics / len(self.train_data_loader)).tolist()
@@ -99,7 +87,7 @@ class Trainer(BaseGANTrainer):
 
         return log
 
-    def _pre_train_discriminator(self, epoch):
+    def _train_discriminator_epoch(self, epoch):
         """
         Pre training logic for an epoch
         :param epoch: Current training epoch

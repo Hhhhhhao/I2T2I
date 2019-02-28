@@ -62,8 +62,6 @@ def main(config, resume):
                       data_loader=train_data_loader,
                       valid_data_loader=valid_data_loader,
                       train_logger=train_logger)
-
-    trainer.load_pre_trained_generator('/home/s1786991/')
     trainer.pre_train()
     trainer.train()
 
