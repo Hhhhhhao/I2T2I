@@ -109,7 +109,6 @@ class Text2ImageDataLoader(DataLoader):
             transforms.Resize(self.image_size),
             transforms.RandomHorizontalFlip(),
             transforms.ToTensor(),
-            # TODO: change mean and std
             transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
         ])
 
