@@ -4,6 +4,8 @@ from data_loader.txt2image_dataset import Text2ImageDataset_Origin
 import argparse
 from PIL import Image
 import os
+dirname = os.path.dirname(__file__)
+data_dir = os.path.join(dirname, 'data')
 
 from utils.arg_extractor import get_args
 
@@ -16,7 +18,7 @@ if __name__ == '__main__':
         train_data_loader = DataLoader(
 
             Text2ImageDataset_Origin(
-                data_dir='/home/s1784380/I2T2I/data/',
+                data_dir=data_dir,
                 dataset_name="birds",
                 which_set="train"
             ),
@@ -29,7 +31,7 @@ if __name__ == '__main__':
         valid_data_loader = DataLoader(
 
             Text2ImageDataset_Origin(
-                data_dir='/home/s1784380/I2T2I/data/',
+                data_dir=data_dir,
                 dataset_name="birds",
                 which_set="train"
             ),
@@ -44,7 +46,7 @@ if __name__ == '__main__':
         train_data_loader = DataLoader(
 
             Text2ImageDataset_Origin(
-                data_dir='/home/s1784380/I2T2I/data/',
+                data_dir=data_dir,
                 dataset_name="flowers",
                 which_set="train"
             ),
@@ -57,7 +59,7 @@ if __name__ == '__main__':
         valid_data_loader = DataLoader(
 
             Text2ImageDataset_Origin(
-                data_dir='/home/s1784380/I2T2I/data/',
+                data_dir=data_dir,
                 dataset_name="flowers",
                 which_set="train"
             ),

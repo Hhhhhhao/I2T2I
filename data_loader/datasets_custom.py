@@ -11,8 +11,9 @@ import torch
 from torch.autograd import Variable
 import torch.nn.functional as F
 from torch.utils.data import Dataset, DataLoader
-sys.path.append('/home/s1784380/I2T2I/data/coco/cocoapi/PythonAPI')
-sys.path.append('/Users/cuijingchen/Documents/Your Projects/I2T2I/data/coco/cocoapi/PythonAPI')
+dirname = os.path.dirname(__file__)
+dirname = os.path.dirname(dirname)
+sys.path.append(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data/coco/cocoapi/PythonAPI'))
 from pycocotools.coco import COCO
 from tqdm import tqdm
 from utils.data_processing import Vocabulary

@@ -1,9 +1,7 @@
 import numpy as np
 import torch
-import yaml
 from torch import nn
 from torch.autograd import Variable
-from torch.utils.data import DataLoader
 import logging
 from model.gan_factory import gan_factory
 from utils.utils_cls import Utils
@@ -87,7 +85,7 @@ class Trainer(object):
         #     self._train_vanilla_gan()
 
     def _train_lsgan_cls(self):
-        criterion = nn.BCELoss()
+        criterion = nn.MSELoss()
 
         for epoch in range(self.pre_epoch, self.num_epochs + self.pre_epoch+1):
 
@@ -207,7 +205,12 @@ class Trainer(object):
                 fake_validity_1, _ = self.discriminator(fake_image, right_embed)
 
                 # gradient penalty
-                gradient_penalty = Utils.compute_gradient_penalty(self.discriminator, right_images.data, wrong_images.data, fake_image.data)
+                gradient_penalty = Utils.compute_gradient_penalty(
+                    self.discriminator,
+                    right_images.data,
+                    wrong_images.data,
+                    fake_image.data,
+                    right_embed)
 
                 d_loss = -torch.mean(real_validity) + (torch.mean(fake_validity_0) + torch.mean(fake_validity_1)) * 0.5 + lambda_gp * gradient_penalty
 
