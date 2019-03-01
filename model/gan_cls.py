@@ -52,9 +52,9 @@ class generator(BaseModel):
             # state size. (ngf*2) x 16 x 16
             nn.ConvTranspose2d(self.ngf * 2, self.ngf, 4, 2, 1, bias=False),
             nn.BatchNorm2d(self.ngf),
-            nn.ReLU(True),
+            nn.LeakyReLU(0.2),
 
-            nn.Conv2d(self.ngf * 2, self.ngf, 3, 1, 1),
+            nn.Conv2d(self.ngf, self.ngf, 3, 1, 1),
             nn.BatchNorm2d(self.ngf),
             nn.LeakyReLU(0.2),
 
