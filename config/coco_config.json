@@ -5,7 +5,7 @@
     "models": {
         "Generator":{
             "type":"ConditionalGenerator",
-            "pretrain_path": null,
+            "pretrain_path": 'random',
             "args":{
                 "image_embed_size": 512,
                 "word_embed_size": 512,
@@ -25,7 +25,7 @@
         },
         "Discriminator": {
             "type": "Evaluator",
-            "pretrain_path": null,
+            "pretrain_path": 'random',
             "args": {
                 "image_embed_size": 512,
                 "word_embed_size": 512,
