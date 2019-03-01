@@ -86,20 +86,20 @@ class BaseGANTrainer:
         return device, list_ids
 
     def pre_train(self):
-        if not os.path.exists(self.config["models"]["generator"]["pretrain_path"]):
+        if not os.path.exists(self.config["models"]["Generator"]["pretrain_path"]):
             print("pre train generator")
             self.pre_train_generator()
         else:
             print("load generator")
-            checkpoint = torch.load(self.config["models"]["generator"]["pretrain_path"])
+            checkpoint = torch.load(self.config["models"]["Generator"]["pretrain_path"])
             self.generator.load_state_dict(checkpoint['state_dict'])
 
-        if not os.path.exists(self.config["models"]["discriminator"]["pretrain_path"]):
+        if not os.path.exists(self.config["models"]["Discriminator"]["pretrain_path"]):
             print("pre train discriminator")
             self.pre_train_discriminator()
         else:
             print("load discriminator")
-            checkpoint = torch.load(self.config["models"]["discriminator"]["pretrain_path"])
+            checkpoint = torch.load(self.config["models"]["Discriminator"]["pretrain_path"])
             self.generator.load_state_dict(checkpoint['state_dict'])
 
     def train(self):
