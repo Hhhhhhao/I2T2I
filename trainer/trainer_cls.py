@@ -81,8 +81,8 @@ class Trainer(object):
             self._train_gan_cls()
         elif self.gan_type == 'lsgan_cls':
             self._train_lsgan_cls()
-        # elif self.gan_type == 'vanilla_wgan':
-        #     self._train_vanilla_wgan()
+        elif self.gan_type == 'wgan_cls':
+            self._train_wgan_cls()
         # elif self.gan_type == 'vanilla_gan':
         #     self._train_vanilla_gan()
 
@@ -153,6 +153,84 @@ class Trainer(object):
                 # because it links the embedding feature vector directly to certain pixel values.
                 # ===========================================
                 g_loss = criterion(outputs, generator_real_labels)
+                # + self.l2_coef * l2_loss(activation_fake, activation_real.detach()) \
+                # + self.l1_coef * l1_loss(fake_image, right_images)
+
+                g_loss.backward()
+                self.optimG.step()
+
+                # log
+                if batch_idx % self.log_step == 0:
+                    self.logger.info('Train Epoch: {} [{}/{} ({:.0f}%)] G_Loss: {:.6f} D_Loss: {:.6f}'.format(
+                        epoch,
+                        batch_idx * self.train_data_loader.batch_size,
+                        len(self.train_data_loader.dataset),
+                        100.0 * batch_idx / len(self.train_data_loader),
+                        g_loss.item(),
+                        d_loss.item()))
+
+            if epoch % 5 == 0:
+                self.logger.info("save checkpoints")
+                Utils.save_checkpoint(self.discriminator, self.generator, self.save_path, self.checkpoints_path, epoch)
+
+            if epoch % 10 == 0:
+                self.logger.info("predict first batch for valid")
+                self.predict(data_loader=self.valid_data_loader, valid=True, epoch=epoch)
+
+    def _train_wgan_cls(self):
+        lambda_gp = 10
+
+        for epoch in range(self.pre_epoch, self.num_epochs + self.pre_epoch+1):
+
+            for batch_idx, sample in enumerate(self.train_data_loader):
+                right_images = sample['right_images']
+                right_embed = sample['right_embed']
+                wrong_images = sample['wrong_images']
+
+                right_images = Variable(right_images.float()).to(self.device)
+                right_embed = Variable(right_embed.float()).to(self.device)
+                wrong_images = Variable(wrong_images.float()).to(self.device)
+
+                # Train the discriminator
+                self.discriminator.zero_grad()
+
+                # real image, right text
+                real_validity, _ = self.discriminator(right_images, right_embed)
+
+                # wrong image, right text
+                fake_validity_0, _ = self.discriminator(wrong_images, right_embed)
+
+                # fake image, right text
+                noise = Variable(torch.randn(right_images.size(0), self.noise_dim)).to(self.device)
+                noise = noise.view(noise.size(0), self.noise_dim, 1, 1)
+                fake_image = self.generator(right_embed, noise)
+                fake_validity_1, _ = self.discriminator(fake_image, right_embed)
+
+                # gradient penalty
+                gradient_penalty = Utils.compute_gradient_penalty(self.discriminator, right_images.data, wrong_images.data, fake_image.data)
+
+                d_loss = -torch.mean(real_validity) + (torch.mean(fake_validity_0) + torch.mean(fake_validity_1)) * 0.5 + lambda_gp * gradient_penalty
+
+                d_loss.backward()
+
+                self.optimD.step()
+
+                # Train the generator
+                self.generator.zero_grad()
+                noise = Variable(torch.randn(right_images.size(0), self.noise_dim)).to(self.device)
+                noise = noise.view(noise.size(0), self.noise_dim, 1, 1)
+
+                fake_image = self.generator(right_embed, noise)
+                outputs, _ = self.discriminator(fake_image, right_embed)
+
+                # ======= Generator Loss function============
+                # This is a customized loss function, the first term is the regular cross entropy loss
+                # The second term is feature matching loss, this measure the distance between the real and generated
+                # image statistics by comparing intermediate layers activations
+                # The third term is L1 distance between the generated and real image, this is helpful for the conditional case
+                # because it links the embedding feature vector directly to certain pixel values.
+                # ===========================================
+                g_loss = -torch.mean(outputs)
                 # + self.l2_coef * l2_loss(activation_fake, activation_real.detach()) \
                 # + self.l1_coef * l1_loss(fake_image, right_images)
 
