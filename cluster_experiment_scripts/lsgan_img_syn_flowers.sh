@@ -32,7 +32,7 @@ mkdir -p ${TMP}/datasets/
 export DATASET_DIR=${TMP}/datasets/
 # Activate the relevant virtual environment:
 
-source /home/${STUDENT_ID}/miniconda3/bin/activate I2T2I
+source /home/${STUDENT_ID}/anaconda3/bin/activate I2T2I
 cd ..
 
 python train_cls.py --filepath_to_config_file config/flowers_config_lsgan.json
