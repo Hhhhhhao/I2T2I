@@ -34,4 +34,4 @@ export DATASET_DIR=${TMP}/datasets/
 
 source /home/${STUDENT_ID}/anaconda3/bin/activate I2T2I
 cd ..
-python test.py -r  /home/s1786991/I2T2I/saved/Show-and-Tell-CoCo/0212_233752/model_best.pth
+python test.py -r  /home/s1786991/I2T2I/saved/Show-and-Tell-CoCo/0226_162117/model_best.pth
