@@ -1,4 +1,5 @@
 from model import gan_cls
+from model import lsgan_cls
 
 
 class gan_factory(object):
@@ -7,6 +8,8 @@ class gan_factory(object):
     def generator_factory(type):
         if type == 'gan_cls':
             return gan_cls.generator()
+        elif type =='lsgan_cls':
+            return lsgan_cls.generator()
         # elif type == 'wgan':
         #     return wgan_cls.generator()
         # elif type == 'vanilla_gan':
@@ -18,6 +21,8 @@ class gan_factory(object):
     def discriminator_factory(type):
         if type == 'gan_cls':
             return gan_cls.discriminator()
+        elif type == 'lsgan_cls':
+            return lsgan_cls.discriminator()
         # elif type == 'wgan':
         #     return wgan_cls.discriminator()
         # elif type == 'vanilla_gan':
