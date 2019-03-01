@@ -47,7 +47,6 @@ def text_image_collate_fn(data):
         right_images_128.append(data[i]['right_image_128'])
         right_images_256.append(data[i]['right_image_256'])
 
-        collate_data['wrong_img_id'].append(data[i]['wrong_img_id'])
         collate_data['wrong_txt'].append(data[i]['wrong_txt'])
         wrong_captions.append(data[i]['wrong_caption'])
         wrong_embeds.append(data[i]['wrong_embed'])
