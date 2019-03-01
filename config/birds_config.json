@@ -5,7 +5,7 @@
     "models": {
         "Generator":{
             "type":"ConditionalGenerator",
-            "pretrain_path": "/home/s1786991/I2T2I/saved/Show-and-Tell-Birds/0226_170158/model_best.pth",
+            "pretrain_path": "/home/s1786991/I2T2I/saved/Show-and-Tell-Birds/hehe",
             "args":{
                 "image_embed_size": 512,
                 "word_embed_size": 512,
