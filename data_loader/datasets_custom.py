@@ -267,7 +267,7 @@ class COCOTextImageDataset(Dataset):
         wrong_caption = torch.Tensor(wrong_caption).long()
 
         sample = {
-                'img_id': img_id,
+                'right_img_id': img_id,
                 'right_image_32': right_image_32,
                 'right_image_64': right_image_64,
                 'right_image_128': right_image_128,
@@ -412,7 +412,7 @@ class TextImageDataset(Dataset):
         wrong_caption = torch.Tensor(wrong_caption).long()
 
         sample = {
-                'img_id': img_id,
+                'right_img_id': img_id,
                 'right_image_32': right_image_32,
                 'right_image_64': right_image_64,
                 'right_image_128': right_image_128,
