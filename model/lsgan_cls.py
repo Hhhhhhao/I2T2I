@@ -105,8 +105,7 @@ class discriminator(BaseModel):
 
         self.netD_2 = nn.Sequential(
             # state size. (ndf*8) x 4 x 4
-            nn.Conv2d(self.ndf * 8 + self.projected_embed_dim, 1, 4, 1, 0, bias=False),
-            nn.Sigmoid()
+            nn.Conv2d(self.ndf * 8 + self.projected_embed_dim, 1, 4, 1, 0, bias=False)
         )
 
     def forward(self, inp, embed):

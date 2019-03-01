@@ -10,6 +10,7 @@ from torch.autograd import Variable
 import pdb
 import torch.nn.functional as F
 
+
 class Text2ImageDataset_Origin(Dataset):
 
     def __init__(self, data_dir, dataset_name, which_set, transform=None):
