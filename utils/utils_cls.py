@@ -87,12 +87,12 @@ class Utils(object):
         # Get random interpolation between real and fake samples
         interpolates = (alpha * real_samples + ((1 - alpha) * fake_samples + (1 - alpha) * wrong_samples) * 0.5).requires_grad_(True)
 
-        d_interpolates = D(interpolates, real_embed)
-        fake = autograd.Variable(torch.Tensor(real_samples.shape[0], 1).fill_(1.0), requires_grad=False)
+        d_interpolates, _ = D(interpolates, real_embed)
+        fake = autograd.Variable(torch.Tensor(real_samples.shape[0], 1).fill_(1.0), requires_grad=False).squeeze(1)
         # Get gradient w.r.t. interpolates
         gradients = autograd.grad(
             outputs=d_interpolates,
-            inputs=[interpolates, real_embed],
+            inputs=interpolates,
             grad_outputs=fake,
             create_graph=True,
             retain_graph=True
