@@ -92,7 +92,7 @@ class BaseGANTrainer:
         else:
             print("load generator")
             checkpoint = torch.load(self.config["models"]["Generator"]["pretrain_path"])
-            self.generator.load_state_dict(checkpoint['state_dict'])
+            self.generator.load_state_dict(checkpoint['generator_state_dict'])
 
         if not os.path.exists(self.config["models"]["Discriminator"]["pretrain_path"]):
             print("pre train discriminator")
@@ -100,7 +100,7 @@ class BaseGANTrainer:
         else:
             print("load discriminator")
             checkpoint = torch.load(self.config["models"]["Discriminator"]["pretrain_path"])
-            self.generator.load_state_dict(checkpoint['state_dict'])
+            self.generator.load_state_dict(checkpoint['discriminator_state_dict'])
 
     def train(self):
         """
