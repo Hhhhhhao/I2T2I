@@ -99,7 +99,7 @@ class Trainer(object):
                 wrong_images = Variable(wrong_images.float()).to(self.device)
 
                 real_labels = torch.ones(right_images.size(0))
-                fake_labels = - torch.ones(right_images.size(0))
+                fake_labels = -torch.ones(right_images.size(0))
 
                 real_labels = Variable(real_labels).to(self.device)
                 fake_labels = Variable(fake_labels).to(self.device)
@@ -139,6 +139,8 @@ class Trainer(object):
                 fake_image = self.generator(right_embed, noise)
                 outputs, activation_fake = self.discriminator(fake_image, right_embed)
                 generator_real_labels = torch.zeros(right_images.size(0))
+
+                generator_real_labels = Variable(generator_real_labels).to(self.device)
 
                 activation_fake = torch.mean(activation_fake, 0)
                 activation_real = torch.mean(activation_real, 0)
