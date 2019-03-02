@@ -225,7 +225,7 @@ class Trainer(BaseGANTrainer):
 
             if self.verbosity >= 2 and batch_idx % self.log_step == 0:
                 self.logger.info('Train Epoch: {} [{}/{} ({:.0f}%)] '
-                                 'Generator Loss: [CCE:{:.6f}, RL:{:.6f}, Total:{:.6f}]'
+                                 'Generator Loss: [CCE:{:.6f}, RL:{:.6f}, Total:{:.6f}] '
                                  'Discriminator Loss: {:.6f}'.format(
                     epoch,
                     batch_idx * self.train_data_loader.batch_size,
