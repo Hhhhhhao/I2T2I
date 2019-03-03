@@ -1,18 +1,47 @@
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
-import torchvision
-import torchgan
-from torch.nn.utils.rnn import pack_padded_sequence
+import functools
+from torchgan.layers import ResidualBlock2d
+
 from base import BaseModel
 from torch.autograd import Variable
-from torchgan.models import Generator, Discriminator, DCGANGenerator, DCGANDiscriminator
-from torchgan.layers import SpectralNorm2d, ResidualBlockTranspose2d
-from math import ceil, log2
-from collections import OrderedDict
 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+
+def conv_block(input_dim, output_dim, kernel_size=3, stride=1):
+    seq = []
+    if kernel_size != 1:
+        seq += [nn.ReflectionPad2d(1)]
+
+    seq += [nn.Conv2d(input_dim, output_dim, kernel_size=kernel_size, stride=stride, padding=0, bias=True),
+            nn.BatchNorm2d(output_dim),
+            nn.LeakyReLU(0.2)]
+
+    return nn.Sequential(*seq)
+
+
+def branch_out(in_dim, out_dim=3):
+    _layers = [ nn.ReflectionPad2d(1),
+                nn.Conv2d(in_dim, out_dim,
+                kernel_size=3, padding=0, bias=False)]
+    _layers += [nn.Tanh()]
+
+    return nn.Sequential(*_layers)
+
+
+## Weights init function, DCGAN use 0.02 std
+def weights_init(m):
+    classname = m.__class__.__name__
+    if classname.find('Conv') != -1:
+        if hasattr(m, 'weight'):
+            m.weight.data.normal_(0.0, 0.02)
+    elif classname.find('BatchNorm') != -1:
+        # Estimated variance, must be around 1
+        m.weight.data.normal_(1.0, 0.02)
+        # Estimated mean, must be around 0
+        m.bias.data.fill_(0)
 
 
 class CAEmbedding(BaseModel):
@@ -22,7 +51,7 @@ class CAEmbedding(BaseModel):
         self.text_dim = text_dim
         self.embed_dim = embed_dim
         self.linear = nn.Linear(self.text_dim, self.embed_dim*2, bias=True)
-        self.relu = nn.ReLU()
+        self.relu = nn.LeakyReLU(0.2, inplace=True)
 
     def encode(self, text_embedding):
         x = self.relu(self.linear(text_embedding))
@@ -47,415 +76,329 @@ class CAEmbedding(BaseModel):
         return c_code, mean, log_var
 
 
-class HDGANGenerator(DCGANGenerator):
+class Sent2FeatMap(nn.Module):
+    # used to project a sentence code into a set of feature maps
+    def __init__(self, in_dim, row, col, channel, activ=None):
+        super(Sent2FeatMap, self).__init__()
+        self.__dict__.update(locals())
+        out_dim = row*col*channel
+        norm_layer = functools.partial(nn.BatchNorm1d, affine=True)
+        _layers = [nn.Linear(in_dim, out_dim)]
+        _layers += [norm_layer(out_dim)]
+        if activ is not None:
+            _layers += [activ]
+        self.out = nn.Sequential(*_layers)
+
+    def forward(self, inputs):
+        output = self.out(inputs)
+        output = output.view(-1, self.channel, self.row, self.col)
+        return output
+
+
+class ResidualBlock(BaseModel):
+    def __init__(self, input_dim):
+        super(ResidualBlock, self).__init__()
+        self.res_block = ResidualBlock2d(
+            filters=[input_dim, input_dim, input_dim],
+            kernels=[3, 3],
+            strides=[1, 1],
+            paddings=[1, 1]
+        )
+
+    def forward(self, input):
+        return self.res_block(input)
+
+
+class ImageDownSample(BaseModel):
+    def __init__(self, input_size, num_chan, out_dim):
+        """
+            Parameters:
+            ----------
+            input_size: int
+                input image size, can be 64, or 128, or 256
+            num_chan: int
+                channel of input images.
+            out_dim : int
+                the channel dimension of generated image code.
+        """
+
+        super(ImageDownSample, self).__init__()
+        self.__dict__.update(locals())
+
+        _layers = []
+        # use large kernel_size at the end to prevent using zero-padding and stride
+        if input_size == 64:
+            curr_dim = 128
+            _layers += [conv_block(num_chan, curr_dim, kernel_size=3, stride=2)]  # 32
+            _layers += [conv_block(curr_dim, curr_dim*2, kernel_size=3, stride=2)]  # 16
+            _layers += [conv_block(curr_dim*2, curr_dim*4, kernel_size=3, stride=2)]  # 8
+            _layers += [conv_block(curr_dim*4, out_dim, kernel_size=3, stride=1)] # 4
+
+        if input_size == 128:
+            curr_dim = 64
+            _layers += [conv_block(num_chan, curr_dim, kernel_size=3, stride=2)]  # 64
+            _layers += [conv_block(curr_dim, curr_dim*2, kernel_size=3, stride=2)]  # 32
+            _layers += [conv_block(curr_dim*2, curr_dim*4, kernel_size=3, stride=2)]  # 16
+            _layers += [conv_block(curr_dim*4, curr_dim*8, kernel_size=3, stride=2)] # 8
+            _layers += [conv_block(curr_dim*8, out_dim, kernel_size=3, stride=1)] # 4
+
+        if input_size == 256:
+            curr_dim = 32 # for testing
+            _layers += [conv_block(num_chan, curr_dim, kernel_size=3, stride=2)]  # 128
+            _layers += [conv_block(curr_dim, curr_dim*2, kernel_size=3, stride=2)]  # 64
+            _layers += [conv_block(curr_dim*2, curr_dim*4, kernel_size=3, stride=2)]  # 32
+            _layers += [conv_block(curr_dim*4, curr_dim*8, kernel_size=3, stride=2)] # 16
+            _layers += [conv_block(curr_dim*8, out_dim, kernel_size=3, stride=2)] # 8
+
+        self.encode = nn.Sequential(*_layers)
+
+    def forward(self, inputs):
+
+        out = self.encode(inputs)
+        return out
+
+
+class DiscClassifier(BaseModel):
+    def __init__(self, enc_dim, emb_dim, kernel_size):
+        """
+           Parameters:
+           ----------
+           enc_dim: int
+               the channel of image code.
+           emb_dim: int
+               the channel of sentence code.
+           kernel_size : int
+               kernel size used for final convolution.
+       """
+
+        super(DiscClassifier, self).__init__()
+        self.__dict__.update(locals())
+
+        inp_dim = enc_dim + emb_dim
+
+        _layers = [conv_block(inp_dim, enc_dim, kernel_size=1, stride=1),
+                   nn.Conv2d(enc_dim, 1, kernel_size=kernel_size, padding=0, bias=True)]
+
+        self.node = nn.Sequential(*_layers)
+
+    def forward(self, sent_code, img_code):
+        sent_code = sent_code.unsqueeze(-1).unsqueeze(-1)
+        dst_shape = list(sent_code.size())
+        dst_shape[1] = sent_code.size()[1]
+        dst_shape[2] = img_code.size()[2]
+        dst_shape[3] = img_code.size()[3]
+        sent_code = sent_code.expand(dst_shape)
+        comp_inp = torch.cat([img_code, sent_code], dim=1)
+        output = self.node(comp_inp)
+        chn = output.size()[1]
+        output = output.view(-1, chn)
+
+        return output
+
+
+class HDGANGenerator(BaseModel):
+
     def __init__(self,
                  text_embed_dim=1024,
                  ca_code_dim=128,
                  noise_dim=128,
-                 image_size=256,
-                 image_channels=3,
-                 discriminator_at=['64', '128', '256'],
-                 step_channels=64,
-                 batchnorm=True,
-                 nonlinearity=None,
-                 last_nonlinearity=None,
-                 label_type='none'):
-        super(HDGANGenerator, self).__init__(
-                encoding_dims=ca_code_dim+noise_dim,
-                out_size=image_size,
-                out_channels=image_channels,
-                step_channels=step_channels,
-                batchnorm=batchnorm,
-                nonlinearity=nonlinearity,
-                last_nonlinearity=last_nonlinearity,
-                label_type=label_type)
-        self.intermediate_output = discriminator_at
+                 num_resblock=1,
+                 side_output_at=[64, 128, 256]):
+        super(HDGANGenerator, self).__init__()
+        self.__dict__.update(locals())
+        # feature map dimension reduce at which resolution
+        reduce_dim_at = [8, 32, 128, 256]
+        # different sacles for all network
+        num_scales = [4, 8, 16, 32, 64, 128, 256]
+        # initialize feature map dimension
+        curr_dim = 1024
+
+        self.sent2featmap = Sent2FeatMap(ca_code_dim+noise_dim, 4, 4, curr_dim)
+        self.side_output_at = side_output_at
         self.ca_embedding = CAEmbedding(text_embed_dim, ca_code_dim)
 
+        for i in range(len(num_scales)):
+            seq = []
+            # upsampling
+            if i != 0:
+                seq += [nn.Upsample(scale_factor=2, mode='nearest')]
+
+            # if need to reduce dimension
+            if num_scales[i] in reduce_dim_at:
+                seq += [conv_block(curr_dim, curr_dim//2, kernel_size=3)]
+                curr_dim = curr_dim//2
+            # add residual blocks
+            for n in range(num_resblock):
+                seq += [ResidualBlock(curr_dim)]
+
+            # add main convolutional module
+            setattr(self, 'scale_%d' % (num_scales[i]), nn.Sequential(*seq))
+
+            if num_scales[i] in self.side_output_at:
+                setattr(self, 'tensor_to_img_%d' %
+                        (num_scales[i]), branch_out(curr_dim))
+
+        self.apply(weights_init)
+        print('>> Init HDGAN Generator')
+        print('\t side output at {}'.format(str(side_output_at)))
+
     def forward(self, text_embedding, noise):
-        """Calculates the output tensor on passing the encoding ``x`` through the Generator.
-
-        Args:
-            noise (torch.Tensor): A 2D torch tensor of the encoding sampled from a probability
-                distribution.
-            feature_matching (bool, optional): Returns the activation from a predefined intermediate
-                layer.
-
-        Returns:
-            A 4D torch.Tensor of the generated image.
         """
 
-        output = OrderedDict()
+        :param text_embedding: [batch_size, sent_dim], sentence emcodeing using DAMSM or Char-rnn
+        :param noise: [batch_size, noise_dim] noise_input
+        :return:
+        """
 
-        c_code, mean, log_var = self.ca_embedding(text_embedding)
-        # print("c shape:{}".format(c_code.shape))
-        x = torch.cat((noise, c_code), 1)
-        # print("x shape:{}".format(x.shape))
-        x = x.view(-1, x.size(1), 1, 1)
-        # print("input shape:{}".format(x.shape))
-        for i in range(len(self.model)):
-            x = self.model[i](x)
-            if str(x.shape[-1]) in self.intermediate_output:
-                output[str(x.shape[-1])] = x
-            # print("middle {} shape:{}".format(i, x.shape))
-            # print(str(x.shape[-1]))
-        return output, mean, log_var
+        text_random, mean, logsigma = self.ca_embedding(text_embedding)
+        x_in = torch.cat([text_random, noise], dim=1)
+
+        # transform input vector into feature maps 4x4x1024
+        x = self.sent2featmap(x_in)
+
+        x_4 = self.scale_4(x)
+        x_8 = self.scale_8(x_4)
+        x_16 = self.scale_16(x_8)
+        x_32 = self.scale_32(x_16)
+
+        # skip 4x4 feature map to 32 and send to 64
+        x_64 = self.scale_64(x_32)
+        output_64 = self.tensor_to_img_64(x_64)
+
+        # skip 8x8 feature map to 64 and send to 128
+        x_128 = self.scale_128(x_64)
+        output_128 = self.tensor_to_img_128(x_128)
+
+        # skip 16x16 feature map to 128 and send to 256
+        x_256 = self.scale_256(x_128)
+        output_256 = self.tensor_to_img_256(x_256)
+
+        return output_64, output_128, output_256, mean, logsigma
+
+    def freeze(self):
+        for param in self.parameters():
+            param.requires_grad = False
+
+    def unfreeze(self):
+        for param in self.parameters():
+            param.requires_grad = True
 
 
-class HDGANDiscriminator(DCGANDiscriminator):
+class HDGANDiscriminator(BaseModel):
     def __init__(self,
                  text_embed_dim=1024,
-                 reduced_text_embed_dim=128,
-                 image_size=256,
-                 image_channels=3,
-                 step_channels=64,
-                 batchnorm=True,
-                 nonlinearity=None,
-                 last_nonlinearity=None,
-                 label_type='none'
-                 ):
-        super(HDGANDiscriminator, self).__init__(
-            in_size=image_size,
-            in_channels=image_channels,
-            step_channels=step_channels,
-            batchnorm=batchnorm,
-            nonlinearity=nonlinearity,
-            last_nonlinearity=last_nonlinearity,
-            label_type=label_type)
-        self.image_size = image_size
-        self.linear = nn.Linear(text_embed_dim, reduced_text_embed_dim, bias=True)
-        self.activation = nn.LeakyReLU(0.2)
+                 ca_code_dim=128,
+                 side_output_at=[64, 128, 256]):
+        super(HDGANDiscriminator, self).__init__()
+        self.__dict__.update(locals())
+
+        self.num_chan = 3
+        self.enc_dim = 1
+        activation = nn.LeakyReLU(0.2)
+        bn = functools.partial(nn.BatchNorm2d, affine=True)
+
+        if 64 in side_output_at:
+            self.img_encoder_64 = ImageDownSample(64, self.num_chan, self.enc_dim)  # enc_dim x 4 x 4
+            self.pair_disc_64 = DiscClassifier(self.enc_dim, ca_code_dim, kernel_size=4)  # scalar
+            self.local_img_disc_64 = nn.Conv2d(self.enc_dim, 1, kernel_size=4, padding=0, bias=True)  # 1 x 1 x 1
+            _layers = [nn.Linear(text_embed_dim, ca_code_dim), nn.LeakyReLU(0.2)]
+            self.context_emb_pipe_64 = nn.Sequential(*_layers)
+
+        if 128 in side_output_at:
+            self.img_encoder_128 = ImageDownSample(128, self.num_chan, self.enc_dim)  # enc_dim x 4 x 4
+            self.pair_disc_128 = DiscClassifier(self.enc_dim, ca_code_dim, kernel_size=4)
+            self.local_img_disc_128 = nn.Conv2d(self.enc_dim, 1, kernel_size=4, padding=0, bias=True)
+            _layers = [nn.Linear(text_embed_dim, ca_code_dim), nn.LeakyReLU(0.2)]
+            self.context_emb_pipe_128 = nn.Sequential(*_layers)
+
+        if 256 in side_output_at:
+            self.img_encoder_256 = ImageDownSample(256, self.num_chan, self.enc_dim)  # 8 x 8
+            self.pair_disc_256 = DiscClassifier(self.enc_dim, ca_code_dim, kernel_size=4)
+            self.pre_encode = conv_block(self.enc_dim, self.enc_dim, kernel_size=3, stride=1)
+            self.local_img_disc_256 = nn.Conv2d(self.enc_dim, 1, kernel_size=4, padding=0, bias=True)
+            _layers = [nn.Linear(text_embed_dim, ca_code_dim), nn.LeakyReLU(0.2)]
+            self.context_emb_pipe_256 = nn.Sequential(*_layers)
+
+        self.apply(weights_init)
+        print('>> Init HDGAN Discriminator')
+        print('\t Add adversarial loss at scale {}'.format(str(side_output_at)))
 
     def forward(self, images, text_embeddings):
-        image_size = images.size()[-1]
-        assert image_size == self.image_size, "wrong input size {} in discriminator".format(image_size)
-
-        disc_output = self.model[:-1](images)
-        print(disc_output.shape)
-
-#
-#
-# class HDGANDiscriminator(BaseModel):
-#     def __init__(self,
-#                  text_embed_dim=1024,
-#                  reduced_text_embed_dim=128,
-#                  image_size=256,
-#                  image_channels=3,
-#                  step_channels=64,
-#                  discriminator_at=['64', '128', '256'],
-#                  batchnorm=True,
-#                  nonlinearity=None,
-#                  last_nonlinearity=nn.Sigmoid(),
-#                  label_type='none'
-#                  ):
-#         super(HDGANDiscriminator).__init__()
-#
-#         self.discriminators = OrderedDict()
-#         self.discriminator_at = discriminator_at
-#         self.linear = nn.Linear(text_embed_dim, reduced_text_embed_dim, bias=True)
-#         self.activation = nn.LeakyReLU(0.2, True)
-#
-#         for i, in_size in enumerate(discriminator_at):
-#             if i == 2 and in_size == str(image_size):
-#                 in_channels=image_channels
-#             else:
-#                 in_channels=(i-1)*step_channels
-#
-#             self.discriminators[in_size] = DCGANDiscriminator(
-#                 in_size=in_size,
-#                 in_channels=in_channels,
-#                 step_channels=step_channels,
-#                 batchnorm=batchnorm,
-#                 nonlinearity=nonlinearity,
-#                 last_nonlinearity=last_nonlinearity,
-#                 label_type=label_type
-#             )
-#
-#             print("discriminator:{}".format(in_size))
-#             print(self.discriminators[in_size])
-#
-#
-#     def forward(self, images, text_embedding):
-#
-#         image_size = images.size()[-1]
-#         assert image_size in self.discriminator_at, "wrong input size {} in discriminator".format(image_size)
-#
-#         disc_output = self.discriminators[str(image_size)][:-1](images)
-#         print(disc_output)
-
-
-
-
-
-
-
-
-
-
-
-
-
-class EncoderCNN(BaseModel):
-    """
-    Encoder
-    """
-
-    def __init__(self, image_size=256, encode_image_size=4, embed_size=256):
-        super(EncoderCNN, self).__init__()
-
-        resnet = torchvision.models.resnet34(pretrained=True)
-
-        # Remove linear and pool layers
-        modules = list(resnet.children())[:-2]
-        self.resnet = nn.Sequential(*modules)
-
-        self.adaptive_pool = nn.AdaptiveAvgPool2d((encode_image_size, encode_image_size))
-        # Resize image to fixed size to allow input images of variable size
-        self.linear = nn.Linear(encode_image_size**2 * 512, embed_size)
-        self.bn = nn.BatchNorm1d(embed_size, momentum=0.01)
-        self.init_weights()
-        self.fine_tune()
-
-    def init_weights(self):
-        self.linear.weight.data.normal_(0.0, 0.01)
-        self.linear.bias.data.fill_(0)
-
-    def forward(self, images):
-        """
-        Forward propagation.
-
-        :param images: images, a tensor of dimensions (batch_size, 3, image_size, image_size)
-        :return: encoded images
         """
 
-        features = self.resnet(images)
-        features = self.adaptive_pool(features)
-        features = features.view(features.size(0), -1)
-        features = self.linear(features)
-        features = self.bn(features)  # (batch_size, embed_size)
-
-        return features
-
-    def fine_tune(self, fine_tune=True):
+        :param images: (batch_size, channels, h, w) input image tensor
+        :param text_embeddings: (batch_size, text_embed_size) corresponding embedding
+        :return:
         """
-        Allow or prevent the computation of gradients for convolutional blocks 2 through 4 of the encoder.
+        img_size = images.size()[3]
+        assert img_size in [64, 128, 256], "wrong input size {} in discriminator".format(image_size)
 
-        :param fine_tune:
-        """
+        img_encoder = getattr(self, 'img_encoder_{}'.format(img_size))
+        local_img_disc = getattr(self, 'local_img_disc_{}'.format(img_size))
+        pair_disc = getattr(self, 'pair_disc_{}'.format(img_size))
+        context_emb_pipe = getattr(self, 'context_emb_pipe_{}'.format(img_size))
 
-        for p in self.resnet.parameters():
-            p.requires_grad = False
-        # If fine-tuning, only fine tune convolutional blocks 2 through 4
-        for c in list(self.resnet.children())[5:]:
-            for p in c.parameters():
-                p.requires_grad = fine_tune
+        text_code = context_emb_pipe(text_embeddings)
+        img_code = img_encoder(images)
 
+        if img_size == 256:
+            pre_img_code = self.pre_encode(img_code)
+            pair_disc_out = pair_disc(text_code, pre_img_code)
+        else:
+            pair_disc_out = pair_disc(text_code, img_code)
 
-class DecoderRNN(BaseModel):
-    def __init__(self, embed_size, hidden_size, vocab_size, num_layers=1):
-        """
-        Set the hyper-parameters and build the layers.
+        local_img_disc_out = local_img_disc(img_code)
 
-        :param embed_size: word embedding size
-        :param hidden_size: hidden unit size of LSTM
-        :param vocab_size: size of vocabulary (output of the network)
-        :param num_layers:
-        :param dropout: use of drop out
-        """
-        super(DecoderRNN, self).__init__()
-        self.embed_size = embed_size
-        self.hidden_size = hidden_size
-        self.vocab_size = vocab_size
+        return pair_disc_out, local_img_disc_out
 
-        self.embedding = nn.Embedding(vocab_size, embed_size) # embedding layer
-        self.lstm = nn.LSTM(embed_size, hidden_size, num_layers, bias=True, batch_first=True)
-        self.linear = nn.Linear(hidden_size, vocab_size)   # linear layer to find scores over vocabulary
-        self.init_weights()
+    def freeze(self):
+        for param in self.parameters():
+            param.requires_grad = False
 
-    def init_weights(self):
-        """
-        Initializes some parameters with values from the uniform distribution, for easier convergence.
-        """
-        self.embedding.weight.data.uniform_(-0.1, 0.1)
-        self.linear.bias.data.fill_(0)
-        self.linear.weight.data.uniform_(-0.1, 0.1)
-
-    def forward(self, features, captions, caption_lengths):
-        """
-        Decode image feature vectors and generate captions.
-
-        :param features: encoded images, a tensor of dimension (batch_size, encoded_image_size, encoded_image_size, 2048)
-        :param captions: encoded captions, a tensor of dimension (batch_size, max_caption_length)
-        :param caption_lengths: caption lengths, a tensor of dimension (batch_size, 1)
-        :return: scores of vocabulary, sorted encoded captions, decode lengths, weights, sort indices
-        """
-        # Embedding
-        embeddings = self.embedding(captions)  # (batch_size, max_caption_length, embed_dim)
-        embeddings = torch.cat((features.unsqueeze(1), embeddings), 1)
-        packed = pack_padded_sequence(embeddings, caption_lengths, batch_first=True)
-        hiddens, _ = self.lstm(packed)
-        outputs = self.linear(hiddens[0])
-        return outputs
-
-    def sample(self, features, states=None, max_len=20):
-        """Accept a pre-processed image tensor (inputs) and return predicted
-        sentence (list of tensor ids of length max_len). This is the greedy
-        search approach.
-        """
-        sampled_ids = []
-        inputs = features.unsqueeze(1)
-        for i in range(max_len):
-            hiddens, states = self.lstm(inputs, states) # (batch_size, 1, hidden_size)
-            outputs = self.linear(hiddens.squeeze(1))  # (batch_size, vocab_size)
-            # Get the index (in the vocabulary) of the most likely integer that
-            # represents a word
-            predicted = outputs.argmax(1)
-            sampled_ids.append(predicted.item())
-            inputs = self.embed(predicted)
-            inputs = inputs.unsqueeze(1)
-        return sampled_ids
-
-    def sample_beam_search(self, features, states=None, max_len=20, beam_width=5):
-        """Accept a pre-processed image tensor and return the top predicted
-        sentences. This is the beam search approach.
-        """
-        # Top word idx sequences and their corresponding inputs and states
-        inputs = features.unsqueeze(1)
-        idx_sequences = [[[], 0.0, inputs, states]]
-        for _ in range(max_len):
-            # Store all the potential candidates at each step
-            all_candidates = []
-            # Predict the next word idx for each of the top sequences
-            for idx_seq in idx_sequences:
-                hiddens, states = self.lstm(idx_seq[2], idx_seq[3])
-                outputs = self.linear(hiddens.squeeze(1))
-                # Transform outputs to log probabilities to avoid floating-point
-                # underflow caused by multiplying very small probabilities
-                log_probs = F.log_softmax(outputs, -1)
-                top_log_probs, top_idx = log_probs.topk(beam_width, 1)
-                top_idx = top_idx.squeeze(0)
-                # create a new set of top sentences for next round
-                for i in range(beam_width):
-                    next_idx_seq, log_prob = idx_seq[0][:], idx_seq[1]
-                    next_idx_seq.append(top_idx[i].item())
-                    log_prob += top_log_probs[0][i].item()
-                    # Indexing 1-dimensional top_idx gives 0-dimensional tensors.
-                    # We have to expand dimensions before embedding them
-                    inputs = self.embed(top_idx[i].unsqueeze(0)).unsqueeze(0)
-                    all_candidates.append([next_idx_seq, log_prob, inputs, states])
-            # Keep only the top sequences according to their total log probability
-            ordered = sorted(all_candidates, key=lambda x: x[1], reverse=True)
-            idx_sequences = ordered[:beam_width]
-        return [idx_seq[0] for idx_seq in idx_sequences]
-
-
-class ImageCaptionModel(BaseModel):
-    def __init__(self, image_size, image_encode_size, image_embed_size, word_embed_size, lstm_hidden_size, vocab_size, lstm_num_layers=1):
-        super(ImageCaptionModel, self).__init__()
-        self.image_size = image_size
-        self.image_encode_size = image_encode_size
-        self.image_embed_size = image_embed_size
-        self.word_embed_size = word_embed_size
-        self.lstm_hidden_size = lstm_hidden_size
-        self.lstm_num_layers = lstm_num_layers
-        self.vocab_size = vocab_size
-
-        self.encoder = EncoderCNN(self.image_size, self.image_encode_size, self.image_embed_size)
-        self.decoder = DecoderRNN(self.word_embed_size, self.lstm_hidden_size, self.vocab_size, self.lstm_num_layers)
-
-    def forward(self, images, captions, caption_lengths):
-        features = self.encoder(images)
-        outputs = self.decoder(features, captions, caption_lengths)
-        return outputs
-
-    def sample(self, images, states=None, max_len=20):
-        """Accept a pre-processed image tensor (inputs) and return predicted
-        sentence (list of tensor ids of length max_len). This is the greedy
-        search approach.
-        """
-        sampled_ids = []
-        features = self.encoder(images)
-        inputs = features.unsqueeze(1)
-        for i in range(max_len):
-            hiddens, states = self.lstm(inputs, states) # (batch_size, 1, hidden_size)
-            outputs = self.linear(hiddens.squeeze(1))  # (batch_size, vocab_size)
-            # Get the index (in the vocabulary) of the most likely integer that
-            # represents a word
-            predicted = outputs.argmax(1)
-            sampled_ids.append(predicted.item())
-            inputs = self.embed(predicted)
-            inputs = inputs.unsqueeze(1)
-        return sampled_ids
-
-    def sample_beam_search(self, images, states=None, max_len=20, beam_width=5):
-        """Accept a pre-processed image tensor and return the top predicted
-        sentences. This is the beam search approach.
-        """
-        features = self.encoder(images)
-        # Top word idx sequences and their corresponding inputs and states
-        inputs = features.unsqueeze(1)
-        idx_sequences = [[[], 0.0, inputs, states]]
-        for _ in range(max_len):
-            # Store all the potential candidates at each step
-            all_candidates = []
-            # Predict the next word idx for each of the top sequences
-            for idx_seq in idx_sequences:
-                hiddens, states = self.lstm(idx_seq[2], idx_seq[3])
-                outputs = self.linear(hiddens.squeeze(1))
-                # Transform outputs to log probabilities to avoid floating-point
-                # underflow caused by multiplying very small probabilities
-                log_probs = F.log_softmax(outputs, -1)
-                top_log_probs, top_idx = log_probs.topk(beam_width, 1)
-                top_idx = top_idx.squeeze(0)
-                # create a new set of top sentences for next round
-                for i in range(beam_width):
-                    next_idx_seq, log_prob = idx_seq[0][:], idx_seq[1]
-                    next_idx_seq.append(top_idx[i].item())
-                    log_prob += top_log_probs[0][i].item()
-                    # Indexing 1-dimensional top_idx gives 0-dimensional tensors.
-                    # We have to expand dimensions before embedding them
-                    inputs = self.embed(top_idx[i].unsqueeze(0)).unsqueeze(0)
-                    all_candidates.append([next_idx_seq, log_prob, inputs, states])
-            # Keep only the top sequences according to their total log probability
-            ordered = sorted(all_candidates, key=lambda x: x[1], reverse=True)
-            idx_sequences = ordered[:beam_width]
-        return [idx_seq[0] for idx_seq in idx_sequences]
+    def unfreeze(self):
+        for param in self.parameters():
+            param.requires_grad = True
 
 
 if __name__ == '__main__':
+    generator = HDGANGenerator()
+    generator.summary()
 
-    from data_loader import TextEmbeddingDataLoader
-    import numpy as np
+    discriminator = HDGANDiscriminator()
+    discriminator.summary()
 
-    birds_data_loader = TextEmbeddingDataLoader(
-        data_dir='/Users/leon/Projects/I2T2I/data/',
-        dataset_name="flowers",
-        which_set='train',
-        image_size=256,
-        batch_size=16,
-        num_workers=0
-    )
-
-    generator = HDGANGenerator(
-                 text_embed_dim=1024,
-                 ca_code_dim=128,
-                 noise_dim=128)
-    print(generator.model)
-
-    discriminator = HDGANDiscriminator(
-                 text_embed_dim=1024,
-                 reduced_text_embed_dim=128,
-                 image_size=256,
-                 image_channels=3)
-
-
-    for i, sample in enumerate(birds_data_loader):
-        images = sample["right_image"]
-        text_embeddings = sample["right_embed"]
-        noise = Variable(torch.FloatTensor(np.random.normal(0, 1, (images.shape[0], 128))))
-        generator(text_embeddings, noise)
-
-        discriminator(images, text_embeddings)
+    # from data_loader import TextEmbeddingDataLoader
+    # import numpy as np
+    #
+    # birds_data_loader = TextEmbeddingDataLoader(
+    #     data_dir='/Users/leon/Projects/I2T2I/data/',
+    #     dataset_name="flowers",
+    #     which_set='train',
+    #     image_size=256,
+    #     batch_size=16,
+    #     num_workers=0
+    # )
+    #
+    # generator = HDGANGenerator(
+    #              text_embed_dim=1024,
+    #              ca_code_dim=128,
+    #              noise_dim=128)
+    # print(generator.model)
+    #
+    # discriminator = HDGANDiscriminator(
+    #              text_embed_dim=1024,
+    #              reduced_text_embed_dim=128,
+    #              image_size=256,
+    #              image_channels=3)
+    #
+    #
+    # for i, sample in enumerate(birds_data_loader):
+    #     images = sample["right_image"]
+    #     text_embeddings = sample["right_embed"]
+    #     noise = Variable(torch.FloatTensor(np.random.normal(0, 1, (images.shape[0], 128))))
+    #     generator(text_embeddings, noise)
+    #
+    #     discriminator(images, text_embeddings)
 
 
 

@@ -1,33 +1,56 @@
 {
-    "name": "Show-and-Tell-Birds",
+    "name": "HDGAN-Birds",
     "n_gpu": 1,
-    
-    "arch": {
-        "type": "ImageCaptionModel",
-        "args": {
-            "image_size":256,
-            "image_encode_size":4,
-            "image_embed_size":256,
-            "word_embed_size": 256,
-            "lstm_hidden_size":512,
-            "vocab_size":888
+
+    "models": {
+        "Generator":{
+            "type":"HDGANGenerator",
+            "args":{
+                "text_embed_dim": 1024,
+                "ca_code_dim": 128,
+                "noise_dim":100,
+                "num_resblock":1,
+                "side_output_at":[64, 128, 256]
+            },
+            "optimizer":{
+                "type":"Adam",
+                "args":{
+                    "lr": 4e-4,
+                    "weight_decay":0
+                        }
+            }
+        },
+        "Discriminator": {
+            "type":"HDGANDiscriminator",
+            "args":{
+                "text_embed_dim": 1024,
+                "ca_code_dim": 128,
+                "side_output_at":[64, 128, 256]
+            },
+            "optimizer":{
+                "type":"Adam",
+                "args":{
+                    "lr": 2e-4,
+                    "weight_decay":0
+                        }
         }
-    },
+    }},
+
     "train_data_loader": {
-        "type": "CaptionDataLoader",
+        "type": "TextImageDataLoader",
         "args":{
-            "data_dir": "/home/s1786991/I2T2I/data/",
+            "data_dir": "/Users/leon/Projects/I2T2I/data/",
             "dataset_name":"birds",
             "which_set": "train",
             "image_size":256,
-            "batch_size": 32,
+            "batch_size":32,
             "num_workers": 0
         }
     },
     "valid_data_loader": {
-        "type": "CaptionDataLoader",
+        "type": "TextImageDataLoader",
         "args":{
-            "data_dir": "/home/s1786991/I2T2I/data/",
+            "data_dir": "/Users/leon/Projects/I2T2I/data/",
             "dataset_name":"birds",
             "which_set": "valid",
             "image_size":256,
@@ -35,25 +58,14 @@
             "num_workers": 0
         }
     },
-    "optimizer": {
-        "type": "Adam",
-        "args":{
-            "lr": 2e-4,
-            "weight_decay": 0,
-            "amsgrad": true
-        }
-    },
-    "loss": "cross_entropy_loss",
-    "metrics": [],
     "trainer": {
-        "epochs": 100,
+        "epochs": 400,
+        "KL_coe":4,
         "save_dir": "saved/",
         "save_period": 1,
         "verbosity": 2,
-        
-        "monitor": "min val_loss",
-        "early_stop": 3,
-        
+        "monitor": "off",
+        "early_stop": 2,
         "tensorboardX": true,
         "log_dir": "saved/runs"
     }
