@@ -63,11 +63,6 @@ def main(config, resume):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model = model.to(device)
     model.eval()
-
-    total_loss = 0.0
-    total_metrics = torch.zeros(len(metric_fns))
-
-    save_dir = os.path.dirname(resume)
     save_dir = os.path.dirname(resume)
     example_dir = os.path.join(save_dir, 'examples')
     if not os.path.exists(example_dir):
@@ -97,7 +92,6 @@ def main(config, resume):
             pred_captions = model.decoder.sample_beam_search(batch_features, beam_width=3)
 
             pred_sentence = convert_back_to_text(list(pred_captions[0]), data_loader.dataset.vocab)
-            # pred_sentence = convert_back_to_text(list(pred_captions), data_loader.dataset.vocab)
             target_sentence = convert_back_to_text(batch_captions.cpu().tolist()[0], data_loader.dataset.vocab)
 
             if i % 500 == 0:
@@ -142,7 +136,7 @@ def main(config, resume):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='PyTorch Template')
 
-    parser.add_argument('-r', '--resume', default='/Users/leon/Projects/I2T2I/saved/Show-and-Tell-Flowers/0212_233922/checkpoint-epoch2.pth', type=str,
+    parser.add_argument('-r', '--resume', default='/Users/leon/Projects/I2T2I/output/Show-and-Tell-Bir/0226_171950/model_best.pth', type=str,
                            help='path to latest checkpoint (default: None)')
     parser.add_argument('-d', '--device', default=None, type=str,
                            help='indices of GPUs to enable (default: all)')
@@ -156,7 +150,9 @@ if __name__ == '__main__':
             config = torch.load(args.resume, map_location='cpu')['config']
     if args.device:
         os.environ["CUDA_VISIBLE_DEVICES"] = args.device
-    _, _, save_dir = main(config, args.resume)
+
+    # _, _, save_dir = main(config, args.resume)
+    save_dir = os.path.dirname(args.resume)
 
     with open(os.path.join(save_dir, 'gts.json'), 'r') as f:
         gts = json.load(f)
