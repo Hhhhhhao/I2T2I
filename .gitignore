@@ -1,3 +1,6 @@
+data.zip
+output/*
+
 /data/*
 /saved/*
 /eval_metrics/spice/lib/*
