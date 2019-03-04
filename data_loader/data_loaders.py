@@ -313,9 +313,6 @@ if __name__ == '__main__':
 
     print(len(data_loader.dataset.vocab))
     print(data_loader.dataset.vocab.word2idx)
-    # 10330 for coco
-    #  for birds
-    #  for flowers
 
     for i, (images, captions, caption_lengths) in enumerate(data_loader):
         print("done")
