@@ -3,7 +3,6 @@ import json
 import argparse
 import torch
 import data_loader.data_loaders as module_data
-import model.loss as module_loss
 import model.metric as module_metric
 import model.model as module_arch
 from trainer.gan_trainer import Trainer
@@ -32,7 +31,7 @@ def main(config, resume):
 
     # get function handles of loss and metrics
     loss = torch.nn.MSELoss()
-    metrics = [getattr(module_metric, met) for met in config['metrics']]
+    metrics = None
 
     model_config = config["models"]
     models = {}
@@ -63,7 +62,7 @@ def main(config, resume):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='PyTorch Template')
-    parser.add_argument('-c', '--config', default="config/birds_config.json", type=str,
+    parser.add_argument('-c', '--config', default="config/coco_config.json", type=str,
                         help='config file path (default: None)')
     parser.add_argument('-r', '--resume', default=None, type=str,
                         help='path to latest checkpoint (default: None)')

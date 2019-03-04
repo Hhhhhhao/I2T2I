@@ -39,7 +39,7 @@
     "train_data_loader": {
         "type": "TextImageDataLoader",
         "args":{
-            "data_dir": "/Users/leon/Projects/I2T2I/data/",
+            "data_dir": "/home/s1786991/I2T2I/data/",
             "dataset_name":"birds",
             "which_set": "train",
             "image_size":256,
@@ -50,7 +50,7 @@
     "valid_data_loader": {
         "type": "TextImageDataLoader",
         "args":{
-            "data_dir": "/Users/leon/Projects/I2T2I/data/",
+            "data_dir": "/home/s1786991/I2T2I/data/",
             "dataset_name":"birds",
             "which_set": "valid",
             "image_size":256,

@@ -174,4 +174,4 @@ def to_numpy(src):
         x = src.data
     else:
         x = src
-    return x.cpu().numpy()
+    return x.detach().cpu().numpy()

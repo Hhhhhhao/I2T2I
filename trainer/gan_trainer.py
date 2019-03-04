@@ -3,12 +3,8 @@ import numpy as np
 import torch
 from torch.autograd import Variable
 from torchvision.utils import make_grid
-from torch.nn.utils.rnn import pack_padded_sequence
 from base import BaseGANTrainer
-from utils import get_caption_lengths
 from model.damsm import DAMSM
-from utils.plot_utils import *
-from utils.util import to_numpy
 
 dirname = os.path.dirname(__file__)
 main_dirname = os.path.dirname(dirname)
@@ -45,40 +41,23 @@ class Trainer(BaseGANTrainer):
         self.log_step = int(np.sqrt(data_loader.batch_size))
 
         self.image_size = self.config["train_data_loader"]["args"]["image_size"]
-        self.noise_dim = self.config["models"]["generator"]["args"]["noise_dim"]
+        self.noise_dim = self.config["models"]["Generator"]["args"]["noise_dim"]
 
         print("load damsm ecoding model")
         self.damsm = DAMSM(
-            vocab_size=self.train_data_loader.dataset.vocab,
+            vocab_size=len(self.train_data_loader.dataset.vocab),
             word_embed_size=512,
             embedding_size=1024)
-        if "bird" in self.config.name:
+        if "bird" in self.config["name"]:
             resume_path = birds_damsm
-        elif "flower" in self.config.name:
+        elif "flower" in self.config["name"]:
             resume_path = flowers_damsm
-        elif "CoCo" in self.config.name:
+        elif "CoCo" in self.config["name"]:
             resume_path = coco_damsm
         else:
             raise ValueError("cannot find corresponding damsm model path")
-        checkpoint = torch.load(resume_path)
+        checkpoint = torch.load(resume_path, map_location=self.device)
         self.damsm.load_state_dict(checkpoint["state_dict"])
-
-    def init_plots(self):
-        # -------------init ploters for losses----------------------------#
-        display_freq = 200 # update loss every 200 batches
-        self.d_loss_plot = plot_scalar(
-            name="d_loss", env=self.config.name, rate=display_freq)
-        self.g_loss_plot = plot_scalar(
-            name="g_loss", env=self.config.name, rate=display_freq)
-        self.kl_loss_plot = plot_scalar(name="kl_loss", env=self.config.name, rate=display_freq)
-
-        all_keys = ["64", "128", "256"]
-        self.g_plot_dict, self.d_plot_dict = {}, {}
-        for this_key in all_keys:
-            self.g_plot_dict[this_key] = plot_scalar(
-                name="g_img_loss_" + this_key, env=self.config.name, rate=display_freq)
-            self.d_plot_dict[this_key] = plot_scalar(
-                name="d_img_loss_" + this_key, env=self.config.name, rate=display_freq)
 
     def _train_epoch(self, epoch):
         """
@@ -107,7 +86,7 @@ class Trainer(BaseGANTrainer):
             right_images['64'] = data["right_images_64"].to(self.device)
             right_captions = data["right_captions"].to(self.device)
             right_caption_lengths = data["right_caption_lengths"]
-            right_embeddings = self.damsm.rnn_encoder(right_captions, right_caption_lengths)
+            _, right_embeddings = self.damsm.rnn_encoder(right_captions, right_caption_lengths)
             right_embeddings.to(self.device)
 
             # other image
@@ -117,12 +96,12 @@ class Trainer(BaseGANTrainer):
             wrong_images['64'] = data["wrong_images_64"].to(self.device)
 
             # train the generator first
-            self.generator.unfreeze()
             self.discriminator.freeze()
+            self.generator.unfreeze()
             self.generator_optimizer.zero_grad()
 
             noise = Variable(torch.randn(right_images['256'].size(0), self.noise_dim)).to(self.device)
-            noise = noise.view(noise.size(0), self.noise_dim, 1, 1)
+            noise = noise.view(noise.size(0), self.noise_dim)
             generated_images, mean_var = self.to_img_dict_(self.generator(right_embeddings, noise))
 
             generator_loss = 0
@@ -133,39 +112,31 @@ class Trainer(BaseGANTrainer):
                 fake_pair_logit, fake_img_logit_local = self.discriminator(this_fake, right_embeddings)
 
                 # -- compute pair loss ---
-                real_global_labels = torch.ones(right_images.size(0))
+                real_global_labels = torch.ones(fake_pair_logit.size(0))
                 real_labels = Variable(real_global_labels).to(self.device)
-                generator_loss += self.compute_g_loss(fake_pair_logit, real_labels)
+                pair_loss = self.compute_g_loss(fake_pair_logit, real_labels)
+                generator_loss += pair_loss
 
                 # -- compute image loss ---
-                real_local_labels = torch.ones((right_images.size(0), 1, 5, 5))
+                real_local_labels = torch.ones((right_images['256'].size(0), 1, 5, 5))
                 real_labels = Variable(real_local_labels).to(self.device)
                 img_loss = self.compute_g_loss(fake_img_logit_local, real_labels)
                 generator_loss += img_loss
-                self.g_plot_dict[key].plot(to_numpy(img_loss).mean())
 
-            if type(mean_var) == tuple:
-                kl_loss = self.get_KL_Loss(mean_var[0], mean_var[1])
-                kl_loss_val = to_numpy(kl_loss).mean()
-                generator_loss += self.config["trainer"]["KL_coe"] * kl_loss
-            else:
-                # when trian 512HDGAN. KL loss is fixed since we assume 256HDGAN is trained.
-                # mean_var actually returns pixel-wise l1 loss (see paper)
-                generator_loss += mean_var
+            # KL loss
+            kl_loss = self.get_KL_Loss(mean_var[0], mean_var[1])
+            generator_loss += self.config["trainer"]["KL_coe"] * kl_loss
 
-            self.kl_loss_plot.plot(kl_loss_val)
-            generator_loss.backward()
+            generator_loss.backward(retain_graph=True)
             self.generator_optimizer.step()
-            g_loss_val = to_numpy(generator_loss).mean()
-            self.g_loss_plot.plot(g_loss_val)
 
             # train the discriminator
-            self.generator.freeze()
             self.discriminator.unfreeze()
+            self.generator.freeze()
             self.discriminator_optimizer.zero_grad()
 
             noise = Variable(torch.randn(right_images['256'].size(0), self.noise_dim)).to(self.device)
-            noise = noise.view(noise.size(0), self.noise_dim, 1, 1)
+            noise = noise.view(noise.size(0), self.noise_dim)
             fake_images, mean_var = self.to_img_dict_(self.generator(right_embeddings, noise))
 
             discriminator_loss = 0
@@ -180,28 +151,24 @@ class Trainer(BaseGANTrainer):
                 fake_logit, fake_img_logit_local = self.discriminator(this_fake, right_embeddings)
 
                 ''' compute disc pair loss '''
-                real_global_labels = torch.ones(right_images.size(0))
-                fake_global_labels = -torch.ones(right_images.size(0))
+                real_global_labels = torch.ones(real_logit.size(0))
+                fake_global_labels = -torch.ones(real_logit.size(0))
                 real_labels = Variable(real_global_labels).to(self.device)
                 fake_labels = Variable(fake_global_labels).to(self.device)
                 pair_loss = self.compute_d_pair_loss(real_logit, wrong_logit, fake_logit, real_labels, fake_labels)
+                discriminator_loss += pair_loss
 
                 ''' compute disc image loss '''
-                real_local_labels = torch.ones((right_images.size(0), 1, 5, 5))
-                fake_local_labels = -torch.ones((right_images.size(0), 1, 5, 5))
+                real_local_labels = torch.ones((right_images['256'].size(0), 1, 5, 5))
+                fake_local_labels = -torch.ones((right_images['256'].size(0), 1, 5, 5))
                 real_labels = Variable(real_local_labels).to(self.device)
                 fake_labels = Variable(fake_local_labels).to(self.device)
                 img_loss = self.compute_d_img_loss(wrong_img_logit_local, real_img_logit_local, fake_img_logit_local,
                                               real_labels, fake_labels)
-
-                discriminator_loss += (pair_loss + img_loss)
-
-                self.d_plot_dict[key].plot(to_numpy(img_loss).mean())
+                discriminator_loss += img_loss
 
             discriminator_loss.backward()
             self.discriminator_optimizer.step()
-            d_loss_val = to_numpy(discriminator_loss).mean()
-            self.d_loss_plot.plot(d_loss_val)
 
             self.writer.set_step((epoch - 1) * len(self.train_data_loader) + batch_idx)
             self.writer.add_scalar('Generator_Loss', generator_loss.item())
@@ -241,7 +208,7 @@ class Trainer(BaseGANTrainer):
         pass
 
     def compute_d_pair_loss(self, real_logit, wrong_logit, fake_logit, real_labels, fake_labels):
-        criterion = self.loss
+        criterion = self.losses
         real_d_loss = criterion(real_logit, real_labels)
         wrong_d_loss = criterion(wrong_logit, fake_labels)
         fake_d_loss = criterion(fake_logit, fake_labels)
@@ -250,7 +217,7 @@ class Trainer(BaseGANTrainer):
         return discriminator_loss
 
     def compute_d_img_loss(self, wrong_img_logit, real_img_logit, fake_img_logit, real_labels, fake_labels):
-        criterion = self.loss
+        criterion = self.losses
         wrong_d_loss = criterion(wrong_img_logit, real_labels)
         real_d_loss = criterion(real_img_logit, real_labels)
         fake_d_loss = criterion(fake_img_logit, fake_labels)
@@ -258,7 +225,7 @@ class Trainer(BaseGANTrainer):
         return fake_d_loss + (wrong_d_loss + real_d_loss) / 2
 
     def compute_g_loss(self, fake_logit, real_labels):
-        criterion = self.loss
+        criterion = self.losses
         generator_loss = criterion(fake_logit, real_labels)
         return generator_loss
 
