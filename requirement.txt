@@ -3,7 +3,7 @@
 # platform: osx-64
 @EXPLICIT
 https://repo.anaconda.com/pkgs/main/osx-64/blas-1.0-mkl.tar.bz2
-https://repo.anaconda.com/pkgs/main/osx-64/ca-certificates-2018.12.5-0.tar.bz2
+https://repo.anaconda.com/pkgs/main/osx-64/ca-certificates-2019.1.23-0.tar.bz2
 https://repo.anaconda.com/pkgs/main/osx-64/intel-openmp-2019.1-144.tar.bz2
 https://repo.continuum.io/pkgs/main/osx-64/jpeg-9b-he5867d9_2.tar.bz2
 https://repo.anaconda.com/pkgs/main/osx-64/libcxxabi-4.0.1-hcfea43d_1.tar.bz2
