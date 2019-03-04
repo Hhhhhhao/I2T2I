@@ -8,6 +8,7 @@ import model.metric as module_metric
 import model.model as module_arch
 from trainer import Trainer
 from utils import Logger
+from test import main as evalution
 
 
 def get_instance(module, name, config, *args):

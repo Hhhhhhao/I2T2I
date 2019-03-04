@@ -13,8 +13,6 @@ from eval_metrics.eval import compute_score
 from torchvision import transforms
 main_dir = os.path.dirname(__file__)
 
-
-
 def main(config, resume):
     # setup data_loader instances
     # batch size must be one

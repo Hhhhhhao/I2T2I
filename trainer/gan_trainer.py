@@ -1,10 +1,11 @@
 import os
 import numpy as np
 import torch
+from torchvision import transforms
 from torchvision.utils import make_grid
 from torch.nn.utils.rnn import pack_padded_sequence
 from base import BaseGANTrainer
-from utils import get_caption_lengths
+from utils import get_caption_lengths, convert_back_to_text
 
 
 def get_instance(module, name, config, *args):
@@ -165,6 +166,7 @@ class Trainer(BaseGANTrainer):
                 > return log
             The metrics in log must have the key 'metrics'.
         """
+
         self.generator.train()
         self.discriminator.train()
 
@@ -249,6 +251,7 @@ class Trainer(BaseGANTrainer):
         if self.do_validation:
             val_log = self._valid_epoch(epoch)
             log = {**log, **val_log}
+            self.predict(self.valid_data_loader, epoch)
 
         return log
 
@@ -310,5 +313,39 @@ class Trainer(BaseGANTrainer):
     def load_pre_trained_generator(self, path):
         checkpoint = torch.load(path)
         self.generator.load_state_dict(checkpoint['state_dict'])
+
+    def predict(self, data_loader, epoch=None):
+        self.generator.eval()
+        self.discriminator.eval()
+
+        mean = torch.tensor([0.485, 0.456, 0.406], dtype=torch.float32)
+        std = torch.tensor([0.229, 0.224, 0.225], dtype=torch.float32)
+
+        transform = transforms.Compose([
+            transforms.Normalize(mean=(-mean / std).tolist(), std=(1.0 / std).tolist()),
+            transforms.ToPILImage()]
+        )
+
+        for batch_idx, data in enumerate(data_loader):
+            if batch_idx != 0:
+                break
+
+            batch_images = data["right_images_{}".format(self.image_size)].to(self.device)
+            batch_captions = data["right_captions"].to(self.device)
+            batch_caption_lengths = data["right_caption_lengths"]
+
+            if not os.path.exists('{0}/results/epoch_{1}'.format(self.checkpoint_dir, epoch)):
+                os.makedirs('{0}/results/epoch_{1}'.format(self.checkpoint_dir, epoch))
+
+            image_features, outputs = self.generator(batch_images, batch_captions, batch_caption_lengths)
+            generator_captions = []
+            for image_feature in image_features:
+                generator_captions.append(
+                    self.generator.sample(image_feature.unsqueeze(0)))
+
+            for generated_caption, image in zip(generator_captions, batch_images):
+                generated_sentence = convert_back_to_text(generated_caption, self.train_data_loader.dataset.vocab)
+                image = transform(image)
+                image.save('{0}/results/epoch_{1}/{2}.png'.format(self.checkpoint_dir, epoch, generated_sentence.replace("/", "")[:100]))
 
 
