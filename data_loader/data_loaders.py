@@ -92,11 +92,11 @@ class TextImageDataLoader(DataLoader):
         self.batch_size = batch_size
         self.num_workers = num_workers
 
-        # transforms.ToTensor convert PIL images in range [0, 255] to a torch in range [0.0, 1.0]
+        # transforms.ToTensor convert PIL images in range [0, 255] to a torch in range [-1.0, 1.0]
         self.transform = transforms.Compose([
             transforms.RandomHorizontalFlip(),
             transforms.ToTensor(),
-            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+            transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
         ])
 
         self.dataset = TextImageDataset(self.data_dir, self.dataset_name, self.which_set, self.transform, vocab_from_file=False)
@@ -134,9 +134,9 @@ class COCOTextImageDataLoader(BaseDataLoader):
         self.batch_size = batch_size
         self.num_workers = num_workers
 
-        # transforms.ToTensor convert PIL images in range [0, 255] to a torch in range [0.0, 1.0]
-        mean = torch.tensor([0.485, 0.456, 0.406], dtype=torch.float32)
-        std = torch.tensor([0.229, 0.224, 0.225], dtype=torch.float32)
+        # transforms.ToTensor convert PIL images in range [0, 255] to a torch in range [-1.0, 1.0]
+        mean = torch.tensor([0.5, 0.5, 0.5], dtype=torch.float32)
+        std = torch.tensor([0.5, 0.5, 0.5], dtype=torch.float32)
 
         if which_set == 'val' or which_set == 'test':
             self.transform = transforms.Compose([

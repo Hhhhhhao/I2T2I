@@ -3,8 +3,11 @@ import numpy as np
 import torch
 from torch.autograd import Variable
 from torchvision.utils import make_grid
+from torchvision import transforms
 from base import BaseGANTrainer
 from model.damsm import DAMSM
+from matplotlib import pyplot as plt
+
 
 dirname = os.path.dirname(__file__)
 main_dirname = os.path.dirname(dirname)
@@ -189,6 +192,7 @@ class Trainer(BaseGANTrainer):
                 ))
 
         self.writer.add_image('input', make_grid(generated_images['256'].cpu(), nrow=8, normalize=True))
+        self.predict(self.valid_data_loader, epoch)
 
         log = {
             'Generator_Loss': total_generator_loss / len(self.train_data_loader),
@@ -249,3 +253,69 @@ class Trainer(BaseGANTrainer):
         kld = mu.pow(2).add(logvar.mul(2).exp()).add(-1).mul(0.5).add(logvar.mul(-1))
         kl_loss = torch.mean(kld)
         return kl_loss
+
+    def predict(self, data_loader, epoch=None):
+
+        self.generator.eval()
+        self.discriminator.eval()
+
+        mean = torch.tensor([0.5, 0.5, 0.5], dtype=torch.float32)
+        std = torch.tensor([0.5, 0.5, 0.5], dtype=torch.float32)
+
+        transform = transforms.Compose([
+            transforms.Normalize(mean=(-mean / std).tolist(), std=(1.0 / std).tolist()),
+            transforms.ToPILImage()]
+        )
+
+        for batch_idx, sample in enumerate(data_loader):
+            if batch_idx != 0:
+                break
+
+            right_images_256 = sample['right_images_256'].to(self.device)
+            right_images_128 = sample['right_images_128'].to(self.device)
+            right_images_64 = sample['right_images_64'].to(self.device)
+            right_captions = sample["right_captions"].to(self.device)
+            right_caption_lengths = sample["right_caption_lengths"]
+            _, right_embeddings = self.damsm.rnn_encoder(right_captions, right_caption_lengths)
+            right_embeddings.to(self.device)
+            txt = sample['right_txt']
+
+            if not os.path.exists('{0}/results/epoch_{1}'.format(self.checkpoint_dir, epoch)):
+                os.makedirs('{0}/results/epoch_{1}'.format(self.checkpoint_dir, epoch))
+
+            noise = Variable(torch.randn(right_images_256.size(0), self.noise_dim)).to(self.device)
+            noise = noise.view(noise.size(0), self.noise_dim)
+
+            fake_images_64, fake_images_128, fake_images_256, _, _ = self.generator(right_embeddings, noise)
+            real_logit_64, _ = self.discriminator(right_images_64, right_embeddings)
+            real_logit_128, _ = self.discriminator(right_images_128, right_embeddings)
+            real_logit_256, _ = self.discriminator(right_images_256, right_embeddings)
+            fake_logit_64, _ = self.discriminator(fake_images_64, right_embeddings)
+            fake_logit_128, _ = self.discriminator(fake_images_128, right_embeddings)
+            fake_logit_256, _ = self.discriminator(fake_images_256, right_embeddings)
+
+            cnt = 0
+            for f_64, f_128, f_256, r_64, r_128, r_256, t in zip(fake_images_64, fake_images_128, fake_images_256, right_images_64, right_images_128, right_images_256, txt):
+                fig, axs = plt.subplots(3, 2)
+
+                axs[0, 0].set_title('Fake 64 Disc:{:.1f}'.format(fake_logit_64[cnt][0]))
+                axs[0, 0].imshow(np.array(transform(f_64.cpu())))
+                axs[0, 0].axis("off")
+                axs[1, 0].set_title('Fake 128 Disc:{:.1f}'.format(fake_logit_128[cnt][0]))
+                axs[1, 0].imshow(np.array(transform(f_128.cpu())))
+                axs[1, 0].axis("off")
+                axs[2, 0].set_title('Fake 256 Disc:{:.1f}'.format(fake_logit_256[cnt][0]))
+                axs[2, 0].imshow(np.array(transform(f_256.cpu())))
+                axs[2, 0].axis("off")
+
+                axs[0, 1].set_title('Real 64 Disc:{:.1f}'.format(real_logit_64[cnt][0]))
+                axs[0, 1].imshow(np.array(transform(r_64.cpu())))
+                axs[0, 1].axis("off")
+                axs[1, 1].set_title('Real 128 Disc:{:.1f}'.format(real_logit_128[cnt][0]))
+                axs[1, 1].imshow(np.array(transform(r_128.cpu())))
+                axs[1, 1].axis("off")
+                axs[2, 1].set_title('Real 256 Disc:{:.1f}'.format(real_logit_256[cnt][0]))
+                axs[2, 1].imshow(np.array(transform(r_256.cpu())))
+                axs[2, 1].axis("off")
+                fig.savefig('{0}/results/epoch_{1}/{2}.jpg'.format(self.checkpoint_dir, epoch, t.replace("/", "")[:100]))
+

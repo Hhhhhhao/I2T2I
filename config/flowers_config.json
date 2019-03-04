@@ -59,7 +59,7 @@
         }
     },
     "trainer": {
-        "epochs": 400,
+        "epochs": 200,
         "KL_coe":4,
         "save_dir": "saved/",
         "save_period": 1,
