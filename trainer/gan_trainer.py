@@ -51,9 +51,9 @@ class Trainer(BaseGANTrainer):
             vocab_size=len(self.train_data_loader.dataset.vocab),
             word_embed_size=512,
             embedding_size=1024)
-        if "bird" in self.config["name"]:
+        if "Bird" in self.config["name"]:
             resume_path = birds_damsm
-        elif "flower" in self.config["name"]:
+        elif "Flower" in self.config["name"]:
             resume_path = flowers_damsm
         elif "CoCo" in self.config["name"]:
             resume_path = coco_damsm
