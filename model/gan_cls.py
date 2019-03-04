@@ -11,7 +11,7 @@ class generator(BaseModel):
         self.num_channels = 3
         self.noise_dim = 100
         self.embed_dim = 1024
-        self.projected_embed_dim = 128
+        self.projected_embed_dim = 256
         self.latent_dim = self.noise_dim + self.projected_embed_dim
         self.ngf = 64
 
