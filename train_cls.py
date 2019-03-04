@@ -1,8 +1,7 @@
 from trainer.trainer_cls import Trainer
 from torch.utils.data import DataLoader
 from data_loader.txt2image_dataset import Text2ImageDataset_Origin
-import argparse
-from PIL import Image
+import datetime
 import os
 dirname = os.path.dirname(__file__)
 data_dir = os.path.join(dirname, 'data')
@@ -73,12 +72,15 @@ if __name__ == '__main__':
     else:
         raise AssertionError("dataset_name not valid!")
 
+    start_time = datetime.datetime.now().strftime('%m%d_%H%M%S')
+    save_path = os.path.join(args.save_path, start_time)
+
     trainer = Trainer(gan_type=args.gan_type,
                       train_data_loader=train_data_loader,
                       valid_data_loader=valid_data_loader,
                       num_epochs=args.num_epochs,
                       lr=args.lr,
-                      save_path=args.save_path,
+                      save_path=save_path,
                       l1_coef=args.l1_coef,
                       l2_coef=args.l2_coef,
                       pre_trained_disc=args.pre_trained_disc,

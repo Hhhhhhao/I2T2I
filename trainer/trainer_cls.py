@@ -88,7 +88,9 @@ class Trainer(object):
         criterion = nn.MSELoss()
 
         for epoch in range(self.pre_epoch, self.num_epochs + self.pre_epoch+1):
-
+            self.generator.train()
+            self.discriminator.train()
+            
             for batch_idx, sample in enumerate(self.train_data_loader):
                 right_images = sample['right_images']
                 right_embed = sample['right_embed']
@@ -105,6 +107,8 @@ class Trainer(object):
                 fake_labels = Variable(fake_labels).to(self.device)
 
                 # Train the discriminator
+                self.generator.freeze()
+                self.discriminator.unfreeze()
                 self.discriminator.zero_grad()
 
                 # real image, right text
@@ -132,7 +136,11 @@ class Trainer(object):
                 self.optimD.step()
 
                 # Train the generator
+                self.generator.unfreeze()
+                self.discriminator.freeze()
                 self.generator.zero_grad()
+
+
                 noise = Variable(torch.randn(right_images.size(0), self.noise_dim)).to(self.device)
                 noise = noise.view(noise.size(0), self.noise_dim, 1, 1)
 
@@ -181,6 +189,8 @@ class Trainer(object):
         lambda_gp = 10
 
         for epoch in range(self.pre_epoch, self.num_epochs + self.pre_epoch+1):
+            self.generator.train()
+            self.discriminator.train()
 
             for batch_idx, sample in enumerate(self.train_data_loader):
                 right_images = sample['right_images']
@@ -192,6 +202,8 @@ class Trainer(object):
                 wrong_images = Variable(wrong_images.float()).to(self.device)
 
                 # Train the discriminator
+                self.generator.freeze()
+                self.discriminator.unfreeze()
                 self.discriminator.zero_grad()
 
                 # real image, right text
@@ -221,7 +233,10 @@ class Trainer(object):
                 self.optimD.step()
 
                 # Train the generator
+                self.generator.unfreeze()
+                self.discriminator.freeze()
                 self.generator.zero_grad()
+
                 noise = Variable(torch.randn(right_images.size(0), self.noise_dim)).to(self.device)
                 noise = noise.view(noise.size(0), self.noise_dim, 1, 1)
 
@@ -266,6 +281,8 @@ class Trainer(object):
         l1_loss = nn.L1Loss()
 
         for epoch in range(self.pre_epoch, self.num_epochs + self.pre_epoch+1):
+            self.generator.train()
+            self.discriminator.train()
 
             for batch_idx, sample in enumerate(self.train_data_loader):
                 right_images = sample['right_images']
@@ -284,6 +301,8 @@ class Trainer(object):
                 fake_labels = Variable(fake_labels).to(self.device)
 
                 # Train the discriminator
+                self.generator.freeze()
+                self.discriminator.unfreeze()
                 self.discriminator.zero_grad()
 
                 # real image, right text
@@ -311,7 +330,10 @@ class Trainer(object):
                 self.optimD.step()
 
                 # Train the generator
+                self.generator.unfreeze()
+                self.discriminator.freeze()
                 self.generator.zero_grad()
+
                 noise = Variable(torch.randn(right_images.size(0), self.noise_dim)).to(self.device)
                 noise = noise.view(noise.size(0), self.noise_dim, 1, 1)
 
@@ -354,6 +376,9 @@ class Trainer(object):
                 self.predict(data_loader=self.valid_data_loader, valid=True, epoch=epoch)
 
     def predict(self, data_loader, valid=False, epoch=None):
+
+        self.generator.eval()
+        self.discriminator.eval()
 
         if valid:
 

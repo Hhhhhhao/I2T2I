@@ -71,6 +71,14 @@ class generator(BaseModel):
 
         return output
 
+    def freeze(self):
+        for param in self.parameters():
+            param.requires_grad = False
+
+    def unfreeze(self):
+        for param in self.parameters():
+            param.requires_grad = True
+
 
 class discriminator(BaseModel):
     def __init__(self):
@@ -115,6 +123,14 @@ class discriminator(BaseModel):
         x = self.netD_2(x)
 
         return x.view(-1, 1).squeeze(1), x_intermediate
+
+    def freeze(self):
+        for param in self.parameters():
+            param.requires_grad = False
+
+    def unfreeze(self):
+        for param in self.parameters():
+            param.requires_grad = True
 
 
 if __name__ == "__main__":
