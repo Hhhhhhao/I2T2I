@@ -122,7 +122,6 @@ class COCOTextImageDataset(Dataset):
                 'right_embed': torch.FloatTensor(right_embed),
                 'right_caption': right_caption,
                 'right_txt': right_txt,
-                'wrong_img_id': wrong_img_id,
                 'wrong_image_32': wrong_image_32,
                 'wrong_image_64': wrong_image_64,
                 'wrong_image_128': wrong_image_128,
