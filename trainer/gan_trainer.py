@@ -47,7 +47,7 @@ class Trainer(BaseGANTrainer):
         self.noise_dim = self.config["models"]["Generator"]["args"]["noise_dim"]
 
         print("load damsm ecoding model")
-        self.damsm = DAMSM(
+        damsm = DAMSM(
             vocab_size=len(self.train_data_loader.dataset.vocab),
             word_embed_size=512,
             embedding_size=1024)
@@ -60,12 +60,13 @@ class Trainer(BaseGANTrainer):
         else:
             raise ValueError("cannot find corresponding damsm model path")
         checkpoint = torch.load(resume_path, map_location=self.device)
-        self.damsm.load_state_dict(checkpoint["state_dict"])
-        for p in self.damsm.parameters():
+        damsm.load_state_dict(checkpoint["state_dict"])
+        for p in damsm.parameters():
             p.requires_grad = False
-        self.damsm.to(self.device)
+        self.damsm_rnn_encoder = damsm.rnn_encoder
+        self.damsm_rnn_encoder.to(self.device)
         if len(self.device_ids) > 1:
-            self.damsm= torch.nn.DataParallel(self.damsm, device_ids=self.device_ids)
+            self.damsm_rnn_encoder= torch.nn.DataParallel(self.damsm_rnn_encoder, device_ids=self.device_ids)
 
 
     def _train_epoch(self, epoch):
@@ -95,7 +96,7 @@ class Trainer(BaseGANTrainer):
             right_images['64'] = data["right_images_64"].to(self.device)
             right_captions = data["right_captions"].to(self.device)
             right_caption_lengths = data["right_caption_lengths"].to(self.device)
-            _, right_embeddings = self.damsm.rnn_encoder(right_captions, right_caption_lengths)
+            _, right_embeddings = self.damsm_rnn_encoder(right_captions, right_caption_lengths)
             right_embeddings.to(self.device)
 
             # other image
@@ -286,7 +287,7 @@ class Trainer(BaseGANTrainer):
             right_images_64 = sample['right_images_64'].to(self.device)
             right_captions = sample["right_captions"].to(self.device)
             right_caption_lengths = sample["right_caption_lengths"]
-            _, right_embeddings = self.damsm.rnn_encoder(right_captions, right_caption_lengths)
+            _, right_embeddings = self.damsm_rnn_encoder(right_captions, right_caption_lengths)
             right_embeddings.to(self.device)
             txt = sample['right_txt']
 
