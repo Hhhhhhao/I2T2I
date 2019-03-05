@@ -101,6 +101,7 @@ class EncoderRNN(BaseModel):
         :param caption_lengths: caption lengths, a tensor of dimension (batch_size, 1)
         :return: scores of vocabulary, sorted encoded captions, decode lengths, weights, sort indices
         """
+        self.lstm.flatten_parameters()
         # Embedding
         embeddings = self.embedding(captions)  # (batch_size, max_caption_length, embed_dim)
         caption_lengths = caption_lengths.to("cpu").tolist()
@@ -146,6 +147,7 @@ class DecoderRNN(BaseModel):
         self.linear.weight.data.uniform_(-0.1, 0.1)
 
     def forward(self, features, captions, caption_lengths):
+        self.lstm.flatten_parameters()
         # Embedding
         embeddings = self.embedding(captions)  # (batch_size, max_caption_length, embed_dim)
         embeddings = torch.cat((features.unsqueeze(1), embeddings), 1)
@@ -298,7 +300,7 @@ class ConditionalGenerator(BaseModel):
         :param monte_carlo_count: monte carlo count
         :return:
         '''
-        # self.decoder.lstm.flatten_parameters()
+        self.decoder.lstm.flatten_parameters()
         batch_size = images.size(0)
         image_features = self.encoder(images)
         features = self.get_feature_linear_output(image_features)
