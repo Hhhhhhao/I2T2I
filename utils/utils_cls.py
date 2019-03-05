@@ -83,6 +83,7 @@ class Utils(object):
         """Calculates the gradient penalty loss for WGAN GP"""
         # Random weight term for interpolation between real and fake samples
         alpha = torch.Tensor(np.random.random((real_samples.size(0), 1, 1, 1)))
+
         if torch.cuda.is_available():
            alpha = alpha.cuda()
 
@@ -91,6 +92,10 @@ class Utils(object):
 
         d_interpolates, _ = D(interpolates, real_embed)
         fake = autograd.Variable(torch.Tensor(real_samples.shape[0], 1).fill_(1.0), requires_grad=False).squeeze(1)
+
+        if torch.cuda.is_available():
+           fake = fake.cuda()
+
         # Get gradient w.r.t. interpolates
         gradients = autograd.grad(
             outputs=d_interpolates,
