@@ -183,8 +183,10 @@ class Trainer(BaseGANTrainer):
             other_caption_lengths = data["wrong_caption_lengths"]
 
             # train the generator first
-            self.generator.unfreeze()
-            self.discriminator.freeze()
+            for p in self.generator.parameters():
+                p.requires_grad = True
+            for p in self.discriminator.parameters():
+                p.requires_grad = False
             self.generator_optimizer.zero_grad()
 
             image_features, outputs = self.generator(batch_images, batch_captions, batch_caption_lengths)
@@ -198,8 +200,10 @@ class Trainer(BaseGANTrainer):
             self.generator_optimizer.step()
 
             # train the discriminator
-            self.generator.freeze()
-            self.discriminator.unfreeze()
+            for p in self.generator.parameters():
+                p.requires_grad = False
+            for p in self.discriminator.parameters():
+                p.requires_grad = True
             self.discriminator_optimizer.zero_grad()
             generator_captions = []
             for image_feature in image_features:
