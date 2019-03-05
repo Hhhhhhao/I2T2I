@@ -61,6 +61,8 @@ class Trainer(BaseGANTrainer):
             raise ValueError("cannot find corresponding damsm model path")
         checkpoint = torch.load(resume_path, map_location=self.device)
         self.damsm.load_state_dict(checkpoint["state_dict"])
+        for p in self.damsm.parameters():
+            p.requires_grad = False
 
     def _train_epoch(self, epoch):
         """
@@ -88,7 +90,7 @@ class Trainer(BaseGANTrainer):
             right_images['128'] = data["right_images_128"].to(self.device)
             right_images['64'] = data["right_images_64"].to(self.device)
             right_captions = data["right_captions"].to(self.device)
-            right_caption_lengths = data["right_caption_lengths"]
+            right_caption_lengths = data["right_caption_lengths"].to('cpu')
             _, right_embeddings = self.damsm.rnn_encoder(right_captions, right_caption_lengths)
             right_embeddings.to(self.device)
 
