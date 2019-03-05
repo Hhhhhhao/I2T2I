@@ -39,10 +39,10 @@
     "train_data_loader": {
         "type": "COCOTextImageDataLoader",
         "args":{
-            "data_dir": "/Users/leon/Projects/I2T2I/data/coco/",
+            "data_dir": "data/coco/",
             "which_set": "train",
             "image_size":256,
-            "batch_size":32,
+            "batch_size":16,
             "num_workers": 0,
             "validation_split":0.05
         }
@@ -50,10 +50,10 @@
     "valid_data_loader": {
         "type": "COCOTextImageDataLoader",
         "args":{
-            "data_dir": "/Users/leon/Projects/I2T2I/data/coco/",
+            "data_dir": "data/coco/",
             "which_set": "valid",
             "image_size":256,
-            "batch_size": 1,
+            "batch_size": 16,
             "num_workers": 0
         }
     },

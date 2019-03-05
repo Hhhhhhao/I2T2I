@@ -286,7 +286,7 @@ class Trainer(BaseGANTrainer):
             right_images_128 = sample['right_images_128'].to(self.device)
             right_images_64 = sample['right_images_64'].to(self.device)
             right_captions = sample["right_captions"].to(self.device)
-            right_caption_lengths = sample["right_caption_lengths"]
+            right_caption_lengths = sample["right_caption_lengths"].to(self.device)
             _, right_embeddings = self.damsm_rnn_encoder(right_captions, right_caption_lengths)
             right_embeddings.to(self.device)
             txt = sample['right_txt']

@@ -2,7 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b3134c42-5a5c-4eae-8274-2ca6fc32ab15" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/model/damsm.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/damsm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/birds_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/birds_config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/coco_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/coco_config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/flowers_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/flowers_config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/trainer/gan_trainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/trainer/gan_trainer.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -29,11 +32,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="damsm.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="damsm.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/model/damsm.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="526">
-              <caret line="202" column="88" selection-start-line="202" selection-start-column="88" selection-end-line="202" selection-end-column="88" />
+            <state relative-caret-position="186">
+              <caret line="185" column="62" lean-forward="true" selection-start-line="185" selection-start-column="62" selection-end-line="185" selection-end-column="62" />
               <folding>
                 <element signature="e#772#4208#0" />
                 <element signature="e#7717#8503#0" />
@@ -54,11 +57,8 @@
       <file leaf-file-name="gan_trainer.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/trainer/gan_trainer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4440">
-              <caret line="222" column="12" selection-start-line="222" selection-start-column="12" selection-end-line="222" selection-end-column="12" />
-              <folding>
-                <element signature="e#0#9#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="162">
+              <caret line="292" lean-forward="true" selection-start-line="292" selection-end-line="292" />
             </state>
           </provider>
         </entry>
@@ -77,6 +77,33 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="2700">
               <caret line="142" column="36" selection-start-line="142" selection-start-column="36" selection-end-line="142" selection-end-column="36" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="birds_config.json" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/config/birds_config.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="446">
+              <caret line="52" column="25" selection-start-line="52" selection-start-column="25" selection-end-line="52" selection-end-column="25" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="coco_config.json" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/config/coco_config.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="469">
+              <caret line="52" column="25" selection-start-line="52" selection-start-column="25" selection-end-line="52" selection-end-column="25" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="flowers_config.json" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/config/flowers_config.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="66">
+              <caret line="41" column="25" selection-start-line="41" selection-start-column="25" selection-end-line="41" selection-end-column="25" />
             </state>
           </provider>
         </entry>
@@ -139,17 +166,17 @@
         <option value="$PROJECT_DIR$/utils/local_utils.py" />
         <option value="$PROJECT_DIR$/utils/plot_utils.py" />
         <option value="$PROJECT_DIR$/train.py" />
-        <option value="$PROJECT_DIR$/config/coco_config.json" />
         <option value="$PROJECT_DIR$/utils/util.py" />
-        <option value="$PROJECT_DIR$/config/birds_config.json" />
         <option value="$PROJECT_DIR$/.gitignore" />
-        <option value="$PROJECT_DIR$/config/flowers_config.json" />
         <option value="$PROJECT_DIR$/data_loader/datasets_custom.py" />
         <option value="$PROJECT_DIR$/data_loader/data_loaders.py" />
         <option value="$PROJECT_DIR$/base/base_gan_trainer.py" />
-        <option value="$PROJECT_DIR$/trainer/gan_trainer.py" />
         <option value="$PROJECT_DIR$/model/model.py" />
         <option value="$PROJECT_DIR$/model/damsm.py" />
+        <option value="$PROJECT_DIR$/trainer/gan_trainer.py" />
+        <option value="$PROJECT_DIR$/config/birds_config.json" />
+        <option value="$PROJECT_DIR$/config/coco_config.json" />
+        <option value="$PROJECT_DIR$/config/flowers_config.json" />
       </list>
     </option>
   </component>
@@ -187,6 +214,11 @@
               <item name="I2T2I" type="b2602c69:ProjectViewProjectNode" />
               <item name="I2T2I" type="462c0819:PsiDirectoryNode" />
               <item name="base" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="I2T2I" type="b2602c69:ProjectViewProjectNode" />
+              <item name="I2T2I" type="462c0819:PsiDirectoryNode" />
+              <item name="config" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="I2T2I" type="b2602c69:ProjectViewProjectNode" />
@@ -653,8 +685,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/config/birds_config.json" />
-    <entry file="file://$PROJECT_DIR$/config/coco_config.json" />
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="20">
@@ -662,7 +692,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/config/flowers_config.json" />
     <entry file="file://$PROJECT_DIR$/saved/HDGAN-CoCo/0304_110215/results/epoch_0/a person standing on a deck in front of a green field while holding a wine glass.jpg" />
     <entry file="file://$PROJECT_DIR$/saved/HDGAN-CoCo/0304_110215/results/epoch_0/A man riding a bicycle with a dog in a crate strapped to the back.jpg" />
     <entry file="file://$PROJECT_DIR$/train.py">
@@ -703,16 +732,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/trainer/gan_trainer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4440">
-          <caret line="222" column="12" selection-start-line="222" selection-start-column="12" selection-end-line="222" selection-end-column="12" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/model/model.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="253">
@@ -722,12 +741,40 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/model/damsm.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="526">
-          <caret line="202" column="88" selection-start-line="202" selection-start-column="88" selection-end-line="202" selection-end-column="88" />
+        <state relative-caret-position="186">
+          <caret line="185" column="62" lean-forward="true" selection-start-line="185" selection-start-column="62" selection-end-line="185" selection-end-column="62" />
           <folding>
             <element signature="e#772#4208#0" />
             <element signature="e#7717#8503#0" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/trainer/gan_trainer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="162">
+          <caret line="292" lean-forward="true" selection-start-line="292" selection-end-line="292" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config/birds_config.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="446">
+          <caret line="52" column="25" selection-start-line="52" selection-start-column="25" selection-end-line="52" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config/coco_config.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="469">
+          <caret line="52" column="25" selection-start-line="52" selection-start-column="25" selection-end-line="52" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config/flowers_config.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="66">
+          <caret line="41" column="25" selection-start-line="41" selection-start-column="25" selection-end-line="41" selection-end-column="25" />
         </state>
       </provider>
     </entry>
