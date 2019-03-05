@@ -103,6 +103,7 @@ class EncoderRNN(BaseModel):
         """
         # Embedding
         embeddings = self.embedding(captions)  # (batch_size, max_caption_length, embed_dim)
+        caption_lengths = caption_lengths.to("cpu").tolist()
 
         packed = pack_padded_sequence(embeddings, caption_lengths, batch_first=True)
         hiddens, _ = self.lstm(packed)
@@ -148,6 +149,9 @@ class DecoderRNN(BaseModel):
         # Embedding
         embeddings = self.embedding(captions)  # (batch_size, max_caption_length, embed_dim)
         embeddings = torch.cat((features.unsqueeze(1), embeddings), 1)
+
+        caption_lengths = caption_lengths.to("cpu").tolist()
+
         packed = pack_padded_sequence(embeddings, caption_lengths, batch_first=True)
         hiddens, _ = self.lstm(packed)
         outputs = self.linear(hiddens[0])
