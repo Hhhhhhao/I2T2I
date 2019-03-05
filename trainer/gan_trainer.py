@@ -111,7 +111,7 @@ class Trainer(BaseGANTrainer):
             batch_captions = data["right_captions"].to(self.device)
             batch_caption_lengths = data["right_caption_lengths"].to(self.device)
             other_captions = data["wrong_captions"].to(self.device)
-            other_caption_lengths = data["wrong_caption_lengths"]
+            other_caption_lengths = data["wrong_caption_lengths"].to(self.device)
 
             # use generator to generator image features and captions (one-hot)
             image_features, generator_outputs = self.generator(batch_images, batch_captions, batch_caption_lengths)
@@ -278,7 +278,7 @@ class Trainer(BaseGANTrainer):
                 batch_captions = data["right_captions"].to(self.device)
                 batch_caption_lengths = data["right_caption_lengths"].to(self.device)
                 other_captions = data["wrong_captions"].to(self.device)
-                other_caption_lengths = data["wrong_caption_lengths"]
+                other_caption_lengths = data["wrong_caption_lengths"].to(self.device)
 
                 image_features, outputs = self.generator(batch_images, batch_captions, batch_caption_lengths)
                 targets = pack_padded_sequence(batch_captions, batch_caption_lengths, batch_first=True)[0]

@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b3134c42-5a5c-4eae-8274-2ca6fc32ab15" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data_loader/data_loaders.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_loader/data_loaders.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/trainer/gan_trainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/trainer/gan_trainer.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -32,11 +31,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="gan_trainer.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="gan_trainer.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/trainer/gan_trainer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="803">
-              <caret line="316" column="47" selection-start-line="316" selection-start-column="47" selection-end-line="316" selection-end-column="47" />
+            <state relative-caret-position="445">
+              <caret line="280" column="47" selection-start-line="280" selection-start-column="47" selection-end-line="280" selection-end-column="47" />
             </state>
           </provider>
         </entry>
@@ -44,7 +43,7 @@
       <file leaf-file-name="base_gan_trainer.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/base/base_gan_trainer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="340">
+            <state relative-caret-position="313">
               <caret line="24" selection-start-line="24" selection-end-line="24" selection-end-column="36" />
             </state>
           </provider>
@@ -95,11 +94,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="data_loaders.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="data_loaders.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/data_loader/data_loaders.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="484">
-              <caret line="101" column="66" selection-start-line="101" selection-start-column="66" selection-end-line="101" selection-end-column="66" />
+            <state relative-caret-position="-636">
+              <caret line="89" column="40" lean-forward="true" selection-start-line="89" selection-start-column="40" selection-end-line="89" selection-end-column="40" />
             </state>
           </provider>
         </entry>
@@ -203,8 +202,8 @@
         <option value="$PROJECT_DIR$/config/coco_config.json" />
         <option value="$PROJECT_DIR$/config/flowers_config.json" />
         <option value="$PROJECT_DIR$/base/base_gan_trainer.py" />
-        <option value="$PROJECT_DIR$/trainer/gan_trainer.py" />
         <option value="$PROJECT_DIR$/data_loader/data_loaders.py" />
+        <option value="$PROJECT_DIR$/trainer/gan_trainer.py" />
       </list>
     </option>
   </component>
@@ -723,13 +722,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/base/base_gan_trainer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="24" selection-start-line="24" selection-end-line="24" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/model/model.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="560">
@@ -737,17 +729,24 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/trainer/gan_trainer.py">
+    <entry file="file://$PROJECT_DIR$/data_loader/data_loaders.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="803">
-          <caret line="316" column="47" selection-start-line="316" selection-start-column="47" selection-end-line="316" selection-end-column="47" />
+        <state relative-caret-position="-636">
+          <caret line="89" column="40" lean-forward="true" selection-start-line="89" selection-start-column="40" selection-end-line="89" selection-end-column="40" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data_loader/data_loaders.py">
+    <entry file="file://$PROJECT_DIR$/base/base_gan_trainer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="484">
-          <caret line="101" column="66" selection-start-line="101" selection-start-column="66" selection-end-line="101" selection-end-column="66" />
+        <state relative-caret-position="313">
+          <caret line="24" selection-start-line="24" selection-end-line="24" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/trainer/gan_trainer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="445">
+          <caret line="280" column="47" selection-start-line="280" selection-start-column="47" selection-end-line="280" selection-end-column="47" />
         </state>
       </provider>
     </entry>
