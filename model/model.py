@@ -103,11 +103,12 @@ class EncoderRNN(BaseModel):
         """
         # Embedding
         embeddings = self.embedding(captions)  # (batch_size, max_caption_length, embed_dim)
-
+        caption_lengths = caption_lengths.to("cpu").tolist()
+        total_length = captions.size(1)
         packed = pack_padded_sequence(embeddings, caption_lengths, batch_first=True)
         hiddens, _ = self.lstm(packed)
         # print("hiddens shape {}".format(hiddens[0].shape))
-        padded = pad_packed_sequence(hiddens, batch_first=True)
+        padded = pad_packed_sequence(hiddens, batch_first=True, total_length=total_length)
         last_padded_indices = [index-1 for index in padded[1]]
         hidden_outputs = padded[0][range(captions.size(0)), last_padded_indices, :]
         # print("hidden_outputs shape:{}".format(hidden_outputs.shape))
@@ -148,6 +149,9 @@ class DecoderRNN(BaseModel):
         # Embedding
         embeddings = self.embedding(captions)  # (batch_size, max_caption_length, embed_dim)
         embeddings = torch.cat((features.unsqueeze(1), embeddings), 1)
+
+        caption_lengths = caption_lengths.to("cpu").tolist()
+
         packed = pack_padded_sequence(embeddings, caption_lengths, batch_first=True)
         hiddens, _ = self.lstm(packed)
         outputs = self.linear(hiddens[0])
