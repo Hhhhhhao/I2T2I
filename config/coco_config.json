@@ -60,7 +60,7 @@
             "data_dir": "data/coco",
             "which_set": "val",
             "image_size":256,
-            "batch_size": 1,
+            "batch_size":8,
             "num_workers": 0
         }
     },

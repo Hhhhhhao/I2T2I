@@ -61,7 +61,7 @@
             "dataset_name":"birds",
             "which_set": "valid",
             "image_size":256,
-            "batch_size": 1,
+            "batch_size":8,
             "num_workers": 0
         }
     },
