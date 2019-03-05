@@ -99,6 +99,7 @@ def image_caption_collate_fn(data):
 
     # merge captions (from tuple of 1D tensor to 2D tensor)
     batch_caption_lengths = [len(cap) for cap in captions]
+    batch_caption_lengths = torch.LongTensor(batch_caption_lengths)
     batch_captions = torch.zeros(len(captions), max(batch_caption_lengths)).long()
     for i, cap in enumerate(captions):
         end = batch_caption_lengths[i]
