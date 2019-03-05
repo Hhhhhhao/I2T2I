@@ -180,7 +180,7 @@ class Trainer(BaseGANTrainer):
             batch_captions = data["right_captions"].to(self.device)
             batch_caption_lengths = data["right_caption_lengths"].to(self.device)
             other_captions = data["wrong_captions"].to(self.device)
-            other_caption_lengths = data["wrong_caption_lengths"].to(self.devices)
+            other_caption_lengths = data["wrong_caption_lengths"].to(self.device)
 
             # train the generator first
             for p in self.generator.parameters():

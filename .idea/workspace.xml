@@ -2,8 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b3134c42-5a5c-4eae-8274-2ca6fc32ab15" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data_loader/data_loaders.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_loader/data_loaders.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/model/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/model.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/trainer/gan_trainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/trainer/gan_trainer.py" afterDir="false" />
     </list>
@@ -25,20 +23,20 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="model.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="model.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/model/model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="241">
-              <caret line="150" column="59" selection-start-line="150" selection-start-column="59" selection-end-line="150" selection-end-column="59" />
+            <state relative-caret-position="1479">
+              <caret line="106" column="39" selection-start-line="106" selection-start-column="39" selection-end-line="106" selection-end-column="39" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="gan_trainer.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="gan_trainer.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/trainer/gan_trainer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="281">
-              <caret line="61" column="33" selection-start-line="61" selection-start-column="12" selection-end-line="61" selection-end-column="33" />
+            <state relative-caret-position="361">
+              <caret line="331" lean-forward="true" selection-start-line="331" selection-end-line="331" />
             </state>
           </provider>
         </entry>
@@ -46,8 +44,8 @@
       <file leaf-file-name="util.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/utils/util.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="40">
-              <caret line="2" selection-start-line="2" selection-end-line="2" />
+            <state relative-caret-position="60">
+              <caret line="3" selection-start-line="3" selection-end-line="3" />
             </state>
           </provider>
         </entry>
@@ -64,8 +62,8 @@
       <file leaf-file-name="data_loaders.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/data_loader/data_loaders.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="626">
-              <caret line="67" column="83" selection-start-line="67" selection-start-column="83" selection-end-line="67" selection-end-column="83" />
+            <state relative-caret-position="2560">
+              <caret line="129" column="49" selection-start-line="129" selection-start-column="49" selection-end-line="129" selection-end-column="49" />
             </state>
           </provider>
         </entry>
@@ -73,44 +71,8 @@
       <file leaf-file-name="datasets_custom.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/data_loader/datasets_custom.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="6221">
+            <state relative-caret-position="8760">
               <caret line="446" column="23" selection-start-line="446" selection-start-column="23" selection-end-line="446" selection-end-column="23" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="base_gan_trainer.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/base/base_gan_trainer.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1540">
-              <caret line="84" column="46" selection-start-line="84" selection-start-column="46" selection-end-line="84" selection-end-column="46" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="birds_config.json" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/config/birds_config.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1440">
-              <caret line="84" selection-start-line="84" selection-end-line="84" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="coco_config.json" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/config/coco_config.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1640">
-              <caret line="82" selection-start-line="82" selection-end-line="82" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="flowers_config.json" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/config/flowers_config.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1660">
-              <caret line="83" selection-start-line="83" selection-end-line="83" />
             </state>
           </provider>
         </entry>
@@ -205,8 +167,8 @@
         <option value="$PROJECT_DIR$/config/coco_config.json" />
         <option value="$PROJECT_DIR$/config/flowers_config.json" />
         <option value="$PROJECT_DIR$/data_loader/data_loaders.py" />
-        <option value="$PROJECT_DIR$/trainer/gan_trainer.py" />
         <option value="$PROJECT_DIR$/model/model.py" />
+        <option value="$PROJECT_DIR$/trainer/gan_trainer.py" />
       </list>
     </option>
   </component>
@@ -233,6 +195,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -269,7 +232,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -440,17 +402,17 @@
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.21878335" />
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Python Console" order="7" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.21878335" />
       <window_info anchor="bottom" id="Terminal" order="7" weight="0.17833553" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49915397" visible="true" weight="0.18767507" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49915397" visible="true" weight="0.18977591" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="right" id="Database" order="3" />
       <window_info anchor="right" id="SciView" order="3" />
       <window_info id="Structure" order="1" sideWeight="0.500846" side_tool="true" weight="0.17938553" />
-      <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.21943231" />
+      <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -463,24 +425,24 @@
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info id="Favorites" order="2" side_tool="true" />
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.15857284" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.21985058" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.32977587" />
-      <window_info anchor="bottom" id="Python Console" order="10" />
+      <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Debug" order="3" visible="true" weight="0.27212682" />
       <window_info anchor="right" id="Database" order="4" />
       <window_info anchor="bottom" id="Terminal" order="11" />
       <window_info anchor="bottom" id="Event Log" order="12" side_tool="true" />
       <window_info anchor="bottom" id="Database Changes" order="9" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="right" id="SciView" order="3" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32977587" />
+      <window_info anchor="bottom" id="Python Console" order="10" />
     </layout-to-restore>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -498,11 +460,6 @@
           <option name="timeStamp" value="196" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/trainer/gan_trainer.py</url>
-          <line>310</line>
-          <option name="timeStamp" value="203" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/base/base_gan_trainer.py</url>
           <line>109</line>
           <option name="timeStamp" value="222" />
@@ -511,61 +468,6 @@
           <url>file://$PROJECT_DIR$/gan_train.py</url>
           <line>78</line>
           <option name="timeStamp" value="223" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/trainer/gan_trainer.py</url>
-          <line>182</line>
-          <option name="timeStamp" value="226" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/trainer/gan_trainer.py</url>
-          <line>195</line>
-          <option name="timeStamp" value="227" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/trainer/gan_trainer.py</url>
-          <line>196</line>
-          <option name="timeStamp" value="228" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/trainer/gan_trainer.py</url>
-          <line>218</line>
-          <option name="timeStamp" value="231" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/trainer/gan_trainer.py</url>
-          <line>246</line>
-          <option name="timeStamp" value="232" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/trainer/gan_trainer.py</url>
-          <line>332</line>
-          <option name="timeStamp" value="234" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/trainer/gan_trainer.py</url>
-          <line>340</line>
-          <option name="timeStamp" value="236" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/trainer/gan_trainer.py</url>
-          <line>349</line>
-          <option name="timeStamp" value="238" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/trainer/gan_trainer.py</url>
-          <line>352</line>
-          <option name="timeStamp" value="239" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/trainer/gan_trainer.py</url>
-          <line>351</line>
-          <option name="timeStamp" value="240" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/trainer/gan_trainer.py</url>
-          <line>350</line>
-          <option name="timeStamp" value="241" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
@@ -754,65 +656,41 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/utils/util.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="40">
-          <caret line="2" selection-start-line="2" selection-end-line="2" />
+        <state relative-caret-position="60">
+          <caret line="3" selection-start-line="3" selection-end-line="3" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/gan_train.py" />
-    <entry file="file://$PROJECT_DIR$/config/birds_config.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1440">
-          <caret line="84" selection-start-line="84" selection-end-line="84" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/config/coco_config.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1640">
-          <caret line="82" selection-start-line="82" selection-end-line="82" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/config/flowers_config.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1660">
-          <caret line="83" selection-start-line="83" selection-end-line="83" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/base/base_gan_trainer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1540">
-          <caret line="84" column="46" selection-start-line="84" selection-start-column="46" selection-end-line="84" selection-end-column="46" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/config/birds_config.json" />
+    <entry file="file://$PROJECT_DIR$/config/coco_config.json" />
+    <entry file="file://$PROJECT_DIR$/config/flowers_config.json" />
+    <entry file="file://$PROJECT_DIR$/base/base_gan_trainer.py" />
     <entry file="file://$PROJECT_DIR$/data_loader/datasets_custom.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6221">
+        <state relative-caret-position="8760">
           <caret line="446" column="23" selection-start-line="446" selection-start-column="23" selection-end-line="446" selection-end-column="23" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/data_loader/data_loaders.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="626">
-          <caret line="67" column="83" selection-start-line="67" selection-start-column="83" selection-end-line="67" selection-end-column="83" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/trainer/gan_trainer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="281">
-          <caret line="61" column="33" selection-start-line="61" selection-start-column="12" selection-end-line="61" selection-end-column="33" />
+        <state relative-caret-position="2560">
+          <caret line="129" column="49" selection-start-line="129" selection-start-column="49" selection-end-line="129" selection-end-column="49" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/model/model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="241">
-          <caret line="150" column="59" selection-start-line="150" selection-start-column="59" selection-end-line="150" selection-end-column="59" />
+        <state relative-caret-position="1479">
+          <caret line="106" column="39" selection-start-line="106" selection-start-column="39" selection-end-line="106" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/trainer/gan_trainer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="361">
+          <caret line="331" lean-forward="true" selection-start-line="331" selection-end-line="331" />
         </state>
       </provider>
     </entry>
