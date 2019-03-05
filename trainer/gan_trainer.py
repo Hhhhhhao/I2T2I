@@ -63,6 +63,10 @@ class Trainer(BaseGANTrainer):
         self.damsm.load_state_dict(checkpoint["state_dict"])
         for p in self.damsm.parameters():
             p.requires_grad = False
+        self.damsm.to(self.device)
+        if len(self.device_ids) > 1:
+            self.damsm= torch.nn.DataParallel(self.damsm, device_ids=self.device_ids)
+
 
     def _train_epoch(self, epoch):
         """
