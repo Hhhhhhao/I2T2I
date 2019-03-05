@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b3134c42-5a5c-4eae-8274-2ca6fc32ab15" name="Default" comment="" />
+    <list default="true" id="b3134c42-5a5c-4eae-8274-2ca6fc32ab15" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/model/damsm.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/damsm.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -30,8 +32,12 @@
       <file leaf-file-name="damsm.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/model/damsm.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="320">
-              <caret line="190" column="54" selection-start-line="190" selection-start-column="54" selection-end-line="190" selection-end-column="54" />
+            <state relative-caret-position="526">
+              <caret line="202" column="88" selection-start-line="202" selection-start-column="88" selection-end-line="202" selection-end-column="88" />
+              <folding>
+                <element signature="e#772#4208#0" />
+                <element signature="e#7717#8503#0" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -716,8 +722,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/model/damsm.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="320">
-          <caret line="190" column="54" selection-start-line="190" selection-start-column="54" selection-end-line="190" selection-end-column="54" />
+        <state relative-caret-position="526">
+          <caret line="202" column="88" selection-start-line="202" selection-start-column="88" selection-end-line="202" selection-end-column="88" />
+          <folding>
+            <element signature="e#772#4208#0" />
+            <element signature="e#7717#8503#0" />
+          </folding>
         </state>
       </provider>
     </entry>

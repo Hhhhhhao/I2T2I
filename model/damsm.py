@@ -186,6 +186,7 @@ class DAMSM_RNN_Encoder(BaseModel):
     def forward(self, captions, caption_lengths, states=None):
         # input: torch.LongTensor of size batch x n_steps
         # --> emb: batch x n_steps x ninput
+        total_length = captions.size(1)
         emb = self.drop(self.embedding(captions))
 
         caption_lengths = caption_lengths.to('cpu').tolist()
@@ -199,7 +200,7 @@ class DAMSM_RNN_Encoder(BaseModel):
         output, hidden = self.lstm(emb, states)
         # PackedSequence object
         # --> (batch, seq_len, hidden_size * num_directions)
-        output = pad_packed_sequence(output, batch_first=True)[0]
+        output = pad_packed_sequence(output, batch_first=True, total_length=total_length)[0]
         # output = self.drop(output)
         # --> batch x hidden_size*num_directions x seq_len
         words_emb = output.transpose(1, 2)
@@ -227,5 +228,4 @@ class DAMSM(BaseModel):
 
         states = self.rnn_encoder.init_hidden(batch_size)
         words_emb, sent_emb = self.rnn_encoder(captions, caption_lengths, states)
-
         return image_features, image_emb, words_emb, sent_emb
