@@ -50,7 +50,7 @@ def text_image_collate_fn(data):
 
     # sort and get captions, lengths, images, embeds, etc.
     right_caption_lengths = [len(cap) for cap in right_captions]
-    collate_data['right_caption_lengths'] = right_caption_lengths
+    collate_data['right_caption_lengths'] = torch.LongTensor(right_caption_lengths)
     collate_data['right_captions'] = torch.zeros(len(right_caption_lengths), max(right_caption_lengths)).long()
     for i, cap in enumerate(right_captions):
         end = right_caption_lengths[i]
@@ -59,7 +59,7 @@ def text_image_collate_fn(data):
     # sort and get captions, lengths, images, embeds, etc.
     wrong_captions.sort(key=lambda x: len(x), reverse=True)
     wrong_caption_lengths = [len(cap) for cap in wrong_captions]
-    collate_data['wrong_caption_lengths'] = wrong_caption_lengths
+    collate_data['wrong_caption_lengths'] = torch.LongTensor(wrong_caption_lengths)
     collate_data['wrong_captions'] = torch.zeros(len(wrong_caption_lengths), max(wrong_caption_lengths)).long()
     for i, cap in enumerate(wrong_captions):
         end = wrong_caption_lengths[i]
