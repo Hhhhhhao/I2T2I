@@ -99,8 +99,10 @@ class Trainer(BaseGANTrainer):
             wrong_images['64'] = data["wrong_images_64"].to(self.device)
 
             # train the generator first
-            self.discriminator.freeze()
-            self.generator.unfreeze()
+            for p in self.discriminator.parameters():
+                p.prequires_grad = False
+            for p in self.generator.parameters():
+                p.prequires_grad = True
             self.generator_optimizer.zero_grad()
 
             noise = Variable(torch.randn(right_images['256'].size(0), self.noise_dim)).to(self.device)
@@ -134,8 +136,10 @@ class Trainer(BaseGANTrainer):
             self.generator_optimizer.step()
 
             # train the discriminator
-            self.discriminator.unfreeze()
-            self.generator.freeze()
+            for p in self.discriminator.parameters():
+                p.prequires_grad = True
+            for p in self.generator.parameters():
+                p.prequires_grad = False
             self.discriminator_optimizer.zero_grad()
 
             noise = Variable(torch.randn(right_images['256'].size(0), self.noise_dim)).to(self.device)
