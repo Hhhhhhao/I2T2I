@@ -187,6 +187,9 @@ class DAMSM_RNN_Encoder(BaseModel):
         # input: torch.LongTensor of size batch x n_steps
         # --> emb: batch x n_steps x ninput
         emb = self.drop(self.embedding(captions))
+
+
+        caption_lengths.to('cpu')
         #
         emb = pack_padded_sequence(emb, caption_lengths, batch_first=True)
         # #hidden and memory (num_layers * num_directions, batch, hidden_size):
