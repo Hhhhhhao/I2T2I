@@ -59,7 +59,7 @@ class Trainer(BaseGANTrainer):
         for batch_idx, data in enumerate(self.train_data_loader):
             batch_images = data["right_images_{}".format(self.image_size)].to(self.device)
             batch_captions = data["right_captions"].to(self.device)
-            batch_caption_lengths = data["right_caption_lengths"]
+            batch_caption_lengths = data["right_caption_lengths"].to(self.device)
 
             self.generator_optimizer.zero_grad()
             _, outputs = self.generator(batch_images, batch_captions, batch_caption_lengths)
@@ -180,7 +180,7 @@ class Trainer(BaseGANTrainer):
             batch_captions = data["right_captions"].to(self.device)
             batch_caption_lengths = data["right_caption_lengths"]
             other_captions = data["wrong_captions"].to(self.device)
-            other_caption_lengths = data["wrong_caption_lengths"]
+            other_caption_lengths = data["wrong_caption_lengths"].to(self.devices)
 
             # train the generator first
             for p in self.generator.parameters():
