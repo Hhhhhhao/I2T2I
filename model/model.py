@@ -351,14 +351,6 @@ class HDGANDiscriminator(BaseModel):
 
         return pair_disc_out, local_img_disc_out
 
-    def freeze(self):
-        for param in self.parameters():
-            param.requires_grad = False
-
-    def unfreeze(self):
-        for param in self.parameters():
-            param.requires_grad = True
-
 
 class DeepSupervisedHDGANDiscriminator(BaseModel):
     def __init__(self,
@@ -431,15 +423,6 @@ class DeepSupervisedHDGANDiscriminator(BaseModel):
         local_img_disc_out = self.local_img_disc(img_code)
 
         return pair_disc_out, local_img_disc_out
-
-    def freeze(self):
-        for param in self.parameters():
-            param.requires_grad = False
-
-    def unfreeze(self):
-        for param in self.parameters():
-            param.requires_grad = True
-
 
 if __name__ == '__main__':
     generator = HDGANGenerator()
