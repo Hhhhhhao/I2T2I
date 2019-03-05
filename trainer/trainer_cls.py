@@ -107,8 +107,10 @@ class Trainer(object):
                 fake_labels = Variable(fake_labels).to(self.device)
 
                 # Train the discriminator
-                self.generator.freeze()
-                self.discriminator.unfreeze()
+                for p in self.discriminator.parameters():
+                    p.prequires_grad = True
+                for p in self.generator.parameters():
+                    p.prequires_grad = False
                 self.discriminator.zero_grad()
 
                 # real image, right text
@@ -136,8 +138,10 @@ class Trainer(object):
                 self.optimD.step()
 
                 # Train the generator
-                self.generator.unfreeze()
-                self.discriminator.freeze()
+                for p in self.discriminator.parameters():
+                    p.prequires_grad = False
+                for p in self.generator.parameters():
+                    p.prequires_grad = True
                 self.generator.zero_grad()
 
 
@@ -202,8 +206,10 @@ class Trainer(object):
                 wrong_images = Variable(wrong_images.float()).to(self.device)
 
                 # Train the discriminator
-                self.generator.freeze()
-                self.discriminator.unfreeze()
+                for p in self.discriminator.parameters():
+                    p.prequires_grad = True
+                for p in self.generator.parameters():
+                    p.prequires_grad = False
                 self.discriminator.zero_grad()
 
                 # real image, right text
@@ -233,8 +239,10 @@ class Trainer(object):
                 self.optimD.step()
 
                 # Train the generator
-                self.generator.unfreeze()
-                self.discriminator.freeze()
+                for p in self.discriminator.parameters():
+                    p.prequires_grad = False
+                for p in self.generator.parameters():
+                    p.prequires_grad = True
                 self.generator.zero_grad()
 
                 noise = Variable(torch.randn(right_images.size(0), self.noise_dim)).to(self.device)
@@ -301,8 +309,10 @@ class Trainer(object):
                 fake_labels = Variable(fake_labels).to(self.device)
 
                 # Train the discriminator
-                self.generator.freeze()
-                self.discriminator.unfreeze()
+                for p in self.discriminator.parameters():
+                    p.prequires_grad = True
+                for p in self.generator.parameters():
+                    p.prequires_grad = False
                 self.discriminator.zero_grad()
 
                 # real image, right text
@@ -330,8 +340,10 @@ class Trainer(object):
                 self.optimD.step()
 
                 # Train the generator
-                self.generator.unfreeze()
-                self.discriminator.freeze()
+                for p in self.discriminator.parameters():
+                    p.prequires_grad = False
+                for p in self.generator.parameters():
+                    p.prequires_grad = True
                 self.generator.zero_grad()
 
                 noise = Variable(torch.randn(right_images.size(0), self.noise_dim)).to(self.device)
