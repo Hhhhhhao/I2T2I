@@ -101,7 +101,8 @@ class Trainer(BaseGANTrainer):
                 > return log
             The metrics in log must have the key 'metrics'.
         """
-        self.generator.freeze()
+        for p in self.generator.parameters():
+            p.requires_grad = False
         self.discriminator.train()
         total_loss = 0
         total_metrics = np.zeros(len(self.metrics))
@@ -116,7 +117,7 @@ class Trainer(BaseGANTrainer):
             image_features, generator_outputs = self.generator(batch_images, batch_captions, batch_caption_lengths)
             generator_captions = []
             for image_feature in image_features:
-                generator_captions.append(self.generator.sample(image_feature.unsqueeze(0)))
+                generator_captions.append(self.generator.module.sample(image_feature.unsqueeze(0)))
             generator_captions, generator_caption_lengths = get_caption_lengths(generator_captions)
             generator_captions.to(self.device)
 
@@ -150,7 +151,8 @@ class Trainer(BaseGANTrainer):
             'metrics': (total_metrics / len(self.train_data_loader)).tolist()
         }
 
-        self.generator.unfreeze()
+        for p in self.generator.parameters():
+            p.requires_grad = True
         return log
 
     def _train_epoch(self, epoch):
@@ -193,7 +195,7 @@ class Trainer(BaseGANTrainer):
             targets = pack_padded_sequence(batch_captions, batch_caption_lengths, batch_first=True)[0]
             generator_cce_loss = self.losses["Generator_CrossEntropyLoss"](outputs, targets)
 
-            rewards, props = self.generator.reward_forward(batch_images, self.discriminator, monte_carlo_count=16)
+            rewards, props = self.generator.module.reward_forward(batch_images, self.discriminator, monte_carlo_count=16)
             generator_rl_loss = self.losses["Generator_RLLoss"](rewards, props)
             generator_loss = self.lambda_1 * generator_cce_loss + self.lambda_2 * generator_rl_loss
             generator_loss.backward()
@@ -207,7 +209,7 @@ class Trainer(BaseGANTrainer):
             self.discriminator_optimizer.zero_grad()
             generator_captions = []
             for image_feature in image_features:
-                generator_captions.append(self.generator.sample(image_feature.unsqueeze(0)))
+                generator_captions.append(self.generator.module.sample(image_feature.unsqueeze(0)))
             generator_captions, generator_caption_lengths = get_caption_lengths(generator_captions)
             generator_captions.to(self.device)
 
@@ -242,7 +244,6 @@ class Trainer(BaseGANTrainer):
                     generator_loss.item(),
                     discriminator_loss.item()
                 ))
-                self.writer.add_image('input', make_grid(batch_images.cpu(), nrow=8, normalize=True))
 
         log = {
             'Generator_CrossEntropyLoss': total_generator_cce_loss / len(self.train_data_loader),
@@ -283,14 +284,14 @@ class Trainer(BaseGANTrainer):
                 targets = pack_padded_sequence(batch_captions, batch_caption_lengths, batch_first=True)[0]
                 generator_cce_loss = self.losses["Generator_CrossEntropyLoss"](outputs, targets)
 
-                rewards, props = self.generator.reward_forward(batch_images, self.discriminator, monte_carlo_count=16)
+                rewards, props = self.generator.module.reward_forward(batch_images, self.discriminator, monte_carlo_count=16)
                 generator_rl_loss = self.losses["Generator_RLLoss"](rewards, props)
                 generator_loss = self.lambda_1 * generator_cce_loss + self.lambda_2 * generator_rl_loss
 
                 generator_captions = []
                 for image_feature in image_features:
                     generator_captions.append(
-                        self.generator.sample(image_feature.unsqueeze(0)))
+                        self.generator.module.sample(image_feature.unsqueeze(0)))
                 generator_captions, generator_caption_lengths = get_caption_lengths(generator_captions)
                 generator_captions.to(self.device)
 
@@ -306,7 +307,6 @@ class Trainer(BaseGANTrainer):
                 total_discriminator_val_loss += discriminator_loss.item()
                 total_val_metrics += self._eval_metrics(evaluator_scores, generator_scores)
 
-            self.writer.add_image('input', make_grid(batch_images.cpu(), nrow=8, normalize=True))
             # self.writer.add_text('caption', make_grid())
         return {
             'generator_val_loss': total_generator_val_loss / len(self.valid_data_loader),

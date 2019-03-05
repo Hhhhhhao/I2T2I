@@ -19,12 +19,12 @@ class BaseGANTrainer:
         self.logger = logging.getLogger(self.__class__.__name__)
 
         # setup GPU device if available, move model into configured device
-        self.device, device_ids = self._prepare_device(config['n_gpu'])
+        self.device, self.device_ids = self._prepare_device(config['n_gpu'])
         self.generator = generator.to(self.device)
         self.discriminator = discriminator.to(self.device)
-        if len(device_ids) > 1:
-            self.generator = torch.nn.DataParallel(self.generator, device_ids=device_ids)
-            self.discriminator = torch.nn.DataParallel(self.discriminator, device_ids=device_ids)
+        if len(self.device_ids) > 1:
+            self.generator = torch.nn.DataParallel(self.generator, device_ids=self.device_ids)
+            self.discriminator = torch.nn.DataParallel(self.discriminator, device_ids=self.device_ids)
 
         self.losses = losses
         self.metrics = metrics
