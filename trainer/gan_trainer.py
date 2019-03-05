@@ -139,7 +139,7 @@ class Trainer(BaseGANTrainer):
             kl_loss = self.get_KL_Loss(mean_var[0], mean_var[1])
             generator_loss += self.config["trainer"]["KL_coe"] * kl_loss
 
-            generator_loss.backward(retain_graph=True)
+            generator_loss.backward()
             self.generator_optimizer.step()
 
             # train the discriminator
@@ -151,7 +151,9 @@ class Trainer(BaseGANTrainer):
 
             noise = Variable(torch.randn(right_images['256'].size(0), self.noise_dim)).to(self.device)
             noise = noise.view(noise.size(0), self.noise_dim)
-            fake_images, mean_var = self.to_img_dict_(self.generator(right_embeddings, noise))
+            fake_images_64, fake_images_128, fake_images_256, mean, logsigma = self.generator(right_embeddings, noise)
+            # fake_images, mean_var = self.to_img_dict_(self.generator(right_embeddings, noise))
+            fake_images, mean_var = self.to_img_dict_(fake_images_64.detach(), fake_images_128.detach(), fake_images_256.detach(), mean.detach(), logsigma.detach())
 
             discriminator_loss = 0
             ''' iterate over image of different sizes.'''
