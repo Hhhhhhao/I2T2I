@@ -83,6 +83,8 @@ class Utils(object):
         """Calculates the gradient penalty loss for WGAN GP"""
         # Random weight term for interpolation between real and fake samples
         alpha = torch.Tensor(np.random.random((real_samples.size(0), 1, 1, 1)))
+        if torch.cuda.is_available():
+           alpha = alpha.cuda()
 
         # Get random interpolation between real and fake samples
         interpolates = (alpha * real_samples + ((1 - alpha) * fake_samples + (1 - alpha) * wrong_samples) * 0.5).requires_grad_(True)
