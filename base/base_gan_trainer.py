@@ -104,7 +104,6 @@ class BaseGANTrainer:
             checkpoint = torch.load(self.config["models"]["Discriminator"]["pretrain_path"])
             self.generator.load_state_dict(checkpoint['discriminator_state_dict'])
 
-
     def train(self):
         """
         Full training logic

@@ -27,18 +27,20 @@ class Rollout:
                 result = torch.zeros(batch_size, 1).cuda()
             else:
                 result = torch.zeros(batch_size, 1)
+
             remaining = self.max_sentence_length - generated_captions.shape[1]
             h, c = states
             generated_captions = generated_captions.repeat(monte_carlo_count, 1)
             for _ in range(steps):
                 states = (h.repeat(1, monte_carlo_count, 1), c.repeat(1, monte_carlo_count, 1))
                 inputs = generated_captions[:, -1].unsqueeze(1)
+                current_captions = generated_captions
 
                 if torch.cuda.is_available():
                     inputs = inputs.cuda()
 
                 inputs = self.embedding(inputs)
-                current_captions = generated_captions
+
                 for i in range(remaining):
                     hidden, states = self.lstm(inputs, states)
                     outputs = self.output_linear(hidden.squeeze(1))
@@ -46,7 +48,7 @@ class Rollout:
                     predicted = outputs.multinomial(1)
                     predicted = predicted.long()
                     # embed the next inputs, unsqueeze is required cause of shape (batch_size, 1, embedding_size)
-                    current_captions = torch.cat([current_captions, predicted.cpu()], dim=1)
+                    current_captions = torch.cat([current_captions, predicted], dim=1)
                     inputs = self.embedding(predicted)
                 caption_list = current_captions.data.clone()
                 caption_list = caption_list.tolist()

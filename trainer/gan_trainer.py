@@ -331,7 +331,7 @@ class Trainer(BaseGANTrainer):
         )
 
         for batch_idx, data in enumerate(data_loader):
-            if batch_idx != 0:
+            if batch_idx == 1:
                 break
 
             batch_images = data["right_images_{}".format(self.image_size)].to(self.device)

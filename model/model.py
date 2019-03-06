@@ -308,7 +308,7 @@ class ConditionalGenerator(BaseModel):
         states = self.init_states_from_features(features.unsqueeze(1))
         # initialize inputs of start symbol
         inputs = torch.zeros((batch_size, 1)).long()
-        current_generated_captions = inputs
+        current_generated_captions = torch.LongTensor(inputs)
         rewards = torch.zeros(batch_size, self.max_sentence_length)
         props = torch.zeros(batch_size, self.max_sentence_length)
 
@@ -316,7 +316,7 @@ class ConditionalGenerator(BaseModel):
             inputs = inputs.cuda()
             rewards = rewards.cuda()
             props = props.cuda()
-            # current_generated_captions.cuda()
+            current_generated_captions.cuda()
 
         inputs = self.decoder.embedding(inputs)
         if torch.cuda.is_available():
@@ -341,7 +341,7 @@ class ConditionalGenerator(BaseModel):
             # prop is a 1D tensor
             props[:, i] = prop.view(-1)
             # embed the next inputs, unsqueeze is required cause of shape (batch_size, 1, embedding_size)
-            current_generated_captions = torch.cat([current_generated_captions, predicted.cpu()], dim=1)
+            current_generated_captions = torch.cat([current_generated_captions, predicted], dim=1)
             inputs = self.decoder.embedding(predicted)
             reward = self.rollout.reward(images, current_generated_captions, states, monte_carlo_count, evaluator)
             rewards[:, i] = reward.view(-1)
