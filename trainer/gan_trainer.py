@@ -120,7 +120,7 @@ class Trainer(BaseGANTrainer):
                 generator_captions.append(self.generator.module.sample(image_feature.unsqueeze(0)))
             generator_captions, generator_caption_lengths = get_caption_lengths(generator_captions)
             generator_captions.to(self.device)
-            generator_caption_lengths = torch.LongTensor(generator_caption_lengths).to(self.device)
+            generator_caption_lengths.to(self.device)
 
             self.discriminator_optimizer.zero_grad()
             evaluator_scores = self.discriminator(batch_images, batch_captions, batch_caption_lengths)
@@ -213,7 +213,7 @@ class Trainer(BaseGANTrainer):
                 generator_captions.append(self.generator.module.sample(image_feature.unsqueeze(0)))
             generator_captions, generator_caption_lengths = get_caption_lengths(generator_captions)
             generator_captions.to(self.device)
-            generator_caption_lengths = torch.LongTensor(generator_caption_lengths).to(self.device)
+            generator_caption_lengths.to(self.device)
 
             evaluator_scores = self.discriminator(batch_images, batch_captions, batch_caption_lengths)
             generator_scores = self.discriminator(batch_images, generator_captions, generator_caption_lengths)
@@ -296,7 +296,7 @@ class Trainer(BaseGANTrainer):
                         self.generator.module.sample(image_feature.unsqueeze(0)))
                 generator_captions, generator_caption_lengths = get_caption_lengths(generator_captions)
                 generator_captions.to(self.device)
-                generator_caption_lengths = torch.LongTensor(generator_caption_lengths).to(self.device)
+                generator_caption_lengths.to(self.device)
 
                 evaluator_scores = self.discriminator(batch_images, batch_captions, batch_caption_lengths)
                 generator_scores = self.discriminator(batch_images, generator_captions, generator_caption_lengths)
