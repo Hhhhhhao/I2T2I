@@ -341,7 +341,7 @@ class ConditionalGenerator(BaseModel):
             # prop is a 1D tensor
             props[:, i] = prop.view(-1)
             # embed the next inputs, unsqueeze is required cause of shape (batch_size, 1, embedding_size)
-            current_generated_captions = torch.cat([current_generated_captions, predicted], dim=1)
+            current_generated_captions = torch.cat([current_generated_captions, predicted.cpu()], dim=1)
             inputs = self.decoder.embedding(predicted)
             reward = self.rollout.reward(images, current_generated_captions, states, monte_carlo_count, evaluator)
             rewards[:, i] = reward.view(-1)

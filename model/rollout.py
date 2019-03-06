@@ -48,7 +48,7 @@ class Rollout:
                     predicted = outputs.multinomial(1)
                     predicted = predicted.long()
                     # embed the next inputs, unsqueeze is required cause of shape (batch_size, 1, embedding_size)
-                    current_captions = torch.cat([current_captions, predicted], dim=1)
+                    current_captions = torch.cat([current_captions, predicted.cpu()], dim=1)
                     inputs = self.embedding(predicted)
                 caption_list = current_captions.data.clone()
                 caption_list = caption_list.tolist()
