@@ -205,7 +205,8 @@ class Trainer(BaseGANTrainer):
                 ))
 
         self.writer.add_image('input', make_grid(generated_images['256'].cpu(), nrow=8, normalize=True))
-        self.predict(self.valid_data_loader, epoch)
+        if epoch%5 == 0:
+            self.predict(self.valid_data_loader, epoch)
 
         log = {
             'Generator_Loss': total_generator_loss / len(self.train_data_loader),
@@ -281,7 +282,7 @@ class Trainer(BaseGANTrainer):
         )
 
         for batch_idx, sample in enumerate(data_loader):
-            if batch_idx != 0:
+            if batch_idx == 2:
                 break
 
             right_images_256 = sample['right_images_256'].to(self.device)
