@@ -66,7 +66,7 @@ class Trainer(BaseGANTrainer):
         self.damsm_rnn_encoder = damsm.rnn_encoder
         self.damsm_rnn_encoder.to(self.device)
         if len(self.device_ids) > 1:
-            self.damsm_rnn_encoder= torch.nn.DataParallel(self.damsm_rnn_encoder, device_ids=self.device_ids)
+            self.damsm_rnn_encoder = torch.nn.DataParallel(self.damsm_rnn_encoder, device_ids=self.device_ids)
 
 
     def _train_epoch(self, epoch):
