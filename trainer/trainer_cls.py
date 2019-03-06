@@ -144,7 +144,6 @@ class Trainer(object):
                     p.prequires_grad = True
                 self.generator.zero_grad()
 
-
                 noise = Variable(torch.randn(right_images.size(0), self.noise_dim)).to(self.device)
                 noise = noise.view(noise.size(0), self.noise_dim, 1, 1)
 
