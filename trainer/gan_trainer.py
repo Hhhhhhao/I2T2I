@@ -211,7 +211,7 @@ class Trainer(BaseGANTrainer):
         log = {
             'Generator_Loss': total_generator_loss / len(self.train_data_loader),
             'Discriminator_Loss': total_discriminator_loss / len(self.train_data_loader),
-            'metrics': 0
+            'metrics': [0]
         }
 
         return log
