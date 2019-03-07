@@ -64,8 +64,8 @@ class Trainer(object):
         self.l1_coef = l1_coef
         self.l2_coef = l2_coef
 
-        self.optimD = torch.optim.Adam(self.discriminator.parameters(), lr=self.lr, betas=(self.beta1, 0.999))
-        self.optimG = torch.optim.Adam(self.generator.parameters(), lr=self.lr, betas=(self.beta1, 0.999))
+        self.optimD = torch.optim.Adam(self.discriminator.parameters(), lr=2e-4, betas=(self.beta1, 0.999))
+        self.optimG = torch.optim.Adam(self.generator.parameters(), lr=4e-4, betas=(self.beta1, 0.999))
 
         self.checkpoints_path = 'checkpoints'
         self.save_path = save_path
