@@ -52,6 +52,7 @@ class Text2ImageDataset_Origin(Dataset):
         right_embed = np.array(example['embeddings'], dtype=float)
         wrong_image = bytes(np.array(self.find_wrong_image(example['class'])))
         inter_embed = np.array(self.find_inter_embed())
+        inter_embed = (right_embed + inter_embed) * 0.5
 
         right_image = Image.open(io.BytesIO(right_image)).resize((64, 64))
         wrong_image = Image.open(io.BytesIO(wrong_image)).resize((64, 64))
