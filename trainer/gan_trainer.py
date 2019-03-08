@@ -81,6 +81,9 @@ class Trainer(BaseGANTrainer):
                     100.0 * batch_idx / len(self.train_data_loader),
                     loss.item()))
 
+            # TODO remove this
+            break
+
         log = {
             'Generator_CrossEntropyLoss': total_loss / len(self.train_data_loader),
             'metrics': (total_metrics / len(self.train_data_loader)).tolist()
@@ -146,6 +149,9 @@ class Trainer(BaseGANTrainer):
             if batch_idx == int(len(self.train_data_loader) / 4):
                 if "CoCo" in self.config["name"]:
                     break
+
+            # TODO remove this
+            break
 
         log = {
             'Evaluator_Loss': total_loss / len(self.train_data_loader),
@@ -247,6 +253,9 @@ class Trainer(BaseGANTrainer):
                     discriminator_loss.item()
                 ))
 
+            # TODO remove this
+            break
+
         log = {
             'Generator_CrossEntropyLoss': total_generator_cce_loss / len(self.train_data_loader),
             'Generator_RLLoss': total_generator_rl_loss / len(self.train_data_loader),
@@ -310,6 +319,9 @@ class Trainer(BaseGANTrainer):
                 total_discriminator_val_loss += discriminator_loss.item()
                 total_val_metrics += self._eval_metrics(evaluator_scores, generator_scores)
 
+                # TODO remove this
+                break
+
             # self.writer.add_text('caption', make_grid())
         return {
             'generator_val_loss': total_generator_val_loss / len(self.valid_data_loader),
@@ -348,7 +360,7 @@ class Trainer(BaseGANTrainer):
             generator_captions = []
             for image_feature in image_features:
                 generator_captions.append(
-                    self.generator.sample(image_feature.unsqueeze(0)))
+                    self.generator.module.sample(image_feature.unsqueeze(0)))
 
             for generated_caption, image in zip(generator_captions, batch_images):
                 generated_sentence = convert_back_to_text(generated_caption, self.train_data_loader.dataset.vocab)
