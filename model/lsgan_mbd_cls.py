@@ -128,7 +128,7 @@ class discriminator(BaseModel):
         x_intermediate = self.netD_1(inp)
         x = self.projector(x_intermediate, embed)
         x = self.netD_2(x)
-        x = x.view(-1)
+        x = x.view(x.size(0), -1)
         x = self.mbd(x)
         x = self.fc(x)
         return x, x_intermediate
