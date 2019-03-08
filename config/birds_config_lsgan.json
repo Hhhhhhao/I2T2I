@@ -2,6 +2,6 @@
   "gan_type":"lsgan_cls",
   "dataset_name": "birds",
   "save_path": "/home/s1786991/I2T2I/saved/LSGAN-CLS/birds",
-  "pre_trained_gen":"/home/s1786991/I2T2I/saved/LSGAN-CLS/birds/0307_213258/checkpoints/gen_40.pth",
-  "pre_trained_disc":"/home/s1786991/I2T2I/saved/LSGAN-CLS/birds/0307_213258/checkpoints/disc_40.pth"
+  "pre_trained_gen":"/home/s1786991/I2T2I/saved/LSGAN-CLS/birds/0308_110324/checkpoints/gen_85.pth",
+  "pre_trained_disc":"/home/s1786991/I2T2I/saved/LSGAN-CLS/birds/0308_110324/checkpoints/disc_85.pth"
 }
