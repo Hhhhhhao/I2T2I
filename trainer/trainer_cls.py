@@ -36,6 +36,8 @@ class Trainer(object):
 
         if pre_trained_disc:
             self.discriminator.load_state_dict(torch.load(pre_trained_disc, map_location='cpu'))
+        elif gan_type=='lsgan_sn_cls':
+            pass
         else:
             self.discriminator.apply(Utils.weights_init)
 
