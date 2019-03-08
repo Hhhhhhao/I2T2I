@@ -1,0 +1,5 @@
+{
+  "gan_type":"lsgan_cls_int",
+  "dataset_name": "flowers",
+  "save_path": "/home/s1786991/I2T2I/saved/LSGAN-CLS-INT/flowers"
+}

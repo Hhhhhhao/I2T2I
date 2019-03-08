@@ -10,6 +10,8 @@ class gan_factory(object):
             return gan_cls.generator()
         elif type =='lsgan_cls':
             return lsgan_cls.generator()
+        elif type == 'lsgan_cls_int':
+            return lsgan_cls.generator()
         elif type == 'wgan_cls':
             return lsgan_cls.generator()
         # elif type == 'vanilla_gan':
@@ -22,6 +24,8 @@ class gan_factory(object):
         if type == 'gan_cls':
             return gan_cls.discriminator()
         elif type == 'lsgan_cls':
+            return lsgan_cls.discriminator()
+        elif type == 'lsgan_cls_int':
             return lsgan_cls.discriminator()
         elif type == 'wgan_cls':
             return lsgan_cls.discriminator()
