@@ -354,7 +354,7 @@ class Trainer(BaseGANTrainer):
 
             for generated_caption, image in zip(generator_captions, batch_images):
                 generated_sentence = convert_back_to_text(generated_caption, self.train_data_loader.dataset.vocab)
-                image = transform(image)
+                image = transform(image.cpu())
                 image.save('{0}/results/epoch_{1}/{2}.png'.format(self.checkpoint_dir, epoch, generated_sentence.replace("/", "")[:100]))
 
 
