@@ -353,14 +353,6 @@ class ConditionalGenerator(BaseModel):
     def sample_beam_search(self, features, beam_width=3, states=None):
         return self.decoder.sample_beam_search(features, self.max_sentence_length, beam_width, states)
 
-    def freeze(self):
-        for param in self.parameters():
-            param.requires_grad = False
-
-    def unfreeze(self):
-        for param in self.parameters():
-            param.requires_grad = True
-
 
 class Evaluator(BaseModel):
     def __init__(self,

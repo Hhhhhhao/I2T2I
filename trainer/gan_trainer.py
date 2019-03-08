@@ -81,6 +81,8 @@ class Trainer(BaseGANTrainer):
                     100.0 * batch_idx / len(self.train_data_loader),
                     loss.item()))
 
+        self.predict(self.valid_data_loader, 0)
+
         log = {
             'Generator_CrossEntropyLoss': total_loss / len(self.train_data_loader),
             'metrics': (total_metrics / len(self.train_data_loader)).tolist()
