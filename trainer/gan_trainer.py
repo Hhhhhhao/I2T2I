@@ -52,6 +52,8 @@ class Trainer(BaseGANTrainer):
             self.writer.add_scalar(f'{metric.__name__}', acc_metrics[i])
         return acc_metrics
 
+
+    # TODO change herre!
     def _train_generator_epoch(self, epoch):
         self.generator.train()
         total_loss = 0
@@ -62,7 +64,7 @@ class Trainer(BaseGANTrainer):
             batch_caption_lengths = data["right_caption_lengths"].to(self.device)
 
             self.generator_optimizer.zero_grad()
-            _, outputs = self.generator(batch_images, batch_captions, batch_caption_lengths)
+            _, outputs = self.generator.(batch_images, batch_captions, batch_caption_lengths)
             targets = pack_padded_sequence(batch_captions, batch_caption_lengths, batch_first=True)[0]
             loss = self.losses["Generator_CrossEntropyLoss"](outputs, targets)
             loss.backward()
@@ -81,7 +83,10 @@ class Trainer(BaseGANTrainer):
                     100.0 * batch_idx / len(self.train_data_loader),
                     loss.item()))
 
-        self.predict(self.valid_data_loader, 0)
+            #todo remove
+            break
+
+        self.predict(self.valid_data_loader, epoch, name='pretrain_epoch')
 
         log = {
             'Generator_CrossEntropyLoss': total_loss / len(self.train_data_loader),
@@ -148,6 +153,9 @@ class Trainer(BaseGANTrainer):
             if batch_idx == int(len(self.train_data_loader) / 4):
                 if "CoCo" in self.config["name"]:
                     break
+
+            #todo remove
+            break
 
         log = {
             'Evaluator_Loss': total_loss / len(self.train_data_loader),
@@ -249,6 +257,9 @@ class Trainer(BaseGANTrainer):
                     discriminator_loss.item()
                 ))
 
+            # todo remove
+            break
+
         log = {
             'Generator_CrossEntropyLoss': total_generator_cce_loss / len(self.train_data_loader),
             'Generator_RLLoss': total_generator_rl_loss / len(self.train_data_loader),
@@ -312,6 +323,9 @@ class Trainer(BaseGANTrainer):
                 total_discriminator_val_loss += discriminator_loss.item()
                 total_val_metrics += self._eval_metrics(evaluator_scores, generator_scores)
 
+                # todo remove
+                break
+
             # self.writer.add_text('caption', make_grid())
         return {
             'generator_val_loss': total_generator_val_loss / len(self.valid_data_loader),
@@ -323,7 +337,7 @@ class Trainer(BaseGANTrainer):
         checkpoint = torch.load(path)
         self.generator.load_state_dict(checkpoint['state_dict'])
 
-    def predict(self, data_loader, epoch=None):
+    def predict(self, data_loader, epoch=None, name='epoch'):
         self.generator.eval()
         self.discriminator.eval()
 
@@ -343,8 +357,8 @@ class Trainer(BaseGANTrainer):
             batch_captions = data["right_captions"].to(self.device)
             batch_caption_lengths = data["right_caption_lengths"].to(self.device)
 
-            if not os.path.exists('{0}/results/epoch_{1}'.format(self.checkpoint_dir, epoch)):
-                os.makedirs('{0}/results/epoch_{1}'.format(self.checkpoint_dir, epoch))
+            if not os.path.exists('{0}/results/{1}_{2}'.format(self.checkpoint_dir, name, epoch)):
+                os.makedirs('{0}/results/{1}_{2}'.format(self.checkpoint_dir, name, epoch))
 
             image_features, outputs = self.generator(batch_images, batch_captions, batch_caption_lengths)
             generator_captions = []
@@ -355,6 +369,6 @@ class Trainer(BaseGANTrainer):
             for generated_caption, image in zip(generator_captions, batch_images):
                 generated_sentence = convert_back_to_text(generated_caption, self.train_data_loader.dataset.vocab)
                 image = transform(image.cpu())
-                image.save('{0}/results/epoch_{1}/{2}.png'.format(self.checkpoint_dir, epoch, generated_sentence.replace("/", "")[:100]))
+                image.save('{0}/results/{1}_{2}/{3}.png'.format(self.checkpoint_dir, name, epoch, generated_sentence.replace("/", "")[:100]))
 
 
