@@ -155,7 +155,6 @@ class COCOTextImageDataset(Dataset):
         return self.find_wrond_txt(right_img_id)
 
 
-
 class TextImageDataset(Dataset):
     def __init__(self,
                  data_dir,
