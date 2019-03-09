@@ -264,6 +264,8 @@ class ConditionalGenerator(BaseModel):
         self.decoder = DecoderRNN(self.word_embed_size, self.lstm_hidden_size, self.vocab_size, self.lstm_num_layers)
         self.rollout = Rollout(max_sentence_length)
 
+        self.activation = nn.LeakyReLU(0.2)
+
     def get_feature_linear_output(self, image_features):
         rand = self.distribution.sample((image_features.shape[0],))
 
@@ -285,6 +287,12 @@ class ConditionalGenerator(BaseModel):
             return (states[0].cuda(), states[1].cuda())
         else:
             return states
+
+    def caption_forward(self, images, captions, caption_lengths):
+        image_features = self.encoder(images)
+        features = self.activation(image_features)
+        outputs = self.decoder(features, captions, caption_lengths)
+        return image_features, outputs
 
     def forward(self, images, captions, caption_lengths):
         image_features = self.encoder(images)

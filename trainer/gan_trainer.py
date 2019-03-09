@@ -52,11 +52,9 @@ class Trainer(BaseGANTrainer):
             self.writer.add_scalar(f'{metric.__name__}', acc_metrics[i])
         return acc_metrics
 
-
-    # TODO change herre!
     def _train_generator_epoch(self, epoch):
         self.generator.train()
-        total_loss = 0
+        total_loss = 0.0
         total_metrics = np.zeros(len(self.metrics))
         for batch_idx, data in enumerate(self.train_data_loader):
             batch_images = data["right_images_{}".format(self.image_size)].to(self.device)
@@ -64,7 +62,7 @@ class Trainer(BaseGANTrainer):
             batch_caption_lengths = data["right_caption_lengths"].to(self.device)
 
             self.generator_optimizer.zero_grad()
-            _, outputs = self.generator.(batch_images, batch_captions, batch_caption_lengths)
+            _, outputs = self.generator.module.caption_forward(batch_images, batch_captions, batch_caption_lengths)
             targets = pack_padded_sequence(batch_captions, batch_caption_lengths, batch_first=True)[0]
             loss = self.losses["Generator_CrossEntropyLoss"](outputs, targets)
             loss.backward()
