@@ -174,10 +174,10 @@ class Trainer(BaseGANTrainer):
         self.generator.train()
         self.discriminator.train()
 
-        total_generator_rl_loss = 0
-        total_generator_cce_loss = 0
-        total_generator_loss = 0
-        total_discriminator_loss = 0
+        total_generator_rl_loss = 0.0
+        total_generator_cce_loss = 0.0
+        total_generator_loss = 0.0
+        total_discriminator_loss = 0.0
         total_metrics = np.zeros(len(self.metrics))
         for batch_idx, data in enumerate(self.train_data_loader):
             batch_images = data["right_images_{}".format(self.image_size)].to(self.device)
@@ -272,8 +272,8 @@ class Trainer(BaseGANTrainer):
         """
         self.generator.eval()
         self.discriminator.eval()
-        total_generator_val_loss = 0
-        total_discriminator_val_loss = 0
+        total_generator_val_loss = 0.0
+        total_discriminator_val_loss = 0.0
         total_val_metrics = np.zeros(len(self.metrics))
         with torch.no_grad():
             for batch_idx, data in enumerate(self.valid_data_loader):
