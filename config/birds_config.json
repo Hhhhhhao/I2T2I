@@ -5,7 +5,7 @@
     "models": {
         "Generator":{
             "type":"ConditionalGenerator",
-            "pretrain_path": "/home/s1786991/I2T2I/saved/Show-and-Tell-Birds/hehe",
+            "pretrain_path": "saved/Show-and-Tell-Birds/hehe",
             "args":{
                 "image_embed_size": 512,
                 "word_embed_size": 512,
@@ -61,7 +61,7 @@
             "dataset_name":"birds",
             "which_set": "valid",
             "image_size":256,
-            "batch_size":8,
+            "batch_size":32,
             "num_workers": 0
         }
     },
@@ -69,8 +69,8 @@
     "metrics": [],
     "trainer": {
         "epochs": 50,
-        "pretrain_generator_epochs":4,
-        "pretrain_discriminator_epochs":2,
+        "pretrain_generator_epochs":0,
+        "pretrain_discriminator_epochs":0,
         "lambda_1": 0.0,
         "lambda_2": 1.0,
         "save_dir": "saved/",

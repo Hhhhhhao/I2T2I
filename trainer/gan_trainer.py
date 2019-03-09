@@ -248,7 +248,6 @@ class Trainer(BaseGANTrainer):
                     discriminator_loss.item()
                 ))
 
-
         log = {
             'Generator_CrossEntropyLoss': total_generator_cce_loss / len(self.train_data_loader),
             'Generator_RLLoss': total_generator_rl_loss / len(self.train_data_loader),
