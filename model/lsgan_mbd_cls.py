@@ -114,7 +114,7 @@ class discriminator(BaseModel):
 
         self.netD_2 = nn.Sequential(
             # state size. (ndf*8) x 4 x 4
-            nn.Conv2d(self.ndf * 8 + self.projected_embed_dim, 1, 4, 1, 0, bias=False),
+            nn.Conv2d(self.ndf * 8 + self.projected_embed_dim, self.ndf * 8 + self.projected_embed_dim, 4, 1, 0, bias=False),
         )
 
         self.mbd = MinibatchDiscrimination1d(
@@ -122,7 +122,7 @@ class discriminator(BaseModel):
             out_features=self.ndf*8+self.projected_embed_dim,
             intermediate_features=64)
 
-        self.fc = nn.Linear(self.ndf*8+self.projected_embed_dim, 1)
+        self.fc = nn.Linear((self.ndf*8+self.projected_embed_dim)*2, 1)
 
     def forward(self, inp, embed):
         x_intermediate = self.netD_1(inp)

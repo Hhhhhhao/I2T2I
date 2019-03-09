@@ -20,7 +20,7 @@ def get_args():
     parser.add_argument('--pre_trained_disc', default=None, help="Generator pre-tranined model path used for intializing training")
     parser.add_argument('--pre_trained_gen', default=None, help="Discriminator pre-tranined model path used for intializing training")
 
-    parser.add_argument('--filepath_to_config_file', default='config/birds_config_wgan.json', help='file path to arguments json file')
+    parser.add_argument('--filepath_to_config_file', default='config/birds_config_lsgan_mbd.json', help='file path to arguments json file')
 
     args = parser.parse_args()
 

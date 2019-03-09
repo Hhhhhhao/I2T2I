@@ -86,7 +86,7 @@ class Trainer(object):
         elif self.gan_type == 'wgan_cls':
             self._train_wgan_cls()
         else:
-            self._train_lsgan_cls_int()
+            self._train_lsgan_cls()
         # elif self.gan_type == 'vanilla_gan':
         #     self._train_vanilla_gan()
 
