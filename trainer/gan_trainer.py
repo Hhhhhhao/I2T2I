@@ -81,9 +81,6 @@ class Trainer(BaseGANTrainer):
                     100.0 * batch_idx / len(self.train_data_loader),
                     loss.item()))
 
-            #todo remove
-            break
-
         self.predict(self.valid_data_loader, epoch, name='pretrain_epoch')
 
         log = {
@@ -151,10 +148,6 @@ class Trainer(BaseGANTrainer):
             if batch_idx == int(len(self.train_data_loader) / 4):
                 if "CoCo" in self.config["name"]:
                     break
-
-            #todo remove
-            break
-
         log = {
             'Evaluator_Loss': total_loss / len(self.train_data_loader),
             'metrics': (total_metrics / len(self.train_data_loader)).tolist()
@@ -255,8 +248,6 @@ class Trainer(BaseGANTrainer):
                     discriminator_loss.item()
                 ))
 
-            # todo remove
-            break
 
         log = {
             'Generator_CrossEntropyLoss': total_generator_cce_loss / len(self.train_data_loader),
@@ -321,8 +312,6 @@ class Trainer(BaseGANTrainer):
                 total_discriminator_val_loss += discriminator_loss.item()
                 total_val_metrics += self._eval_metrics(evaluator_scores, generator_scores)
 
-                # todo remove
-                break
 
             # self.writer.add_text('caption', make_grid())
         return {
