@@ -11,7 +11,7 @@ from matplotlib import pyplot as plt
 
 dirname = os.path.dirname(__file__)
 main_dirname = os.path.dirname(dirname)
-birds_damsm = os.path.join(main_dirname, 'output/Deep-Attentional-Multimodal-Similarity-Birds/0226_204228/bird/text_encoder200.pth')
+birds_damsm = os.path.join(main_dirname, 'output/Deep-Attentional-Multimodal-Similarity-Birds/0226_204228/model_best.pth')
 flowers_damsm = os.path.join(main_dirname, 'output/Deep-Attentional-Multimodal-Similarity-Flowers/0226_204709/model_best.pth')
 coco_damsm = os.path.join(main_dirname, 'output/Deep-Attentional-Multimodal-Similarity-CoCo/0226_180051/model_best.pth')
 
