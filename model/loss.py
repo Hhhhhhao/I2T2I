@@ -20,8 +20,7 @@ def cross_entropy_loss(output, target):
 # Losses for matching text-image
 
 def cosine_similarity(x1, x2, dim=1, eps=1e-8):
-    """
-    Returns cosine similarity between x1 and x2, computed along dim.
+    """Returns cosine similarity between x1 and x2, computed along dim.
     """
     w12 = torch.sum(x1 * x2, dim)
     w1 = torch.norm(x1, 2, dim)
@@ -29,7 +28,8 @@ def cosine_similarity(x1, x2, dim=1, eps=1e-8):
     return (w12 / (w1 * w2).clamp(min=eps)).squeeze()
 
 
-def sent_loss(cnn_code, rnn_code, labels, class_ids, batch_size, eps=1e-8):
+def sent_loss(cnn_code, rnn_code, labels, class_ids,
+              batch_size, eps=1e-8):
     # ### Mask mis-match samples  ###
     # that come from the same class as the real sample ###
     masks = []
@@ -41,7 +41,7 @@ def sent_loss(cnn_code, rnn_code, labels, class_ids, batch_size, eps=1e-8):
         masks = np.concatenate(masks, 0)
         # masks: batch_size x batch_size
         masks = torch.ByteTensor(masks)
-        if cfg.CUDA:
+        if torch.cuda.is_available():
             masks = masks.cuda()
 
     # --> seq_len x batch_size x nef
@@ -70,12 +70,8 @@ def sent_loss(cnn_code, rnn_code, labels, class_ids, batch_size, eps=1e-8):
     return loss0, loss1
 
 
-def words_loss(image_features,
-               words_emb,
-               labels,
-               caption_lengths,
-               class_ids,
-               batch_size):
+def words_loss(img_features, words_emb, labels,
+               cap_lens, class_ids, batch_size):
     """
         words_emb(query): batch x nef x seq_len
         img_features(context): batch x nef x 17 x 17
@@ -83,20 +79,20 @@ def words_loss(image_features,
     masks = []
     att_maps = []
     similarities = []
+    cap_lens = cap_lens.cpu().tolist()
     for i in range(batch_size):
         if class_ids is not None:
-            mask = (class_ids == class_ids[i])# .astype(np.uint8)
-            mask = int(mask)
+            mask = (class_ids == class_ids[i]).astype(np.uint8)
             mask[i] = 0
             masks.append(mask.reshape((1, -1)))
         # Get the i-th text description
-        words_num = caption_lengths[i]
+        words_num = cap_lens[i]
         # -> 1 x nef x words_num
         word = words_emb[i, :, :words_num].unsqueeze(0).contiguous()
         # -> batch_size x nef x words_num
         word = word.repeat(batch_size, 1, 1)
         # batch x nef x 17*17
-        context = image_features
+        context = img_features
         """
             word(query): batch x nef x words_num
             context: batch x nef x 17 x 17

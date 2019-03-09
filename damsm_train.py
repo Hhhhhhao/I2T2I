@@ -14,7 +14,7 @@ def get_instance(module, name, config, *args):
     return getattr(module, config[name]['type'])(*args, **config[name]['args'])
 
 
-def main(config, resume):
+def main(config):
     train_logger = Logger()
 
     # setup data_loader instances
@@ -28,22 +28,23 @@ def main(config, resume):
         print("val vocab size:{}".format(len(valid_data_loader.dataset.vocab)))
 
     # build model architecture
-    model = get_instance(module_arch, 'arch', config)
-    print(model)
+    rnn_encoder = get_instance(module_arch, 'rnn_arch', config)
+    print(rnn_encoder)
+    cnn_encoder = get_instance(module_arch, 'cnn_arch', config)
+    print(cnn_encoder)
 
     # get function handles of loss and metrics
     losses = {}
     losses["word"] = getattr(module_loss, 'words_loss')
     losses["sent"] = getattr(module_loss, 'sent_loss')
-    metrics = [getattr(module_metric, met) for met in config['metrics']]
 
+    a = rnn_encoder.parameters()
     # build optimizer, learning rate scheduler. delete every lines containing lr_scheduler for disabling scheduler
-    trainable_params = filter(lambda p: p.requires_grad, model.parameters())
+    trainable_params = filter(lambda p: p.requires_grad, list(rnn_encoder.parameters()) + list(cnn_encoder.parameters()))
     optimizer = get_instance(torch.optim, 'optimizer', config, trainable_params)
     lr_scheduler = None # get_instance(torch.optim.lr_scheduler, 'lr_scheduler', config, optimizer)
 
-    trainer = DAMSM_Trainer(model, losses, metrics, optimizer,
-                      resume=resume,
+    trainer = DAMSM_Trainer(rnn_encoder, cnn_encoder, losses, optimizer,
                       config=config,
                       data_loader=train_data_loader,
                       valid_data_loader=valid_data_loader,
@@ -77,4 +78,4 @@ if __name__ == '__main__':
     if args.device:
         os.environ["CUDA_VISIBLE_DEVICES"] = args.device
 
-    main(config, args.resume)
+    main(config)
