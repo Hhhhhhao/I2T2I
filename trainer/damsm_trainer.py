@@ -118,9 +118,6 @@ class Trainer(BaseTrainer):
                     word_loss_1.item()))
                 # self.writer.add_image('input', make_grid(batch_images.cpu(), nrow=8, normalize=True))
 
-            # todo remove
-            break
-
         log = {
             'loss': total_loss / len(self.data_loader),
             'word_loss_0': word_total_loss_0 / len(self.data_loader),
@@ -201,9 +198,6 @@ class Trainer(BaseTrainer):
                 sent_total_val_loss_0 += sent_loss_0.item()
                 sent_total_val_loss_1 += sent_loss_1.item()
                 total_val_loss += loss.item()
-
-                #todo remove
-                break
 
         return {
             'val_loss': total_val_loss / len(self.valid_data_loader),
@@ -349,8 +343,9 @@ class Trainer(BaseTrainer):
         num = captions.size(0)
         img_txt = Image.fromarray(convas)
         # get a font
-        fnt = None  # ImageFont.truetype('Pillow/Tests/fonts/FreeMono.ttf', 50)
-        # fnt = ImageFont.truetype('Pillow/Tests/fonts/FreeMono.ttf', 50)
+        # fnt = None  # ImageFont.truetype('Pillow/Tests/fonts/FreeMono.ttf', 50)
+        # fnt = ImageFont.truetype('/Library/Fonts/Arial.ttf', 45)
+        fnt = ImageFont.load_default()
         # get a drawing context
         d = ImageDraw.Draw(img_txt)
         sentence_list = []
