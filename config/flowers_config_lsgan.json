@@ -1,6 +1,8 @@
 {
   "gan_type":"lsgan_cls",
   "dataset_name": "flowers",
-  "save_path": "/home/s1786991/I2T2I/saved/LSGAN-CLS/flowers"
+  "save_path": "/home/s1786991/I2T2I/saved/LSGAN-CLS/flowers",
+  "pre_trained_gen":"/home/s1786991/I2T2I/saved/LSGAN-CLS/flowers/0305_205906/checkpoints/gen_190.pth",
+  "pre_trained_disc":"/home/s1786991/I2T2I/saved/LSGAN-CLS/flowers/0305_205906/checkpoints/disc_190.pth"
 }
 
