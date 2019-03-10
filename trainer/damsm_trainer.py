@@ -59,6 +59,7 @@ class Trainer(BaseTrainer):
         sent_total_loss_1 = 0
 
         for batch_idx, data in enumerate(self.data_loader):
+
             batch_images = data['right_images_256'].to(self.device)
             batch_size = batch_images.size(0)
             batch_captions = data['right_captions'].to(self.device)
@@ -118,6 +119,10 @@ class Trainer(BaseTrainer):
                     word_loss_1.item()))
                 # self.writer.add_image('input', make_grid(batch_images.cpu(), nrow=8, normalize=True))
 
+            # remove
+            break
+
+
         log = {
             'loss': total_loss / len(self.data_loader),
             'word_loss_0': word_total_loss_0 / len(self.data_loader),
@@ -159,12 +164,16 @@ class Trainer(BaseTrainer):
         sent_total_val_loss_1 = 0
         with torch.no_grad():
             for batch_idx, data in enumerate(self.valid_data_loader):
+
                 batch_images = data['right_images_256'].to(self.device)
                 batch_size = batch_images.size(0)
                 batch_captions = data['right_captions'].to(self.device)
                 batch_caption_lengths = data['right_caption_lengths'].to(self.device)
                 labels = torch.LongTensor(range(batch_size)).to(self.device)
                 class_ids = data['class_id']
+
+                # remove
+                break
 
                 image_features, image_emb = self.cnn_encoder(batch_images)
                 states = self.rnn_encoder.init_hidden(batch_size)
@@ -350,10 +359,10 @@ class Trainer(BaseTrainer):
         d = ImageDraw.Draw(img_txt)
         sentence_list = []
         for i in range(num):
-            cap = captions[i].data.cpu().numpy()
+            cap = captions.numpy()[i]
             sentence = []
             for j in range(len(cap)):
-                if cap[j] == 0:
+                if cap[j] == 1:
                     break
                 word = ixtoword[cap[j]].encode('ascii', 'ignore').decode('ascii')
                 d.text(((j + off1) * (vis_size + off2), i * FONT_MAX), '%d:%s' % (j, word[:6]),
