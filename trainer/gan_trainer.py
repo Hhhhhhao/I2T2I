@@ -257,9 +257,9 @@ class Trainer(BaseGANTrainer):
         }
 
         if self.do_validation:
+            self.predict(self.valid_data_loader, epoch)
             val_log = self._valid_epoch(epoch)
             log = {**log, **val_log}
-            self.predict(self.valid_data_loader, epoch)
 
         return log
 
@@ -311,16 +311,11 @@ class Trainer(BaseGANTrainer):
                 total_discriminator_val_loss += discriminator_loss.item()
                 total_val_metrics += self._eval_metrics(evaluator_scores, generator_scores)
 
-
         return {
             'generator_val_loss': total_generator_val_loss / len(self.valid_data_loader),
             'discriminator_val_loss': total_generator_val_loss / len(self.valid_data_loader),
             'val_metrics': (total_val_metrics / len(self.valid_data_loader)).tolist()
         }
-
-    def load_pre_trained_generator(self, path):
-        checkpoint = torch.load(path)
-        self.generator.load_state_dict(checkpoint['state_dict'])
 
     def predict(self, data_loader, epoch=None, name='epoch'):
         self.generator.eval()

@@ -18,6 +18,7 @@ class Rollout:
         self.output_linear = None
 
     def reward(self, images, generated_captions, states, monte_carlo_count, evaluator, steps=1):
+
         assert monte_carlo_count % steps == 0, "Monte Carlo Count can't be divided by Steps"
         monte_carlo_count //= steps
 
@@ -31,6 +32,7 @@ class Rollout:
             remaining = self.max_sentence_length - generated_captions.shape[1]
             h, c = states
             generated_captions = generated_captions.repeat(monte_carlo_count, 1)
+
             for _ in range(steps):
                 states = (h.repeat(1, monte_carlo_count, 1), c.repeat(1, monte_carlo_count, 1))
                 inputs = generated_captions[:, -1].unsqueeze(1)
@@ -50,10 +52,12 @@ class Rollout:
                     # embed the next inputs, unsqueeze is required cause of shape (batch_size, 1, embedding_size)
                     current_captions = torch.cat([current_captions, predicted.cpu()], dim=1)
                     inputs = self.embedding(predicted)
+
                 caption_list = current_captions.data.clone()
                 caption_list = caption_list.tolist()
                 captions, caption_lengths = get_caption_lengths(caption_list)
                 captions.to(device)
+                caption_lengths.to(device)
                 # caption_lengths = [self.max_sentence_length] * current_captions.size(0)
                 # captions = current_captions
                 reward = evaluator.forward(images, captions, caption_lengths)

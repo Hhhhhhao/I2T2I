@@ -14,6 +14,7 @@ class RLLoss(torch.nn.Module):
 
     def forward(self, rewards, props):
         loss = rewards * torch.log(props)
+        # loss = rewards * props
         loss = -torch.sum(loss)
         return loss
 

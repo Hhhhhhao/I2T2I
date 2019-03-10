@@ -311,6 +311,7 @@ class ConditionalGenerator(BaseModel):
         self.decoder.lstm.flatten_parameters()
         batch_size = images.size(0)
         image_features = self.encoder(images)
+
         features = self.get_feature_linear_output(image_features)
         # initialize hiddens states of lstm
         states = self.init_states_from_features(features.unsqueeze(1))
@@ -327,8 +328,10 @@ class ConditionalGenerator(BaseModel):
             current_generated_captions.cuda()
 
         inputs = self.decoder.embedding(inputs)
+
         if torch.cuda.is_available():
             inputs = inputs.cuda()
+
         self.rollout.update(self)
 
         for i in range(self.max_sentence_length):
@@ -336,6 +339,8 @@ class ConditionalGenerator(BaseModel):
             hiddens, states = self.decoder.lstm(inputs, states)
             # squeeze the hidden output size from (batch_siz, 1, hidden_size) to (batch_size, hidden_size)
             outputs = self.decoder.linear(hiddens.squeeze(1))
+
+            # outputs of size (batch_size, vocab_size)
             outputs = F.softmax(outputs, -1)
 
             # use multinomial to random sample
@@ -344,13 +349,14 @@ class ConditionalGenerator(BaseModel):
 
             # if torch.cuda.is_available():
             #   predicted = predicted.cuda()
-
             prop = torch.gather(outputs, 1, predicted)
             # prop is a 1D tensor
             props[:, i] = prop.view(-1)
-            # embed the next inputs, unsqueeze is required cause of shape (batch_size, 1, embedding_size)
+
+            # embed the next inputs, unsqueeze is required cause of shape (batch_size, vocab_size)
             current_generated_captions = torch.cat([current_generated_captions, predicted.cpu()], dim=1)
             inputs = self.decoder.embedding(predicted)
+
             reward = self.rollout.reward(images, current_generated_captions, states, monte_carlo_count, evaluator)
             rewards[:, i] = reward.view(-1)
         return rewards, props

@@ -78,7 +78,7 @@
         "verbosity": 2,
         "monitor": "off",
         "early_stop": 2,
-        "tensorboardX": true,
+        "tensorboardX": false,
         "log_dir": "saved/runs"
     }
 }

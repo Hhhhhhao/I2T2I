@@ -94,22 +94,22 @@ class BaseGANTrainer:
         if not os.path.exists(self.config["models"]["Generator"]["pretrain_path"]):
             print("pre train generator")
             self.pre_train_generator()
-            self.generator.save_state_dict(os.path.join(self.checkpoint_dir, 'pretrain_generator.pth'))
+            self._save_generator_checkpoint()
         else:
             print("load generator")
             checkpoint = torch.load(self.config["models"]["Generator"]["pretrain_path"])
-            self.generator.load_state_dict(checkpoint['generator_state_dict'])
-            self.generator.save_state_dict(os.path.join(self.checkpoint_dir, 'pretrain_generator.pth'))
+            self.generator.module.load_state_dict(checkpoint['generator_state_dict'])
+            self._save_generator_checkpoint()
 
         if not os.path.exists(self.config["models"]["Discriminator"]["pretrain_path"]):
             print("pre train discriminator")
             self.pre_train_discriminator()
-            self.discriminator.save_state_dict(os.path.join(self.checkpoint_dir, 'pretrain_discriminator.pth'))
+            self._save_discriminator_checkpoint()
         else:
             print("load discriminator")
             checkpoint = torch.load(self.config["models"]["Discriminator"]["pretrain_path"])
-            self.discriminator.load_state_dict(checkpoint['discriminator_state_dict'])
-            self.discriminator.save_state_dict(os.path.join(self.checkpoint_dir, 'pretrain_discriminator.pth'))
+            self.discriminator.module.load_state_dict(checkpoint['discriminator_state_dict'])
+            self._save_discriminator_checkpoint()
 
     def train(self):
         """
@@ -254,6 +254,56 @@ class BaseGANTrainer:
             best_path = os.path.join(self.checkpoint_dir, 'model_best.pth')
             torch.save(state, best_path)
             self.logger.info("Saving current best: {} ...".format('model_best.pth'))
+
+    def _save_generator_checkpoint(self):
+        """
+        Saving checkpoints
+        :param epoch: current epoch number
+        :param log: logging information of the epoch
+        :param save_best: if True, rename the saved checkpoint to 'model_best.pth'
+        """
+        generator_arch = type(self.generator).__name__
+        # discriminator_arch = type(self.discriminator).__name__
+        state = {
+            'generator_arch': generator_arch,
+            # 'discriminator_arch': discriminator_arch,
+            # 'epoch': epoch,
+            'logger': self.train_logger,
+            'generator_state_dict': self.generator.state_dict(),
+            'generator_optimizer': self.generator_optimizer.state_dict(),
+            # 'discriminator_state_dict': self.discriminator.state_dict(),
+            # 'discriminator_optimizer': self.discriminator_optimizer.state_dict(),
+            # 'monitor_best': self.mnt_best,
+            # 'config': self.config
+        }
+        filename = os.path.join(self.checkpoint_dir, 'pretrain_generator.pth')
+        torch.save(state, filename)
+        self.logger.info("Saving generator checkpoint: {} ...".format(filename))
+
+    def _save_discriminator_checkpoint(self):
+        """
+        Saving checkpoints
+        :param epoch: current epoch number
+        :param log: logging information of the epoch
+        :param save_best: if True, rename the saved checkpoint to 'model_best.pth'
+        """
+        # generator_arch = type(self.generator).__name__
+        discriminator_arch = type(self.discriminator).__name__
+        state = {
+            #'generator_arch': generator_arch,
+            'discriminator_arch': discriminator_arch,
+            # 'epoch': epoch,
+            'logger': self.train_logger,
+            #'generator_state_dict': self.generator.state_dict(),
+            #'generator_optimizer': self.generator_optimizer.state_dict(),
+            'discriminator_state_dict': self.discriminator.state_dict(),
+            'discriminator_optimizer': self.discriminator_optimizer.state_dict(),
+            # 'monitor_best': self.mnt_best,
+            # 'config': self.config
+        }
+        filename = os.path.join(self.checkpoint_dir, 'pretrain_discriminator.pth')
+        torch.save(state, filename)
+        self.logger.info("Saving generator checkpoint: {} ...".format(filename))
 
     def _resume_checkpoint(self, resume_path):
         """
