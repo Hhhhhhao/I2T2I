@@ -291,29 +291,29 @@ class Trainer(BaseGANTrainer):
                 generator_rl_loss = self.losses["Generator_RLLoss"](rewards, props)
                 generator_loss = self.lambda_1 * generator_cce_loss + self.lambda_2 * generator_rl_loss
 
-                generator_captions = []
-                for image_feature in image_features:
-                    generator_captions.append(
-                        self.generator.module.sample(image_feature.unsqueeze(0)))
-                generator_captions, generator_caption_lengths = get_caption_lengths(generator_captions)
-                generator_captions.to(self.device)
-                generator_caption_lengths.to(self.device)
-
-                evaluator_scores = self.discriminator(batch_images, batch_captions, batch_caption_lengths)
-                generator_scores = self.discriminator(batch_images, generator_captions, generator_caption_lengths)
-                other_scores = self.discriminator(batch_images, other_captions, other_caption_lengths)
-                discriminator_loss = self.losses["Discriminator_Loss"](evaluator_scores, generator_scores, other_scores)
+                # generator_captions = []
+                # for image_feature in image_features:
+                #     generator_captions.append(
+                #         self.generator.module.sample(image_feature.unsqueeze(0)))
+                # generator_captions, generator_caption_lengths = get_caption_lengths(generator_captions)
+                # generator_captions.to(self.device)
+                # generator_caption_lengths.to(self.device)
+                #
+                # evaluator_scores = self.discriminator(batch_images, batch_captions, batch_caption_lengths)
+                # generator_scores = self.discriminator(batch_images, generator_captions, generator_caption_lengths)
+                # other_scores = self.discriminator(batch_images, other_captions, other_caption_lengths)
+                # discriminator_loss = self.losses["Discriminator_Loss"](evaluator_scores, generator_scores, other_scores)
 
                 self.writer.set_step((epoch - 1) * len(self.valid_data_loader) + batch_idx, 'valid')
                 self.writer.add_scalar('Generator_Total_Loss', generator_loss.item())
-                self.writer.add_scalar('Discriminator_Total_Loss', discriminator_loss.item())
+                # self.writer.add_scalar('Discriminator_Total_Loss', discriminator_loss.item())
                 total_generator_val_loss += generator_loss.item()
-                total_discriminator_val_loss += discriminator_loss.item()
-                total_val_metrics += self._eval_metrics(evaluator_scores, generator_scores)
+                # total_discriminator_val_loss += discriminator_loss.item()
+                total_val_metrics += self._eval_metrics(image_features, outputs)
 
         return {
             'generator_val_loss': total_generator_val_loss / len(self.valid_data_loader),
-            'discriminator_val_loss': total_generator_val_loss / len(self.valid_data_loader),
+            # 'discriminator_val_loss': total_generator_val_loss / len(self.valid_data_loader),
             'val_metrics': (total_val_metrics / len(self.valid_data_loader)).tolist()
         }
 
