@@ -1,3 +1,5 @@
+import os
+dirname = os.path.dirname(__file__)
 import numpy as np
 import torch
 import skimage
@@ -70,9 +72,8 @@ class Trainer(BaseTrainer):
             self.optimizer.zero_grad()
             image_features, image_emb = self.cnn_encoder(batch_images)
             att_size = image_features.size(2)
-            states = self.rnn_encoder.init_hidden(batch_size)
+            states = self.rnn_encoder.module.init_hidden(batch_size)
             words_emb, sent_emb = self.rnn_encoder(batch_captions, batch_caption_lengths, states)
-
 
             word_loss_0, word_loss_1, attntion_maps = self.loss["word"](
                 img_features=image_features,
@@ -91,7 +92,7 @@ class Trainer(BaseTrainer):
 
             loss = word_loss_0 + word_loss_1 + sent_loss_0 + sent_loss_1
             loss.backward()
-            torch.nn.utils.clip_grad_norm(self.rnn_encoder.parameters(), self.config["trainer"]["clip_grad"])
+            torch.nn.utils.clip_grad_norm(self.rnn_encoder.module.parameters(), self.config["trainer"]["clip_grad"])
             self.optimizer.step()
 
             self.writer.set_step((epoch - 1) * len(self.data_loader) + batch_idx)
@@ -118,6 +119,8 @@ class Trainer(BaseTrainer):
                     word_loss_0.item(),
                     word_loss_1.item()))
                 # self.writer.add_image('input', make_grid(batch_images.cpu(), nrow=8, normalize=True))
+
+            break
 
         log = {
             'loss': total_loss / len(self.data_loader),
@@ -169,7 +172,7 @@ class Trainer(BaseTrainer):
                 class_ids = data['class_id']
 
                 image_features, image_emb = self.cnn_encoder(batch_images)
-                states = self.rnn_encoder.init_hidden(batch_size)
+                states = self.rnn_encoder.module.init_hidden(batch_size)
                 words_emb, sent_emb = self.rnn_encoder(batch_captions, batch_caption_lengths, states)
 
                 word_loss_0, word_loss_1, attntion_maps = self.loss["word"](
@@ -200,6 +203,8 @@ class Trainer(BaseTrainer):
                 sent_total_val_loss_0 += sent_loss_0.item()
                 sent_total_val_loss_1 += sent_loss_1.item()
                 total_val_loss += loss.item()
+
+                break
 
         return {
             'val_loss': total_val_loss / len(self.valid_data_loader),
@@ -345,7 +350,7 @@ class Trainer(BaseTrainer):
         num = captions.size(0)
         img_txt = Image.fromarray(convas)
         # get a font
-        fnt = ImageFont.truetype('Pillow/Tests/fonts/FreeMono.ttf', 50)
+        fnt = ImageFont.truetype(os.path.join(dirname, 'FreeMono.ttf'), 50)
         # fnt = ImageFont.truetype('/Library/Fonts/Arial.ttf', 45)
         #fnt = ImageFont.load_default()
         # get a drawing context

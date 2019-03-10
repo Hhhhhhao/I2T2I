@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b3134c42-5a5c-4eae-8274-2ca6fc32ab15" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/base/base_damsm_trainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/base/base_damsm_trainer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/trainer/damsm_trainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/trainer/damsm_trainer.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -15,7 +16,7 @@
     <SUITE FILE_PATH="coverage/I2T2I$data_processing.coverage" NAME="data_processing Coverage Results" MODIFIED="1549922361293" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/utils" />
     <SUITE FILE_PATH="coverage/I2T2I$test.coverage" NAME="test Coverage Results" MODIFIED="1550151635574" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/I2T2I$train.coverage" NAME="train Coverage Results" MODIFIED="1550489675715" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/I2T2I$damsm_train.coverage" NAME="damsm_train Coverage Results" MODIFIED="1552176217931" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/I2T2I$damsm_train.coverage" NAME="damsm_train Coverage Results" MODIFIED="1552216722868" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/I2T2I$datasets_custom.coverage" NAME="datasets_custom Coverage Results" MODIFIED="1552166790139" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/data_loader" />
     <SUITE FILE_PATH="coverage/I2T2I$model.coverage" NAME="model Coverage Results" MODIFIED="1551124598685" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/model" />
     <SUITE FILE_PATH="coverage/I2T2I$data_loaders.coverage" NAME="data_loaders Coverage Results" MODIFIED="1551194336901" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/data_loader" />
@@ -32,14 +33,20 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="damsm_trainer.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="damsm_trainer.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/trainer/damsm_trainer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="210">
-              <caret line="347" column="8" lean-forward="true" selection-start-line="347" selection-start-column="8" selection-end-line="347" selection-end-column="8" />
-              <folding>
-                <element signature="e#0#18#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="183">
+              <caret line="69" column="40" lean-forward="true" selection-start-line="69" selection-start-column="40" selection-end-line="69" selection-end-column="40" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="base_damsm_trainer.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/base/base_damsm_trainer.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="325">
+              <caret line="24" column="8" selection-start-line="24" selection-start-column="8" selection-end-line="24" selection-end-column="8" />
             </state>
           </provider>
         </entry>
@@ -200,7 +207,6 @@
         <option value="$PROJECT_DIR$/cluster_experiment_scripts/train_damsm_coco.sh" />
         <option value="$PROJECT_DIR$/base/base_trainer.py" />
         <option value="$PROJECT_DIR$/trainer/gan_trainer.py" />
-        <option value="$PROJECT_DIR$/base/base_damsm_trainer.py" />
         <option value="$PROJECT_DIR$/model/model.py" />
         <option value="$PROJECT_DIR$/damsm_train.py" />
         <option value="$PROJECT_DIR$/data_loader/datasets_custom.py" />
@@ -210,6 +216,7 @@
         <option value="$PROJECT_DIR$/config/birds_damsm_config.json" />
         <option value="$PROJECT_DIR$/config/flowers_damsm_config.json" />
         <option value="$PROJECT_DIR$/trainer/damsm_trainer.py" />
+        <option value="$PROJECT_DIR$/base/base_damsm_trainer.py" />
       </list>
     </option>
   </component>
@@ -223,10 +230,10 @@
     <packageJsonPaths />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1887" />
-    <option name="y" value="-62" />
-    <option name="width" value="1473" />
-    <option name="height" value="936" />
+    <option name="x" value="1961" />
+    <option name="y" value="23" />
+    <option name="width" value="1399" />
+    <option name="height" value="877" />
   </component>
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -253,39 +260,6 @@
               <item name="I2T2I" type="b2602c69:ProjectViewProjectNode" />
               <item name="I2T2I" type="462c0819:PsiDirectoryNode" />
               <item name="config" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="I2T2I" type="b2602c69:ProjectViewProjectNode" />
-              <item name="I2T2I" type="462c0819:PsiDirectoryNode" />
-              <item name="saved" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="I2T2I" type="b2602c69:ProjectViewProjectNode" />
-              <item name="I2T2I" type="462c0819:PsiDirectoryNode" />
-              <item name="saved" type="462c0819:PsiDirectoryNode" />
-              <item name="Deep-Attentional-Multimodal-Similarity-Birds" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="I2T2I" type="b2602c69:ProjectViewProjectNode" />
-              <item name="I2T2I" type="462c0819:PsiDirectoryNode" />
-              <item name="saved" type="462c0819:PsiDirectoryNode" />
-              <item name="Deep-Attentional-Multimodal-Similarity-Birds" type="462c0819:PsiDirectoryNode" />
-              <item name="0309_233550" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="I2T2I" type="b2602c69:ProjectViewProjectNode" />
-              <item name="I2T2I" type="462c0819:PsiDirectoryNode" />
-              <item name="saved" type="462c0819:PsiDirectoryNode" />
-              <item name="Deep-Attentional-Multimodal-Similarity-Birds" type="462c0819:PsiDirectoryNode" />
-              <item name="0309_234830" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="I2T2I" type="b2602c69:ProjectViewProjectNode" />
-              <item name="I2T2I" type="462c0819:PsiDirectoryNode" />
-              <item name="saved" type="462c0819:PsiDirectoryNode" />
-              <item name="Deep-Attentional-Multimodal-Similarity-Birds" type="462c0819:PsiDirectoryNode" />
-              <item name="0309_234830" type="462c0819:PsiDirectoryNode" />
-              <item name="results" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -458,7 +432,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1887" y="-62" width="1473" height="936" extended-state="0" />
+    <frame x="1961" y="23" width="1399" height="877" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -468,12 +442,12 @@
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Python Console" order="7" />
       <window_info anchor="bottom" id="Terminal" order="7" weight="0.17833553" />
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49915397" visible="true" weight="0.09364081" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49915397" visible="true" weight="0.09874724" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="right" id="Database" order="3" />
       <window_info anchor="right" id="SciView" order="3" weight="0.32981133" />
       <window_info id="Structure" order="1" sideWeight="0.500846" side_tool="true" weight="0.17938553" />
-      <window_info active="true" anchor="bottom" id="Debug" order="3" sideWeight="0.49921876" visible="true" weight="0.34681374" />
+      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.49921876" visible="true" weight="0.20211361" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -558,7 +532,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/trainer/damsm_trainer.py</url>
-          <line>135</line>
+          <line>138</line>
           <option name="timeStamp" value="314" />
         </line-breakpoint>
       </breakpoints>
@@ -572,7 +546,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="328" />
+      <option name="time" value="329" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
@@ -771,13 +745,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/base/base_damsm_trainer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="326">
-          <caret line="60" column="35" selection-start-line="60" selection-start-column="35" selection-end-line="60" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/utils/data_processing.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="264">
@@ -876,11 +843,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/trainer/damsm_trainer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="347" column="8" lean-forward="true" selection-start-line="347" selection-start-column="8" selection-end-line="347" selection-end-column="8" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="183">
+          <caret line="69" column="40" lean-forward="true" selection-start-line="69" selection-start-column="40" selection-end-line="69" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/base/base_damsm_trainer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="325">
+          <caret line="24" column="8" selection-start-line="24" selection-start-column="8" selection-end-line="24" selection-end-column="8" />
         </state>
       </provider>
     </entry>

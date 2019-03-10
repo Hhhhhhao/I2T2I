@@ -21,9 +21,8 @@ class BaseTrainer:
         self.device, self.device_ids = self._prepare_device(config['n_gpu'])
         self.rnn_encoder = rnn_encoder.to(self.device)
         self.cnn_encoder = cnn_encoder.to(self.device)
-        if len(self.device_ids) > 1:
-            self.rnn_encoder = torch.nn.DataParallel(self.rnn_encoder, device_ids=self.device_ids)
-            self.cnn_encoder = torch.nn.DataParallel(self.cnn_encoder, device_ids=self.device_ids)
+        self.rnn_encoder = torch.nn.DataParallel(self.rnn_encoder, device_ids=self.device_ids)
+        self.cnn_encoder = torch.nn.DataParallel(self.cnn_encoder, device_ids=self.device_ids)
 
         self.loss = loss
         self.optimizer = optimizer
