@@ -72,8 +72,8 @@ class Trainer(BaseTrainer):
             self.optimizer.zero_grad()
             image_features, image_emb = self.cnn_encoder(batch_images)
             att_size = image_features.size(2)
-            states = self.rnn_encoder.module.init_hidden(int(batch_size/len(self.device_ids)))
-            words_emb, sent_emb = self.rnn_encoder(batch_captions, batch_caption_lengths, states)
+            # states = self.rnn_encoder.module.init_hidden(batch_size)
+            words_emb, sent_emb = self.rnn_encoder(batch_captions, batch_caption_lengths)
 
             word_loss_0, word_loss_1, attntion_maps = self.loss["word"](
                 img_features=image_features,
@@ -169,8 +169,8 @@ class Trainer(BaseTrainer):
                 class_ids = data['class_id']
 
                 image_features, image_emb = self.cnn_encoder(batch_images)
-                states = self.rnn_encoder.module.init_hidden(int(batch_size/len(self.device_ids)))
-                words_emb, sent_emb = self.rnn_encoder(batch_captions, batch_caption_lengths, states)
+                # states = self.rnn_encoder.module.init_hidden(int(batch_size/len(self.device_ids)))
+                words_emb, sent_emb = self.rnn_encoder(batch_captions, batch_caption_lengths)
 
                 word_loss_0, word_loss_1, attntion_maps = self.loss["word"](
                     img_features=image_features,
