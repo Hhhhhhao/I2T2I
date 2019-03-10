@@ -1,6 +1,6 @@
 {
     "name": "Image-Caption-GAN-COCO",
-    "n_gpu": 1,
+    "n_gpu": 8,
 
     "models": {
         "Generator":{
@@ -50,7 +50,7 @@
             "which_set": "train",
             "image_size":256,
             "batch_size":32,
-            "validation_split":0.05,
+            "validation_split":0.02,
             "num_workers": 0
         }
     },
