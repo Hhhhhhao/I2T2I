@@ -119,10 +119,6 @@ class Trainer(BaseTrainer):
                     word_loss_1.item()))
                 # self.writer.add_image('input', make_grid(batch_images.cpu(), nrow=8, normalize=True))
 
-            # remove
-            break
-
-
         log = {
             'loss': total_loss / len(self.data_loader),
             'word_loss_0': word_total_loss_0 / len(self.data_loader),
@@ -171,9 +167,6 @@ class Trainer(BaseTrainer):
                 batch_caption_lengths = data['right_caption_lengths'].to(self.device)
                 labels = torch.LongTensor(range(batch_size)).to(self.device)
                 class_ids = data['class_id']
-
-                # remove
-                break
 
                 image_features, image_emb = self.cnn_encoder(batch_images)
                 states = self.rnn_encoder.init_hidden(batch_size)
