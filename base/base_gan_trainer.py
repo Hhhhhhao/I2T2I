@@ -94,18 +94,22 @@ class BaseGANTrainer:
         if not os.path.exists(self.config["models"]["Generator"]["pretrain_path"]):
             print("pre train generator")
             self.pre_train_generator()
+            self.generator.save_state_dict(os.path.join(self.checkpoint_dir, 'pretrain_generator.pth'))
         else:
             print("load generator")
             checkpoint = torch.load(self.config["models"]["Generator"]["pretrain_path"])
             self.generator.load_state_dict(checkpoint['generator_state_dict'])
+            self.generator.save_state_dict(os.path.join(self.checkpoint_dir, 'pretrain_generator.pth'))
 
         if not os.path.exists(self.config["models"]["Discriminator"]["pretrain_path"]):
             print("pre train discriminator")
             self.pre_train_discriminator()
+            self.discriminator.save_state_dict(os.path.join(self.checkpoint_dir, 'pretrain_discriminator.pth'))
         else:
             print("load discriminator")
             checkpoint = torch.load(self.config["models"]["Discriminator"]["pretrain_path"])
-            self.generator.load_state_dict(checkpoint['discriminator_state_dict'])
+            self.discriminator.load_state_dict(checkpoint['discriminator_state_dict'])
+            self.discriminator.save_state_dict(os.path.join(self.checkpoint_dir, 'pretrain_discriminator.pth'))
 
     def train(self):
         """

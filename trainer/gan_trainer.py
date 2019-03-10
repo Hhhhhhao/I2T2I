@@ -312,7 +312,6 @@ class Trainer(BaseGANTrainer):
                 total_val_metrics += self._eval_metrics(evaluator_scores, generator_scores)
 
 
-            # self.writer.add_text('caption', make_grid())
         return {
             'generator_val_loss': total_generator_val_loss / len(self.valid_data_loader),
             'discriminator_val_loss': total_generator_val_loss / len(self.valid_data_loader),

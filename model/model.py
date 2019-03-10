@@ -177,7 +177,7 @@ class DecoderRNN(BaseModel):
             inputs = inputs.unsqueeze(1)
         return sampled_ids
 
-    def sample_beam_search(self, features, max_len=20, beam_width=5, states=None):
+    def sample_beam_search(self, features, max_len=20, beam_width=3, states=None):
         """Accept a pre-processed image tensor and return the top predicted
         sentences. This is the beam search approach.
         """
