@@ -181,10 +181,16 @@ class DAMSM_RNN_Encoder(BaseModel):
 
     def init_hidden(self, bsz):
         weight = next(self.parameters()).data
-        return (Variable(weight.new(self.lstm_num_layers * self.num_directions,
-                                    bsz, self.lstm_hidden_size).zero_()),
-                Variable(weight.new(self.lstm_num_layers * self.num_directions,
-                                    bsz, self.lstm_hidden_size).zero_()))
+        if torch.cuda.is_available():
+            return (Variable(weight.new(self.lstm_num_layers * self.num_directions,
+                                        bsz, self.lstm_hidden_size).zero_()).cuda(),
+                    Variable(weight.new(self.lstm_num_layers * self.num_directions,
+                                        bsz, self.lstm_hidden_size).zero_()).cuda())
+        else:
+            return (Variable(weight.new(self.lstm_num_layers * self.num_directions,
+                                        bsz, self.lstm_hidden_size).zero_()),
+                    Variable(weight.new(self.lstm_num_layers * self.num_directions,
+                                        bsz, self.lstm_hidden_size).zero_()))
 
     def forward(self, captions, caption_lengths, states=None):
         # input: torch.LongTensor of size batch x n_steps
