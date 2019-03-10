@@ -198,6 +198,7 @@ class DAMSM_RNN_Encoder(BaseModel):
         if torch.cuda.is_available():
             self.lstm.flatten_parameters()
 
+        total_length = captions.size(1)
         emb = self.drop(self.embedding(captions))
         #
         caption_lengths = caption_lengths.to('cpu').tolist()
@@ -211,8 +212,8 @@ class DAMSM_RNN_Encoder(BaseModel):
         output, hidden = self.lstm(emb, states)
         # PackedSequence object
         # --> (batch, seq_len, hidden_size * num_directions)
-        output = pad_packed_sequence(output, batch_first=True)[0]
-        # output = self.drop(output)
+        output = pad_packed_sequence(output, batch_first=True, total_length=total_length)[0]
+        # output = self.drop(output),
         # --> batch x hidden_size*num_directions x seq_len
         words_emb = output.transpose(1, 2)
         # --> batch x num_directions*hidden_size
@@ -385,6 +386,7 @@ class DecoderRNN(BaseModel):
 
     def forward(self, features, captions, caption_lengths):
         # Embedding
+
         embeddings = self.embedding(captions)  # (batch_size, max_caption_length, embed_dim)
         embeddings = torch.cat((features.unsqueeze(1), embeddings), 1)
         packed = pack_padded_sequence(embeddings, caption_lengths, batch_first=True)
