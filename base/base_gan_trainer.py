@@ -98,7 +98,7 @@ class BaseGANTrainer:
         else:
             print("load generator")
             checkpoint = torch.load(self.config["models"]["Generator"]["pretrain_path"])
-            self.generator.module.load_state_dict(checkpoint['generator_state_dict'])
+            self.generator.load_state_dict(checkpoint['generator_state_dict'])
             self._save_generator_checkpoint()
 
         if not os.path.exists(self.config["models"]["Discriminator"]["pretrain_path"]):
@@ -108,7 +108,7 @@ class BaseGANTrainer:
         else:
             print("load discriminator")
             checkpoint = torch.load(self.config["models"]["Discriminator"]["pretrain_path"])
-            self.discriminator.module.load_state_dict(checkpoint['discriminator_state_dict'])
+            self.discriminator.load_state_dict(checkpoint['discriminator_state_dict'])
             self._save_discriminator_checkpoint()
 
     def train(self):
@@ -303,7 +303,7 @@ class BaseGANTrainer:
         }
         filename = os.path.join(self.checkpoint_dir, 'pretrain_discriminator.pth')
         torch.save(state, filename)
-        self.logger.info("Saving generator checkpoint: {} ...".format(filename))
+        self.logger.info("Saving discriminator checkpoint: {} ...".format(filename))
 
     def _resume_checkpoint(self, resume_path):
         """
