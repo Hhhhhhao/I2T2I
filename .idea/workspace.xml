@@ -35,8 +35,8 @@
       <file leaf-file-name="damsm_trainer.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/trainer/damsm_trainer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="263">
-              <caret line="364" column="30" selection-start-line="364" selection-start-column="30" selection-end-line="364" selection-end-column="30" />
+            <state relative-caret-position="210">
+              <caret line="347" column="8" lean-forward="true" selection-start-line="347" selection-start-column="8" selection-end-line="347" selection-end-column="8" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -121,7 +121,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>image.show</find>
       <find>SpellChecker</find>
       <find>caption</find>
       <find>tokens</find>
@@ -151,6 +150,7 @@
       <find>class_ids</find>
       <find>img_id</find>
       <find>fnt</find>
+      <find>break</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -223,9 +223,9 @@
     <packageJsonPaths />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1893" />
+    <option name="x" value="1887" />
     <option name="y" value="-62" />
-    <option name="width" value="1467" />
+    <option name="width" value="1473" />
     <option name="height" value="936" />
   </component>
   <component name="ProjectLevelVcsManager">
@@ -458,7 +458,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1893" y="-62" width="1467" height="936" extended-state="0" />
+    <frame x="1887" y="-62" width="1473" height="936" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -468,7 +468,7 @@
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Python Console" order="7" />
       <window_info anchor="bottom" id="Terminal" order="7" weight="0.17833553" />
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49915397" visible="true" weight="0.09403509" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49915397" visible="true" weight="0.09364081" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="right" id="Database" order="3" />
       <window_info anchor="right" id="SciView" order="3" weight="0.32981133" />
@@ -558,28 +558,8 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/trainer/damsm_trainer.py</url>
-          <line>139</line>
+          <line>135</line>
           <option name="timeStamp" value="314" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/trainer/damsm_trainer.py</url>
-          <line>367</line>
-          <option name="timeStamp" value="324" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/trainer/damsm_trainer.py</url>
-          <line>360</line>
-          <option name="timeStamp" value="325" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/trainer/damsm_trainer.py</url>
-          <line>362</line>
-          <option name="timeStamp" value="326" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/trainer/damsm_trainer.py</url>
-          <line>363</line>
-          <option name="timeStamp" value="327" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
@@ -896,8 +876,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/trainer/damsm_trainer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="263">
-          <caret line="364" column="30" selection-start-line="364" selection-start-column="30" selection-end-line="364" selection-end-column="30" />
+        <state relative-caret-position="210">
+          <caret line="347" column="8" lean-forward="true" selection-start-line="347" selection-start-column="8" selection-end-line="347" selection-end-column="8" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>

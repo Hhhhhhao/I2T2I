@@ -345,9 +345,9 @@ class Trainer(BaseTrainer):
         num = captions.size(0)
         img_txt = Image.fromarray(convas)
         # get a font
-        # fnt = None  # ImageFont.truetype('Pillow/Tests/fonts/FreeMono.ttf', 50)
+        fnt = ImageFont.truetype('Pillow/Tests/fonts/FreeMono.ttf', 50)
         # fnt = ImageFont.truetype('/Library/Fonts/Arial.ttf', 45)
-        fnt = ImageFont.load_default()
+        #fnt = ImageFont.load_default()
         # get a drawing context
         d = ImageDraw.Draw(img_txt)
         sentence_list = []
