@@ -36,7 +36,7 @@ class Trainer(BaseGANTrainer):
         self.config = config
         self.train_data_loader = data_loader
         self.valid_data_loader = valid_data_loader
-        self.do_validation = self.valid_data_loader is not None
+        self.do_validation = False # self.valid_data_loader is not None
         self.log_step = int(np.sqrt(data_loader.batch_size))
 
         self.image_size = self.config["train_data_loader"]["args"]["image_size"]
@@ -256,8 +256,9 @@ class Trainer(BaseGANTrainer):
             'metrics': (total_metrics / len(self.train_data_loader)).tolist()
         }
 
+        self.predict(self.valid_data_loader, epoch)
+
         if self.do_validation:
-            self.predict(self.valid_data_loader, epoch)
             val_log = self._valid_epoch(epoch)
             log = {**log, **val_log}
 
