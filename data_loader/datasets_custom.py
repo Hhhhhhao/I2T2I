@@ -6,6 +6,7 @@ import torch
 import sys
 import nltk
 import numpy as np
+import pandas as pd
 dirname = os.path.dirname(__file__)
 dirname = os.path.dirname(dirname)
 sys.path.append(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data/coco/cocoapi/PythonAPI'))
@@ -200,6 +201,10 @@ class TextImageDataset(Dataset):
         self.img_ids = [str(k) for k in self.data.keys()]
 
         if dataset_name == 'birds':
+            # load bounding box
+            self.bbox = self.load_bounding_box()
+
+            # load class file
             class_file = os.path.join(data_dir, dataset_name, 'CUB_200_2011', 'classes.txt')
             self.classes = OrderedDict()
             with open(class_file, 'rb') as f:
@@ -207,6 +212,7 @@ class TextImageDataset(Dataset):
                     (key, val) = line.split()
                     self.classes[val.decode("utf-8")] = int(key)
         elif dataset_name == 'flowers':
+            self.bbox = None
             class_file = os.path.join(data_dir, dataset_name, 'classes.txt')
             self.classes = OrderedDict()
             with open(class_file, 'rb') as f:
@@ -241,12 +247,18 @@ class TextImageDataset(Dataset):
         wrong_txt = str(np.array(self.find_wrong_txt(self.data[img_id]['class'])))
         right_image_path = bytes(np.array(self.data[img_id]['img']))
         right_embed = np.array(self.data[img_id]['embeddings'], dtype=float)
-        wrong_image_path = bytes(np.array(self.find_wrong_image(self.data[img_id]['class'])))
+        wrong_image_path, wrong_img_id = bytes(np.array(self.find_wrong_image(self.data[img_id]['class'])))
         wrong_embed = np.array(self.find_wrong_embed())
 
         # Processing images
         right_image = Image.open(io.BytesIO(right_image_path)).convert("RGB")
         wrong_image = Image.open(io.BytesIO(wrong_image_path)).convert("RGB")
+
+        if self.bbox is not None:
+            right_image_bbox = self.bbox[str(np.array(self.data[img_id]["name"]))]
+            wrong_image_bbox = self.bbox[str(np.array(self.data[wrong_img_id]["name"]))]
+            right_image = self.crop_image(right_image, right_image_bbox)
+            wrong_image = self.crop_image(wrong_image, wrong_image_bbox)
 
         right_image_32 = right_image.resize((32, 32))
         wrong_image_32 = wrong_image.resize((32, 32))
@@ -311,7 +323,7 @@ class TextImageDataset(Dataset):
         _category = self.data[img_id]
 
         if _category != category:
-            return self.data[img_id]['img']
+            return self.data[img_id]['img'], img_id
 
         return self.find_wrong_image(category)
 
@@ -330,6 +342,48 @@ class TextImageDataset(Dataset):
             return self.data[img_id]['txt']
 
         return self.find_wrong_image(category)
+
+    def load_bounding_box(self):
+        bbox_path = os.path.join(self.data_dir, 'CUB_200_2011/bounding_boxes.txt')
+        df_bounding_boxes = pd.read_csv(bbox_path,
+                                        delim_whitespace=True,
+                                        header=None).astype(int)
+        #
+        filepath = os.path.join(self.data_dir, 'CUB_200_2011/images.txt')
+        df_filenames = \
+            pd.read_csv(filepath, delim_whitespace=True, header=None)
+        filenames = df_filenames[1].tolist()
+
+        # processing filenames to match data example name
+        for i in range(len(filenames)):
+            filename = filenames[i][:-4]
+            filename = filename.split('/')
+            filename = filename[1]
+            filenames[i] = filename
+        print('Total filenames: ', len(filenames), filenames[0])
+        #
+        filename_bbox = {img_file: [] for img_file in filenames}
+        numImgs = len(filenames)
+        for i in range(numImgs):
+            # bbox = [x-left, y-top, width, height]
+            bbox = df_bounding_boxes.iloc[i][1:].tolist()
+
+            key = filenames[i]
+            filename_bbox[key] = bbox
+        #
+        return filename_bbox
+
+    def crop_image(self, image, bbox):
+        width, height = image.size
+        r = int(np.maximum(bbox[2], bbox[3]) * 0.75)
+        center_x = int((2 * bbox[0] + bbox[2]) / 2)
+        center_y = int((2 * bbox[1] + bbox[3]) / 2)
+        y1 = np.maximum(0, center_y - r)
+        y2 = np.minimum(height, center_y + r)
+        x1 = np.maximum(0, center_x - r)
+        x2 = np.minimum(width, center_x + r)
+        image = image.crop([x1, y1, x2, y2])
+        return image
 
 
 if __name__ == '__main__':
