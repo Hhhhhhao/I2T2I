@@ -321,8 +321,8 @@ class Trainer(BaseGANTrainer):
         self.generator.eval()
         self.discriminator.eval()
 
-        mean = torch.tensor([0.485, 0.456, 0.406], dtype=torch.float32)
-        std = torch.tensor([0.229, 0.224, 0.225], dtype=torch.float32)
+        mean = torch.tensor([0.5, 0.5, 0.5], dtype=torch.float32)
+        std = torch.tensor([0.5, 0.5, 0.5], dtype=torch.float32)
 
         transform = transforms.Compose([
             transforms.Normalize(mean=(-mean / std).tolist(), std=(1.0 / std).tolist()),
