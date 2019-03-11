@@ -1,5 +1,5 @@
 {
-    "name": "Image-Caption-GAN-COCO",
+    "name": "Image-Caption-GAN-CoCo",
     "n_gpu": 8,
 
     "models": {
