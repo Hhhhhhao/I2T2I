@@ -94,6 +94,7 @@ def image_caption_collate_fn(data):
 
     # merge captions (from tuple of 1D tensor to 2D tensor)
     batch_caption_lengths = [len(cap) for cap in captions]
+    batch_caption_lengths = torch.LongTensor(batch_caption_lengths)
     batch_captions = torch.zeros(len(captions), max(batch_caption_lengths)).long()
     for i, cap in enumerate(captions):
         end = batch_caption_lengths[i]
@@ -179,14 +180,14 @@ class CaptionDataLoader(DataLoader):
             self.transform = transforms.Compose([
                 transforms.Resize(self.image_size),
                 transforms.ToTensor(),
-                transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+                transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
             ])
         else:
             self.transform = transforms.Compose([
                 transforms.Resize(self.image_size),
                 transforms.RandomHorizontalFlip(),
                 transforms.ToTensor(),
-                transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+                transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
             ])
 
         self.dataset = CaptionDataset(self.data_dir, self.dataset_name, self.which_set, self.transform, vocab_from_file=False)

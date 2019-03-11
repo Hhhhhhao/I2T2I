@@ -1,7 +1,10 @@
 import numpy as np
+import os
 import torch
+from torchvision import transforms
 from torch.nn.utils.rnn import pack_padded_sequence
 from base import BaseTrainer
+from utils import convert_back_to_text
 
 
 class Trainer(BaseTrainer):
@@ -118,5 +121,41 @@ class Trainer(BaseTrainer):
             'val_loss': total_val_loss / len(self.valid_data_loader),
             'val_metrics': (total_val_metrics / len(self.valid_data_loader)).tolist()
         }
+
+    def predict(self, data_loader, epoch=None, name='epoch'):
+        self.model.eval()
+
+        mean = torch.tensor([0.5, 0.5, 0.5], dtype=torch.float32)
+        std = torch.tensor([0.5, 0.5, 0.5], dtype=torch.float32)
+
+        transform = transforms.Compose([
+            transforms.Normalize(mean=(-mean / std).tolist(), std=(1.0 / std).tolist()),
+            transforms.ToPILImage()]
+        )
+
+        for batch_idx, (batch_image_ids, batch_images, batch_captions, batch_caption_lengths) in enumerate(data_loader):
+            if batch_idx == 1:
+                break
+
+            batch_images = batch_images.to(self.device)
+            batch_captions = batch_captions.to(self.device)
+            batch_caption_lengths = batch_caption_lengths.to(self.device)
+
+            if not os.path.exists('{0}/results/{1}_{2}'.format(self.checkpoint_dir, name, epoch)):
+                os.makedirs('{0}/results/{1}_{2}'.format(self.checkpoint_dir, name, epoch))
+
+            image_features, outputs = self.model(batch_images, batch_captions, batch_caption_lengths)
+            generator_captions = []
+            for image_feature in image_features:
+                generator_captions.append(
+                    self.model.module.sample(image_feature.unsqueeze(0)))
+
+            for generated_caption, image in zip(generator_captions, batch_images):
+                generated_sentence = convert_back_to_text(generated_caption, self.data_loader.dataset.vocab)
+                image = transform(image.cpu())
+                image.save('{0}/results/{1}_{2}/{3}.png'.format(self.checkpoint_dir, name, epoch, generated_sentence.replace("/", "")[:100]))
+
+
+
 
 

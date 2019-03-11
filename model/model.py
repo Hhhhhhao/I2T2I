@@ -121,6 +121,7 @@ class DecoderRNN(BaseModel):
         :param caption_lengths: caption lengths, a tensor of dimension (batch_size, 1)
         :return: scores of vocabulary, sorted encoded captions, decode lengths, weights, sort indices
         """
+        caption_lengths = caption_lengths.cpu().tolist()
         # Embedding
         embeddings = self.embedding(captions)  # (batch_size, max_caption_length, embed_dim)
         embeddings = torch.cat((features.unsqueeze(1), embeddings), 1)
@@ -129,31 +130,23 @@ class DecoderRNN(BaseModel):
         outputs = self.linear(hiddens[0])
         return outputs
 
-    def sample(self, features, max_len=20, states=None):
+    def sample(self, features,  max_len=20, states=None):
+        """Accept a pre-processed image tensor (inputs) and return predicted
+        sentence (list of tensor ids of length max_len). This is the greedy
+        search approach.
         """
-        Sample from Recurrent network using greedy decoding
-        :param features: features from CNN feature extractor
-        :returns: predicted image captions
-        """
-        output_ids = []
+        sampled_ids = []
         inputs = features.unsqueeze(1)
-
         for i in range(max_len):
-            # pass data through recurrent network
-            hiddens, states = self.lstm(inputs, states)
-            outputs = self.linear(hiddens.squeeze(1))
-
-            # find maximal predictions
-            predicted = outputs.max(1)[1]
-
-            # append results from given step to global results
-            output_ids.append(predicted)
-
-            # prepare chosen words for next decoding step
+            hiddens, states = self.lstm(inputs, states) # (batch_size, 1, hidden_size)
+            outputs = self.linear(hiddens.squeeze(1))  # (batch_size, vocab_size)
+            # Get the index (in the vocabulary) of the most likely integer that
+            # represents a word
+            predicted = outputs.argmax(1)
+            sampled_ids.append(predicted.item())
             inputs = self.embedding(predicted)
             inputs = inputs.unsqueeze(1)
-        output_ids = torch.stack(output_ids, 1)
-        return output_ids.squeeze()
+        return sampled_ids
 
     def sample_beam_search(self, features, max_len=20, beam_width=5, states=None):
         """Accept a pre-processed image tensor and return the top predicted

@@ -114,6 +114,7 @@ class CaptionDataset(Dataset):
                  ):
 
         self.data_dir = data_dir
+        self.dataset_name = dataset_name
         self.which_set = which_set
         assert self.which_set in {'train', 'valid', 'test'}
 
@@ -137,6 +138,11 @@ class CaptionDataset(Dataset):
                         for index in tqdm(self.ids)]
         self.caption_lengths = [len(token) for token in all_tokens]
 
+        if self.dataset_name == 'birds':
+            self.bbox = self.load_bounding_box()
+        else:
+            self.bbox = None
+
     def __getitem__(self, index):
         # Obtain image and caption
         img_id = self.ids[index]
@@ -146,6 +152,9 @@ class CaptionDataset(Dataset):
         image = Image.open(io.BytesIO(image_path)).convert("RGB")
 
         # image.show()
+        if self.bbox is not None:
+            image_bbox = self.bbox[str(np.array(self.data[img_id]["name"]))]
+            image = self.crop_image(image, image_bbox)
 
         image = self.transform(image)
 
@@ -162,6 +171,48 @@ class CaptionDataset(Dataset):
 
     def __len__(self):
         return len(self.ids)
+
+    def load_bounding_box(self):
+        bbox_path = os.path.join(self.data_dir, self.dataset_name, 'CUB_200_2011/bounding_boxes.txt')
+        df_bounding_boxes = pd.read_csv(bbox_path,
+                                        delim_whitespace=True,
+                                        header=None).astype(int)
+        #
+        filepath = os.path.join(self.data_dir, self.dataset_name, 'CUB_200_2011/images.txt')
+        df_filenames = \
+            pd.read_csv(filepath, delim_whitespace=True, header=None)
+        filenames = df_filenames[1].tolist()
+
+        # processing filenames to match data example name
+        for i in range(len(filenames)):
+            filename = filenames[i][:-4]
+            filename = filename.split('/')
+            filename = filename[1]
+            filenames[i] = filename
+        print('Total filenames: ', len(filenames), filenames[0])
+        #
+        filename_bbox = {img_file: [] for img_file in filenames}
+        numImgs = len(filenames)
+        for i in range(numImgs):
+            # bbox = [x-left, y-top, width, height]
+            bbox = df_bounding_boxes.iloc[i][1:].tolist()
+
+            key = filenames[i]
+            filename_bbox[key] = bbox
+        #
+        return filename_bbox
+
+    def crop_image(self, image, bbox):
+        width, height = image.size
+        r = int(np.maximum(bbox[2], bbox[3]) * 0.75)
+        center_x = int((2 * bbox[0] + bbox[2]) / 2)
+        center_y = int((2 * bbox[1] + bbox[3]) / 2)
+        y1 = np.maximum(0, center_y - r)
+        y2 = np.minimum(height, center_y + r)
+        x1 = np.maximum(0, center_x - r)
+        x2 = np.minimum(width, center_x + r)
+        image = image.crop([x1, y1, x2, y2])
+        return image
 
 
 class COCOTextImageDataset(Dataset):
