@@ -1,6 +1,8 @@
 output/*
 i2t2i.zip
+eval_metrics.zip
 
+/eval_metrics/spice/tmp/*
 
 /data/*
 /saved/*
