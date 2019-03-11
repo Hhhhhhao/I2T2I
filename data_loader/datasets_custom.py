@@ -189,6 +189,8 @@ class TextImageDataset(Dataset):
         if os.path.exists(data_dir):
             assert dataset_name in {'birds', 'flowers'}, "wrong dataset name"
             self.h5_file = os.path.join(data_dir, '{}/{}.hdf5'.format(dataset_name, dataset_name))
+            self.data_dir = data_dir
+            self.dataset_name = dataset_name
         else:
             raise ValueError("data directory not found")
 
@@ -387,17 +389,17 @@ class TextImageDataset(Dataset):
 
 
 if __name__ == '__main__':
-    # dataset = TextImageDataset(
-    #     data_dir='/Users/leon/Projects/I2T2I/data/',
-    #     dataset_name='flowers',
-    #     which_set='train',
-    # )
-
-    dataset = COCOTextImageDataset(
-        data_dir='/Users/leon/Projects/I2T2I/data/coco/',
-        which_set='val',
-        transform=None
+    dataset = TextImageDataset(
+        data_dir='/Users/leon/Projects/I2T2I/data/',
+        dataset_name='birds',
+        which_set='train',
     )
+
+    # dataset = COCOTextImageDataset(
+    #     data_dir='/Users/leon/Projects/I2T2I/data/coco/',
+    #     which_set='val',
+    #     transform=None
+    # )
 
 
     sample = dataset.__getitem__(1)
