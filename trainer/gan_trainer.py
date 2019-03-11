@@ -233,6 +233,8 @@ class Trainer(BaseGANTrainer):
             total_generator_rl_loss += generator_rl_loss.item()
             total_discriminator_loss += discriminator_loss.item()
             total_metrics += self._eval_metrics(outputs, targets)
+            
+            # break            
 
             if self.verbosity >= 2 and batch_idx % self.log_step == 0:
                 self.logger.info('Train Epoch: {} [{}/{} ({:.0f}%)] '
