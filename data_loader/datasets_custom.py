@@ -205,7 +205,6 @@ class TextImageDataset(Dataset):
         if dataset_name == 'birds':
             # load bounding box
             self.bbox = self.load_bounding_box()
-
             # load class file
             class_file = os.path.join(data_dir, dataset_name, 'CUB_200_2011', 'classes.txt')
             self.classes = OrderedDict()
@@ -346,12 +345,12 @@ class TextImageDataset(Dataset):
         return self.find_wrong_image(category)
 
     def load_bounding_box(self):
-        bbox_path = os.path.join(self.data_dir, 'CUB_200_2011/bounding_boxes.txt')
+        bbox_path = os.path.join(self.data_dir, self.dataset_name, 'CUB_200_2011/bounding_boxes.txt')
         df_bounding_boxes = pd.read_csv(bbox_path,
                                         delim_whitespace=True,
                                         header=None).astype(int)
         #
-        filepath = os.path.join(self.data_dir, 'CUB_200_2011/images.txt')
+        filepath = os.path.join(self.data_dir, self.dataset_name, 'CUB_200_2011/images.txt')
         df_filenames = \
             pd.read_csv(filepath, delim_whitespace=True, header=None)
         filenames = df_filenames[1].tolist()
