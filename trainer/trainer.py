@@ -84,6 +84,7 @@ class Trainer(BaseTrainer):
         }
 
         if self.do_validation:
+            self.predict(self.valid_data_loader, epoch)
             val_log = self._valid_epoch(epoch)
             log = {**log, **val_log}
 

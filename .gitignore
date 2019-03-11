@@ -5,7 +5,7 @@ output/*
 
 /data/*
 /saved/*
-/eval_metrics/spice/lib/*
+/eval_metrics/*
 cluster_experiment_scripts/*
 # Byte-compiled / optimized / DLL files
 __pycache__/

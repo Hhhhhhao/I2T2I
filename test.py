@@ -71,8 +71,8 @@ def main(config, resume):
     gts = {}
     res = {}
 
-    mean = torch.tensor([0.485, 0.456, 0.406], dtype=torch.float32)
-    std = torch.tensor([0.229, 0.224, 0.225], dtype=torch.float32)
+    mean = torch.tensor([0.5, 0.5, 0.5], dtype=torch.float32)
+    std = torch.tensor([0.5, 0.5, 0.5], dtype=torch.float32)
 
     transform = transforms.Compose([
             transforms.Normalize(mean=(-mean/std).tolist(), std=(1.0/std).tolist()),
@@ -94,7 +94,7 @@ def main(config, resume):
             pred_sentence = convert_back_to_text(list(pred_captions[0]), data_loader.dataset.vocab)
             target_sentence = convert_back_to_text(batch_captions.cpu().tolist()[0], data_loader.dataset.vocab)
 
-            if i % 500 == 0:
+            if i % 100 == 0:
                 image = batch_images[0]
                 image = transform(image.cpu())
                 image.save(os.path.join(example_dir, '{}_{}.png'.format(img_id, pred_sentence)))
@@ -124,11 +124,6 @@ def main(config, resume):
         json.dump(res, f)
 
     print("test images: {}".format(len(gts.keys())))
-
-    # n_samples = len(data_loader.sampler)
-    # log = {'loss': total_loss / n_samples}
-    # log.update({met.__name__ : total_metrics[i].item() / n_samples for i, met in enumerate(metric_fns)})
-    # print(log)
 
     return gts, res, save_dir
 
