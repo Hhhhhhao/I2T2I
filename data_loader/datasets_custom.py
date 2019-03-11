@@ -248,7 +248,8 @@ class TextImageDataset(Dataset):
         wrong_txt = str(np.array(self.find_wrong_txt(self.data[img_id]['class'])))
         right_image_path = bytes(np.array(self.data[img_id]['img']))
         right_embed = np.array(self.data[img_id]['embeddings'], dtype=float)
-        wrong_image_path, wrong_img_id = bytes(np.array(self.find_wrong_image(self.data[img_id]['class'])))
+        wrong_image_path, wrong_img_id = self.find_wrong_image(self.data[img_id]['class'])
+        wrong_image_path = bytes(np.array(wrong_image_path))
         wrong_embed = np.array(self.find_wrong_embed())
 
         # Processing images
@@ -399,6 +400,5 @@ if __name__ == '__main__':
     #     which_set='val',
     #     transform=None
     # )
-
 
     sample = dataset.__getitem__(1)
