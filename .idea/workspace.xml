@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b3134c42-5a5c-4eae-8274-2ca6fc32ab15" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/trainer/gan_trainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/trainer/gan_trainer.py" afterDir="false" />
-    </list>
+    <list default="true" id="b3134c42-5a5c-4eae-8274-2ca6fc32ab15" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -35,8 +32,8 @@
       <file leaf-file-name="gan_trainer.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/trainer/gan_trainer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2679">
-              <caret line="183" lean-forward="true" selection-start-line="183" selection-end-line="184" selection-end-column="21" />
+            <state relative-caret-position="505">
+              <caret line="337" lean-forward="true" selection-start-line="337" selection-end-line="337" />
             </state>
           </provider>
         </entry>
@@ -775,8 +772,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/trainer/gan_trainer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2679">
-          <caret line="183" lean-forward="true" selection-start-line="183" selection-end-line="184" selection-end-column="21" />
+        <state relative-caret-position="505">
+          <caret line="337" lean-forward="true" selection-start-line="337" selection-end-line="337" />
         </state>
       </provider>
     </entry>
