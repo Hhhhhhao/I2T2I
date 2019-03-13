@@ -344,8 +344,9 @@ class ConditionalGenerator(BaseModel):
             outputs = F.softmax(outputs, -1)
 
             # use multinomial to random sample
-            predicted = outputs.multinomial(1)
-            # predicted = (predicted.unsqueeze(1)).long()
+            predicted = outputs.argmax(1)
+            predicted = (predicted.unsqueeze(1)).long()
+            # predicted = outputs.multinomial(1)
 
             # if torch.cuda.is_available():
             #   predicted = predicted.cuda()

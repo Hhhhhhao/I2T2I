@@ -169,7 +169,7 @@ class BaseGANTrainer:
         """
         Pre Generator training logic
         """
-        for epoch in range(1, self.config["trainer"]["pretrain_generator_epochs"]):
+        for epoch in range(self.config["trainer"]["pretrain_generator_epochs"]):
 
             # save logged informations into log dict
             log = {'pretrain generator epoch': epoch}
@@ -193,7 +193,7 @@ class BaseGANTrainer:
         """
         Pre Discriminator training logic
         """
-        for epoch in range(1, self.config["trainer"]["pretrain_discriminator_epochs"]):
+        for epoch in range(self.config["trainer"]["pretrain_discriminator_epochs"]):
 
             # save logged informations into log dict
             log = {'pretrain discriminator epoch': epoch}

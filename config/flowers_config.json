@@ -69,8 +69,8 @@
     "metrics": [],
     "trainer": {
         "epochs": 50,
-        "pretrain_generator_epochs":4,
-        "pretrain_discriminator_epochs":2,
+        "pretrain_generator_epochs":3,
+        "pretrain_discriminator_epochs":1,
         "lambda_1": 0.0,
         "lambda_2": 1.0,
         "save_dir": "saved/",
