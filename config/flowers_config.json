@@ -43,7 +43,7 @@
             "dataset_name":"flowers",
             "which_set": "train",
             "image_size":256,
-            "batch_size":128,
+            "batch_size":16,
             "num_workers": 0
         }
     },
@@ -54,7 +54,7 @@
             "dataset_name":"flowers",
             "which_set": "valid",
             "image_size":256,
-            "batch_size":128,
+            "batch_size":16,
             "num_workers": 0
         }
     },
