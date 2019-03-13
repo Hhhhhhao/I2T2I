@@ -1,4 +1,5 @@
 import torch
+import numpy as np
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from data_loader.datasets_custom import TextImageDataset, COCOTextImageDataset
@@ -11,8 +12,9 @@ def text_image_collate_fn(data):
     data.sort(key=lambda x: x['right_caption'].size(0), reverse=True)
 
     collate_data['right_img_id'] = []
-    # collate_data['class_id'] = []
+    collate_data['class_id'] = []
     collate_data['right_txt'] = []
+    class_ids = []
     right_captions = []
     right_embeds = []
     right_images_32 = []
@@ -30,8 +32,8 @@ def text_image_collate_fn(data):
     wrong_images_256 = []
 
     for i in range(len(data)):
-        collate_data['right_img_id'].append(data[i]['right_img_id'])
-        # collate_data['class_id'].append(data[i]['right_image_class_id'])
+        class_ids.append(data[i]['right_img_id'])
+        collate_data['class_id'].append(data[i]['right_class_id'])
         collate_data['right_txt'].append(data[i]['right_txt'])
         right_captions.append(data[i]['right_caption'])
         right_embeds.append(data[i]['right_embed'])
@@ -65,6 +67,7 @@ def text_image_collate_fn(data):
         end = wrong_caption_lengths[i]
         collate_data['wrong_captions'][i, :end] = cap[:end]
 
+    collate_data['class_id'] = np.stack(class_ids)
     collate_data['right_embeds'] = torch.stack(right_embeds, 0)
     collate_data['right_images_32'] = torch.stack(right_images_32, 0)
     collate_data['right_images_64'] = torch.stack(right_images_64, 0)

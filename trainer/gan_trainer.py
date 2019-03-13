@@ -5,14 +5,14 @@ from torch.autograd import Variable
 from torchvision.utils import make_grid
 from torchvision import transforms
 from base import BaseGANTrainer
-from model.damsm import DAMSM
+from model.damsm import DAMSM_RNN_Encoder
 from matplotlib import pyplot as plt
 
 
 dirname = os.path.dirname(__file__)
 main_dirname = os.path.dirname(dirname)
 birds_damsm = os.path.join(main_dirname, 'output/Deep-Attentional-Multimodal-Similarity-Birds/0226_204228/model_best.pth')
-flowers_damsm = os.path.join(main_dirname, 'output/Deep-Attentional-Multimodal-Similarity-Flowers/0226_204709/model_best.pth')
+flowers_damsm = os.path.join(main_dirname, 'output/Deep-Attentional-Multimodal-Similarity-Flowers/0311_235759/model_best.pth')
 coco_damsm = os.path.join(main_dirname, 'output/Deep-Attentional-Multimodal-Similarity-CoCo/0226_180051/model_best.pth')
 
 
@@ -47,10 +47,13 @@ class Trainer(BaseGANTrainer):
         self.noise_dim = self.config["models"]["Generator"]["args"]["noise_dim"]
 
         print("load damsm ecoding model")
-        damsm = DAMSM(
-            vocab_size=len(self.train_data_loader.dataset.vocab),
-            word_embed_size=300,
-            embedding_size=1024)
+        self.damsm_rnn_encoder = DAMSM_RNN_Encoder(
+                 vocab_size=len(self.train_data_loader.dataset.vocab),
+                 word_embed_size=256,
+                 lstm_hidden_size=256)
+
+        self.damsm_rnn_encoder.to(self.device)
+        self.damsm_rnn_encoder = torch.nn.DataParallel(self.damsm_rnn_encoder, device_ids=self.device_ids)
 
         if "Bird" in self.config["name"]:
             resume_path = birds_damsm
@@ -62,15 +65,9 @@ class Trainer(BaseGANTrainer):
             raise ValueError("cannot find corresponding damsm model path")
         checkpoint = torch.load(resume_path, map_location=self.device)
 
-        damsm.load_state_dict(checkpoint)
-
-        for p in damsm.parameters():
+        self.damsm_rnn_encoder.load_state_dict(checkpoint["rnn_state_dict"])
+        for p in self.damsm_rnn_encoder.parameters():
             p.requires_grad = False
-        self.damsm_rnn_encoder = damsm.rnn_encoder
-        # self.damsm_rnn_encoder.load_state_dict(checkpoint)
-        self.damsm_rnn_encoder.to(self.device)
-        if len(self.device_ids) > 1:
-            self.damsm_rnn_encoder = torch.nn.DataParallel(self.damsm_rnn_encoder, device_ids=self.device_ids)
 
     def _train_epoch(self, epoch):
         """

@@ -24,7 +24,7 @@ def conv3x3(in_planes, out_planes):
 
 class DAMSM_CNN_Encoder(BaseModel):
     def __init__(self,
-                 embedding_size=512):
+                 embedding_size=256):
         super(DAMSM_CNN_Encoder, self).__init__()
         self.embedding_size = embedding_size  # define a uniform ranker
 
@@ -133,7 +133,7 @@ class DAMSM_RNN_Encoder(BaseModel):
     def __init__(self,
                  vocab_size,
                  word_embed_size=256,
-                 lstm_hidden_size=128,
+                 lstm_hidden_size=256,
                  lstm_num_layers=1,
                  drop_prob=0.5,
                  bidirectional=True):
@@ -178,19 +178,28 @@ class DAMSM_RNN_Encoder(BaseModel):
 
     def init_hidden(self, bsz):
         weight = next(self.parameters()).data
-        return (Variable(weight.new(self.lstm_num_layers * self.num_directions,
-                                    bsz, self.lstm_hidden_size).zero_()),
-                Variable(weight.new(self.lstm_num_layers * self.num_directions,
-                                    bsz, self.lstm_hidden_size).zero_()))
+        if torch.cuda.is_available():
+            return (Variable(weight.new(self.lstm_num_layers * self.num_directions,
+                                        bsz, self.lstm_hidden_size).zero_()).cuda(),
+                    Variable(weight.new(self.lstm_num_layers * self.num_directions,
+                                        bsz, self.lstm_hidden_size).zero_()).cuda())
+        else:
+            return (Variable(weight.new(self.lstm_num_layers * self.num_directions,
+                                        bsz, self.lstm_hidden_size).zero_()),
+                    Variable(weight.new(self.lstm_num_layers * self.num_directions,
+                                        bsz, self.lstm_hidden_size).zero_()))
 
     def forward(self, captions, caption_lengths, states=None):
         # input: torch.LongTensor of size batch x n_steps
         # --> emb: batch x n_steps x ninput
+        if torch.cuda.is_available():
+            self.lstm.flatten_parameters()
+
         total_length = captions.size(1)
         emb = self.drop(self.embedding(captions))
-
-        caption_lengths = caption_lengths.to('cpu').tolist()
         #
+        caption_lengths = caption_lengths.to('cpu').tolist()
+
         emb = pack_padded_sequence(emb, caption_lengths, batch_first=True)
         # #hidden and memory (num_layers * num_directions, batch, hidden_size):
         # tensor containing the initial hidden state for each element in batch.
@@ -201,31 +210,10 @@ class DAMSM_RNN_Encoder(BaseModel):
         # PackedSequence object
         # --> (batch, seq_len, hidden_size * num_directions)
         output = pad_packed_sequence(output, batch_first=True, total_length=total_length)[0]
-        # output = self.drop(output)
+        # output = self.drop(output),
         # --> batch x hidden_size*num_directions x seq_len
         words_emb = output.transpose(1, 2)
         # --> batch x num_directions*hidden_size
         sent_emb = hidden[0].transpose(0, 1).contiguous()
         sent_emb = sent_emb.view(-1, self.lstm_hidden_size * self.num_directions)
         return words_emb, sent_emb
-
-
-class DAMSM(BaseModel):
-    def __init__(self,
-                 vocab_size,
-                 word_embed_size=512,
-                 embedding_size=1024):
-        super(DAMSM, self).__init__()
-
-        self.cnn_encoder = DAMSM_CNN_Encoder(embedding_size)
-        self.rnn_encoder = DAMSM_RNN_Encoder(vocab_size, word_embed_size, embedding_size)
-
-    def forward(self, images, captions, caption_lengths):
-        # words_features: batch_size x embedding_size x 17 x 17
-        # sent_code: batch_size x embedding_size
-        image_features, image_emb = self.cnn_encoder(images)
-        batch_size = images.size(0)
-
-        states = self.rnn_encoder.init_hidden(batch_size)
-        words_emb, sent_emb = self.rnn_encoder(captions, caption_lengths, states)
-        return image_features, image_emb, words_emb, sent_emb
