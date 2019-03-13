@@ -1,1 +1,1 @@
-from .trainer import *
+from .attngan_trainer import *
