@@ -6,7 +6,7 @@
         "Generator":{
             "type":"HDGANGenerator",
             "args":{
-                "text_embed_dim": 1024,
+                "text_embed_dim": 256,
                 "ca_code_dim": 128,
                 "noise_dim":100,
                 "num_resblock":1,
@@ -23,7 +23,7 @@
         "Discriminator": {
             "type":"HDGANDiscriminator",
             "args":{
-                "text_embed_dim": 1024,
+                "text_embed_dim": 256,
                 "ca_code_dim": 128,
                 "side_output_at":[64, 128, 256]
             },

@@ -424,6 +424,7 @@ class DeepSupervisedHDGANDiscriminator(BaseModel):
 
         return pair_disc_out, local_img_disc_out
 
+
 if __name__ == '__main__':
     generator = HDGANGenerator()
     generator.summary()
