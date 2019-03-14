@@ -1,9 +1,8 @@
-import os
-import json
 import time
-import argparse
-import data_loader.data_loaders as module_data
+from data_loader import COCOTextImageDataLoader, TextImageDataLoader
 from utils.visualization import Visualizer
+from model import create_model
+from options import TrainOptions
 
 
 def get_instance(module, name, opt, *args):
@@ -12,20 +11,40 @@ def get_instance(module, name, opt, *args):
 
 def main(opt):
     # setup data_loader instances
-    train_data_loader = get_instance(module_data, 'train_data_loader', opt)
-    print("train vocab size:{}".format(len(train_data_loader.dataset.vocab)))
+    if opt.dataset_name == 'CoCo':
+        data_loader = COCOTextImageDataLoader(
+            data_dir=opt.dataroot + '/coco',
+            which_set=opt.which_set,
+            image_size=opt.image_size,
+            batch_size=opt.batch_size,
+            validation_split=opt.validation_split,
+            num_workers=opt.num_workers
+        )
+    else:
+        data_loader = TextImageDataLoader(
+            data_dir=opt.dataroot,
+            dataset_name=opt.dataset_name,
+            which_set=opt.which_set,
+            image_size=opt.image_size,
+            batch_size=opt.batch_size,
+            num_workers=opt.num_workers
+        )
 
+    opt.vocab_size = len(data_loader.dataset.vocab)
+    print("train vocab size:{}".format(opt.vocab_size))
+
+    # setup model
     model = create_model(opt)      # create a model given opt.model and other options
     model.setup(opt)               # regular setup: load and print networks; create schedulers
     visualizer = Visualizer(opt)   # create a visualizer that display/save images and plots
     total_iters = 0                # the total number of training iterations
 
-    for epoch in range(opt.epoch_count, opt.niter + opt.niter_decay + 1):    # outer loop for different epochs; we save the model by <epoch_count>, <epoch_count>+<save_latest_freq>
+    for epoch in range(opt.epoch_count, opt.epochs + opt.nepoch_decay + 1):    # outer loop for different epochs; we save the model by <epoch_count>, <epoch_count>+<save_latest_freq>
         epoch_start_time = time.time()  # timer for entire epoch
         iter_data_time = time.time()    # timer for data loading per iteration
         epoch_iter = 0                  # the number of training iterations in current epoch, reset to 0 every epoch
 
-        for i, data in enumerate(train_data_loader):  # inner loop within one epoch
+        for i, data in enumerate(data_loader):  # inner loop within one epoch
             iter_start_time = time.time()  # timer for computation per iteration
             if total_iters % opt.print_freq == 0:
                 t_data = iter_start_time - iter_data_time
@@ -45,7 +64,7 @@ def main(opt):
                 t_comp = (time.time() - iter_start_time) / opt.batch_size
                 visualizer.print_current_losses(epoch, epoch_iter, losses, t_comp, t_data)
                 if opt.display_id > 0:
-                    visualizer.plot_current_losses(epoch, float(epoch_iter) / dataset_size, losses)
+                    visualizer.plot_current_losses(epoch, float(epoch_iter) / len(data_loader), losses)
 
             if total_iters % opt.save_latest_freq == 0:   # cache our latest model every <save_latest_freq> iterations
                 print('saving the latest model (epoch %d, total_iters %d)' % (epoch, total_iters))
@@ -58,24 +77,10 @@ def main(opt):
             model.save_networks('latest')
             model.save_networks(epoch)
 
-        print('End of epoch %d / %d \t Time Taken: %d sec' % (epoch, opt.niter + opt.niter_decay, time.time() - epoch_start_time))
+        print('End of epoch %d / %d \t Time Taken: %d sec' % (epoch, opt.epochs + opt.nepoch_decay, time.time() - epoch_start_time))
         model.update_learning_rate()                     # update learning rates at the end of every epoch.
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='PyTorch Template')
-    parser.add_argument('-c', '--opt', default="opt/flowers.json", type=str,
-                        help='opt file path (default: None)')
-    args = parser.parse_args()
-
-    if args.opt:
-        # load opt file
-        opt = json.load(open(args.opt))
-        path = os.path.join(opt['trainer']['save_dir'], opt['name'])
-    else:
-        raise AssertionError("Configuration file need to be specified. Add '-c opt.json', for example.")
-
-    if args.device:
-        os.environ["CUDA_VISIBLE_DEVICES"] = args.device
-
+    opt = TrainOptions().parse()
     main(opt)

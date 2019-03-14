@@ -16,7 +16,7 @@ See our template model class 'template_model.py' for more details.
 """
 
 import importlib
-from base import BaseTrainer
+from trainer.base_trainer import BaseTrainer
 
 
 def find_model_using_name(model_name):
@@ -25,10 +25,10 @@ def find_model_using_name(model_name):
     be instantiated. It has to be a subclass of BaseModel,
     and it is case-insensitive.
     """
-    model_filename = "models." + model_name + "_model"
+    model_filename = "trainer." + model_name + "_trainer"
     modellib = importlib.import_module(model_filename)
     model = None
-    target_model_name = model_name.replace('_', '') + 'model'
+    target_model_name = model_name.replace('_', '') + 'trainer'
     for name, cls in modellib.__dict__.items():
         if name.lower() == target_model_name.lower() \
            and issubclass(cls, BaseTrainer):
@@ -58,3 +58,4 @@ def create_model(opt):
     model = find_model_using_name(opt.model)
     instance = model(opt)
     print("model [%s] was created" % type(instance).__name__)
+    return instance

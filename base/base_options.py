@@ -2,7 +2,7 @@ import argparse
 import os
 from utils import util
 import torch
-import data
+import datetime
 import model
 
 
@@ -20,11 +20,12 @@ class BaseOptions():
         """Define the common options that are used in both training and test."""
         # basic parameters
         parser.add_argument('--dataroot', default='data/', help='path to images')
-        parser.add_argument('--exp_name', type=str, default='experiment_name', help='name of the experiment. It decides where to store samples and models')
+        parser.add_argument('--exp_name', type=str, default='AttnGAN', help='name of the experiment. It decides where to store samples and models')
         parser.add_argument('--checkpoints_dir', type=str, default='./saved', help='models are saved here')
+        parser.add_argument('--n_gpu', type=int, default=8, help='number of gpu')
 
         # model parameters
-        parser.add_argument('--model', type=str, default='cycle_gan', help='chooses which model to use. [attngan | captiongan | cyclegan]')
+        parser.add_argument('--model', type=str, default='attngan', help='chooses which model to use. [attngan | captiongan | cyclegan]')
 
         parser.add_argument('--ngf', type=int, default=64, help='# of gen filters in the last conv layer')
         parser.add_argument('--text_embedding_dim', type=int, default=256, help='text embedding dimension')
@@ -33,8 +34,8 @@ class BaseOptions():
         parser.add_argument('--branch_num', type=int, default=3, help='generate what size images [1 for 64 | 2 for 128 | 3 for 256]')
 
         parser.add_argument('--ndf', type=int, default=64, help='# of discrim filters in the first conv layer')
-        parser.add_argument('--netD', type=str, default='caption', help='specify discriminator architecture [caption | synthesis].')
-        parser.add_argument('--netG', type=str, default='caption', help='specify generator architecture [caption | synthesis]')
+        parser.add_argument('--netD', type=str, default='synthesis', help='specify discriminator architecture [caption | synthesis].')
+        parser.add_argument('--netG', type=str, default='synthesis', help='specify generator architecture [caption | synthesis]')
         parser.add_argument('--init_type', type=str, default='normal', help='network initialization [normal | xavier | kaiming | orthogonal]')
         parser.add_argument('--init_gain', type=float, default=0.02, help='scaling factor for normal, xavier and orthogonal.')
 
@@ -43,7 +44,8 @@ class BaseOptions():
         parser.add_argument('--which_set', type=str, default='train', help='chooses which set of data to use [train | valid | test]')
         parser.add_argument('--image_size', type=int, default=256, help='final image size to load')
         parser.add_argument('--num_workers', default=0, type=int, help='# threads for loading data')
-        parser.add_argument('--batch_size', type=int, default=64, help='input batch size')
+        parser.add_argument('--batch_size', type=int, default=2, help='input batch size')
+        parser.add_argument('--validation_split', type=float, default=0.02, help='validation split of COCO')
 
         # additional parameters
         parser.add_argument('--epoch', type=str, default='latest', help='which epoch to load? set to latest to use latest cached model')
@@ -72,10 +74,10 @@ class BaseOptions():
         parser = model_option_setter(parser, self.isTrain)
         opt, _ = parser.parse_known_args()  # parse again with new defaults
 
-        # modify dataset-related parser options
-        dataset_name = opt.dataset_mode
-        dataset_option_setter = data.get_option_setter(dataset_name)
-        parser = dataset_option_setter(parser, self.isTrain)
+        # # modify dataset-related parser options
+        # dataset_name = opt.dataset_name
+        # dataset_option_setter = data_loader.get_option_setter(dataset_name)
+        # parser = dataset_option_setter(parser, self.isTrain)
 
         # save and return the parser
         self.parser = parser
@@ -98,7 +100,10 @@ class BaseOptions():
         print(message)
 
         # save to the disk
-        expr_dir = os.path.join(opt.checkpoints_dir, opt.name)
+        # setup directory for checkpoint saving
+        start_time = datetime.datetime.now().strftime('%m%d_%H%M%S')
+        expr_dir = os.path.join(opt.checkpoints_dir, opt.exp_name, start_time)
+        opt.expr_dir = expr_dir
         util.mkdirs(expr_dir)
         file_name = os.path.join(expr_dir, 'opt.txt')
         with open(file_name, 'wt') as opt_file:
@@ -116,16 +121,5 @@ class BaseOptions():
             opt.name = opt.name + suffix
 
         self.print_options(opt)
-
-        # set gpu ids
-        str_ids = opt.gpu_ids.split(',')
-        opt.gpu_ids = []
-        for str_id in str_ids:
-            id = int(str_id)
-            if id >= 0:
-                opt.gpu_ids.append(id)
-        if len(opt.gpu_ids) > 0:
-            torch.cuda.set_device(opt.gpu_ids[0])
-
         self.opt = opt
         return self.opt

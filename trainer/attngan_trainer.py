@@ -1,6 +1,7 @@
 import torch
+import numpy as np
 from torch.autograd import Variable
-from base import BaseTrainer
+from .base_trainer import BaseTrainer
 from model import networks
 from model.loss import attangan_discriminator_loss, attangan_generator_loss, KL_loss
 
@@ -24,7 +25,7 @@ class AttnGANtrainer(BaseTrainer):
             parser.add_argument('--gamma1', type=float, default=4.0, help='gamma 1 for damsm')
             parser.add_argument('--gamma2', type=float, default=5.0, help='gamma 2 for damsm')
             parser.add_argument('--gamma3', type=float, default=10.0, help='gamma 3 for damsm')
-            parser.add_argument('--g lambda', type=float, default=5.0, help='gamma 3 for damsm')
+            parser.add_argument('--g_lambda', type=float, default=5.0, help='gamma 3 for damsm')
 
         return parser
 
@@ -42,22 +43,21 @@ class AttnGANtrainer(BaseTrainer):
         # specify the models you want to save to the disk. The training/test scripts will call <BaseModel.save_networks> and <BaseModel.load_networks>
         self.model_names = ['G', 'D']
         # define networks (both generator and discriminator)
-        self.netG = networks.define_G(netG="caption", gpu_ids=self.gpu_ids)
-        self.netD = networks.define_D(netD="caption", gpu_ids=self.gpu_ids)
-        self.rnn_encoder, self.cnn_encoder = networks.define_DAMSM(dataset_name=opt.dataset_name, gpu_ids=self.gpu_ids)
+        self.netG = networks.define_G(opt=opt, gpu_ids=self.gpu_ids)
+        self.netD = networks.define_D(opt=opt, gpu_ids=self.gpu_ids)
+        self.rnn_encoder, self.cnn_encoder = networks.define_DAMSM(opt=opt, gpu_ids=self.gpu_ids)
 
-        self.generator_loss = attangan_generator_loss()
-        self.discriminator_loss = attangan_discriminator_loss()
-        self.KL_loss = KL_loss()
+        self.generator_loss = attangan_generator_loss
+        self.discriminator_loss = attangan_discriminator_loss
+        self.KL_loss = KL_loss
 
         # initialize optimizers; schedulers will be automatically created by function <BaseModel.setup>.
         self.optimizer_G = torch.optim.Adam(self.netG.parameters(), lr=opt.g_lr, betas=(opt.beta_1, 0.999))
+        self.optimizers.append(self.optimizer_G)
         self.optimizer_D = []
         for i in range(len(self.netD)):
-            self.optimizer_D.append(torch.optim.Adam(self.netD.parameters(), lr=opt.g_lr, betas=(opt.beta_1, 0.999)))
-
-        self.optimizers.append(self.optimizer_G)
-        self.optimizers.append(self.optimizer_D)
+            self.optimizer_D.append(torch.optim.Adam(self.netD[i].parameters(), lr=opt.g_lr, betas=(opt.beta_1, 0.999)))
+            self.optimizers.append(self.optimizer_D[i])
 
         # setup noise
         self.noise = Variable(torch.FloatTensor(self.batch_size, 100), volatile=True)
@@ -71,24 +71,22 @@ class AttnGANtrainer(BaseTrainer):
         Parameters:
             input (dict): include the data itself and its metadata information.
         """
-        self.right_images = []
-        self.right_images.append(data["right_images_64"].to(self.device))
-        self.right_images.append(data["right_images_128"].to(self.device))
-        self.right_images.append(data["right_images_256"].to(self.device))
+        self.real_imgs = []
+        self.real_imgs.append(data["right_images_64"].to(self.device))
+        self.real_imgs.append(data["right_images_128"].to(self.device))
+        self.real_imgs.append(data["right_images_256"].to(self.device))
         self.right_captions = data["right_captions"].to(self.device)
         self.right_caption_lengths = data["right_caption_lengths"].to(self.device)
-        _, self.right_embeddings = self.rnn_encoder(self.right_captions, self.right_caption_lengths)
-        self.right_embeddings.to(self.device)
-        self.class_ids = data['class_id']
+        self.class_ids = np.array(data['class_id'])
         self.labels = torch.LongTensor(range(self.batch_size)).to(self.device)
 
-        # other image
-        self.wrong_images = []
-        self.wrong_images.append(data["wrong_images_64"].to(self.device))
-        self.wrong_images.append(data["wrong_images_128"].to(self.device))
-        self.wrong_images.append(data["wrong_images_256"].to(self.device))
-        self.wrong_captions = data["wrong_captions"].to(self.device)
-        self.wrong_caption_lengths = data["wrong_caption_lengths"].to(self.device)
+        # # other image
+        # self.wrong_images = []
+        # self.wrong_images.append(data["wrong_images_64"].to(self.device))
+        # self.wrong_images.append(data["wrong_images_128"].to(self.device))
+        # self.wrong_images.append(data["wrong_images_256"].to(self.device))
+        # self.wrong_captions = data["wrong_captions"].to(self.device)
+        # self.wrong_caption_lengths = data["wrong_caption_lengths"].to(self.device)
 
     def prepare_labels(self):
         real_labels = Variable(torch.FloatTensor(self.batch_size).fill_(1))
@@ -123,19 +121,15 @@ class AttnGANtrainer(BaseTrainer):
         #######################################################
         # (3) calculate D network loss
         ######################################################
-        self.errD = []
         self.loss_D = 0
-        self.D_logs = ''
         for i in range(len(self.netD)):
             self.netD[i].zero_grad()
-            errD = self.discriminator_loss(self.netD[i], self.imgs[i], self.fake_imgs[i],
+            loss = self.discriminator_loss(self.netD[i], self.real_imgs[i], self.fake_imgs[i],
                                       self.sent_emb, self.real_labels, self.fake_labels)
-            self.errD.append(errD)
             # backward and update parameters
-            errD.backward()
+            loss.backward()
             # optimizersD[i].step()
-            self.loss_D += errD
-            self.D_logs += 'errD%d: %.2f ' % (i, errD.data[0])
+            self.loss_D += loss
 
     def backward_G(self):
         #######################################################
@@ -146,12 +140,11 @@ class AttnGANtrainer(BaseTrainer):
         # do not need to compute gradient for Ds
         # self.set_requires_grad_value(netsD, False)
         self.netG.zero_grad()
-        self.loss_G, self.G_logs = \
-            self.generator_loss(self.netD, self.cnn_encoder, self.fake_imgs, self.real_labels,
-                           self.words_embs, self.sent_emb, self.match_labels, self.right_caption_lengths, self.class_ids, self.opt)
+        self.loss_G = self.generator_loss(self.netD, self.cnn_encoder, self.fake_imgs, self.real_labels,
+                                           self.words_embs, self.sent_emb, self.match_labels,
+                                           self.right_caption_lengths, self.class_ids, self.opt)
         kl_loss = self.KL_loss(self.mu, self.logvar)
         self.loss_G += kl_loss
-        self.G_logs += 'kl_loss: %.2f ' % kl_loss.data[0]
         # backward and update parameters
         self.loss_G.backward()
 
@@ -166,7 +159,7 @@ class AttnGANtrainer(BaseTrainer):
         self.backward_D()  # calculate gradients for D
         # update D's weights
         for i in range(len(self.netD)):
-            self.optimizer_D[i].zero_grad()
+            self.optimizer_D[i].step()
 
         # update G
         self.set_requires_grad(self.netD, False)

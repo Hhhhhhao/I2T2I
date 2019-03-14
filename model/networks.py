@@ -1,8 +1,6 @@
 import os
 import torch
-import torch.nn as nn
 from torch.nn import init
-import functools
 from torch.optim import lr_scheduler
 
 from model.attngan_modules import D_NET64, D_NET128, D_NET256, G_NET
@@ -14,6 +12,7 @@ birds_damsm = os.path.join(main_dirname, 'output/Deep-Attentional-Multimodal-Sim
 flowers_damsm = os.path.join(main_dirname, 'output/Deep-Attentional-Multimodal-Similarity-Flowers/0311_235759/model_best.pth')
 coco_damsm = os.path.join(main_dirname, 'output/Deep-Attentional-Multimodal-Similarity-CoCo/0226_180051/model_best.pth')
 
+
 ###############################################################################
 # Helper Functions
 ###############################################################################
@@ -23,14 +22,14 @@ def get_scheduler(optimizer, opt):
         optimizer          -- the optimizer of the network
         opt (option class) -- stores all the experiment flags; needs to be a subclass of BaseOptions．　
                               opt.lr_policy is the name of learning rate policy: linear | step | plateau | cosine
-    For 'linear', we keep the same learning rate for the first <opt.niter> epochs
-    and linearly decay the rate to zero over the next <opt.niter_decay> epochs.
+    For 'linear', we keep the same learning rate for the first <opt.epochs> epochs
+    and linearly decay the rate to zero over the next <opt.nepoch_decay> epochs.
     For other schedulers (step, plateau, and cosine), we use the default PyTorch schedulers.
     See https://pytorch.org/docs/stable/optim.html for more details.
     """
     if opt.lr_policy == 'linear':
         def lambda_rule(epoch):
-            lr_l = 1.0 - max(0, epoch + opt.epoch_count - opt.niter) / float(opt.niter_decay + 1)
+            lr_l = 1.0 - max(0, epoch + opt.epoch_count - opt.epochs) / float(opt.nepoch_decay + 1)
             return lr_l
         scheduler = lr_scheduler.LambdaLR(optimizer, lr_lambda=lambda_rule)
     elif opt.lr_policy == 'step':
@@ -38,7 +37,7 @@ def get_scheduler(optimizer, opt):
     elif opt.lr_policy == 'plateau':
         scheduler = lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.2, threshold=0.01, patience=5)
     elif opt.lr_policy == 'cosine':
-        scheduler = lr_scheduler.CosineAnnealingLR(optimizer, T_max=opt.niter, eta_min=0)
+        scheduler = lr_scheduler.CosineAnnealingLR(optimizer, T_max=opt.epochs, eta_min=0)
     else:
         return NotImplementedError('learning rate policy [%s] is not implemented', opt.lr_policy)
     return scheduler
@@ -95,7 +94,7 @@ def init_net(net, init_type='normal', init_gain=0.02, gpu_ids=[]):
 ###############################################################################
 # Generator Define Function & Discriminator Define Function
 ###############################################################################
-def define_G(netG, opt, init_type='normal', init_gain=0.02, gpu_ids=[]):
+def define_G(opt, init_type='normal', init_gain=0.02, gpu_ids=[]):
     """Create a generator
     Parameters:
         netG (str) -- the architecture's name: caption | synthesis
@@ -113,10 +112,10 @@ def define_G(netG, opt, init_type='normal', init_gain=0.02, gpu_ids=[]):
     """
     net = None
 
-    if netG == 'caption':
+    if opt.netG == 'caption':
         # TODO add caption generator
         pass
-    elif netG == 'synthesis':
+    elif opt.netG == 'synthesis':
         net = G_NET(opt)
     else:
         raise NotImplementedError('Generator model name [%s] is not recognized' % netG)
@@ -124,7 +123,7 @@ def define_G(netG, opt, init_type='normal', init_gain=0.02, gpu_ids=[]):
     return init_net(net, init_type, init_gain, gpu_ids)
 
 
-def define_D(netD, opt, init_type='normal', init_gain=0.02, gpu_ids=[]):
+def define_D(opt, init_type='normal', init_gain=0.02, gpu_ids=[]):
     """Create a discriminator
     Parameters:
         netD (str)         -- the architecture's name: caption | synthesis
@@ -136,12 +135,12 @@ def define_D(netD, opt, init_type='normal', init_gain=0.02, gpu_ids=[]):
     """
     net = None
 
-    if netD == 'caption':
+    if opt.netD == 'caption':
         # TODO add caption discriminator
         pass
         # TODO uncomment
         # return init_net(net, init_type, init_gain, gpu_ids)
-    elif netD == 'synthesis':  # more options
+    elif opt.netD == 'synthesis':  # more options
         net = []
         net_64 = D_NET64(opt)
         net_128 = D_NET128(opt)
@@ -154,7 +153,7 @@ def define_D(netD, opt, init_type='normal', init_gain=0.02, gpu_ids=[]):
         raise NotImplementedError('Discriminator model name [%s] is not recognized' % net)
 
 
-def define_DAMSM(dataset_name, vocab_size, gpu_ids=[]):
+def define_DAMSM(opt, gpu_ids=[]):
     """
     Create Pre-trained DAMSM rnn encoder and cnn encoder
     :param dataset_name (str) -- the dataset name: birds | flowers | CoCo
@@ -164,7 +163,7 @@ def define_DAMSM(dataset_name, vocab_size, gpu_ids=[]):
     """
 
     rnn_encoder = DAMSM_RNN_Encoder(
-        vocab_size=vocab_size,
+        vocab_size=opt.vocab_size,
         word_embed_size=256,
         lstm_hidden_size=256
     )
@@ -178,13 +177,16 @@ def define_DAMSM(dataset_name, vocab_size, gpu_ids=[]):
         rnn_encoder = torch.nn.DataParallel(rnn_encoder, gpu_ids)  # multi-GPUs
         cnn_encoder = torch.nn.DataParallel(cnn_encoder, gpu_ids)
     else:
+        # TODO add here for test on computer
+        rnn_encoder = torch.nn.DataParallel(rnn_encoder, gpu_ids)  # multi-GPUs
+        cnn_encoder = torch.nn.DataParallel(cnn_encoder, gpu_ids)
         device = torch.device('cpu')
 
-    if "d" in dataset_name:  # birds
+    if "d" in opt.dataset_name:  # birds
         resume_path = birds_damsm
-    elif "r" in dataset_name: # flowers
+    elif "r" in opt.dataset_name: # flowers
         resume_path = flowers_damsm
-    elif "C" in dataset_name: # coco
+    elif "C" in opt.dataset_name: # coco
         resume_path = coco_damsm
     else:
         raise ValueError("cannot find corresponding damsm model path")

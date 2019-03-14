@@ -1,13 +1,11 @@
 import os
 import json
-import datetime
 import torch
 import logging
 from collections import OrderedDict
 from abc import ABC, abstractmethod
 from model import networks
 from utils.util import ensure_dir
-
 
 
 class BaseTrainer(ABC):
@@ -34,23 +32,13 @@ class BaseTrainer(ABC):
         """
         self.opt = opt
         self.logger = logging.getLogger(self.__class__.__name__)
-        self.device, self.gpu_ids = self.prepare_device(opt['n_gpu'])
+        self.device, self.gpu_ids = self.prepare_device(opt.n_gpu)
         self.isTrain = opt.isTrain
         # setup batch size
         self.batch_size = self.opt.batch_size
 
         # setup directory for checkpoint saving
-        start_time = datetime.datetime.now().strftime('%m%d_%H%M%S')
-        self.save_dir = os.path.join(opt.checkpoints_dir, opt.exp_name, start_time)
-
-        # Save configuration file into checkpoint directory:
-        ensure_dir(self.save_dir)
-        config_save_path = os.path.join(self.save_dir, 'opt.json')
-        with open(config_save_path, 'w') as handle:
-            json.dump(opt, handle, indent=4, sort_keys=False)
-
-        if opt.preprocess != 'scale_width':  # with [scale_width], input images might have different sizes, which hurts the performance of cudnn.benchmark.
-            torch.backends.cudnn.benchmark = True
+        self.save_dir = opt.expr_dir
 
         self.loss_names = []
         self.model_names = []
@@ -100,7 +88,7 @@ class BaseTrainer(ABC):
         pass
 
     @abstractmethod
-    def configimize_parameters(self):
+    def optimize_parameters(self):
         """Calculate losses, gradients, and update network weights; called in every training iteration"""
         pass
 
@@ -227,12 +215,23 @@ class BaseTrainer(ABC):
         for name in self.model_names:
             if isinstance(name, str):
                 net = getattr(self, 'net' + name)
-                num_params = 0
-                for param in net.parameters():
-                    num_params += param.numel()
-                if verbose:
-                    print(net)
-                print('[Network %s] Total number of parameters : %.3f M' % (name, num_params / 1e6))
+
+                if type(net) is list:
+                    for i in range(len(net)):
+                        num_params = 0
+                        for param in net[i].parameters():
+                            num_params += param.numel()
+                        if verbose:
+                            print(net)
+                        print('[Network %s %s] Total number of parameters : %.3f M' % (name, i, num_params / 1e6))
+                else:
+                    num_params = 0
+                    for param in net.parameters():
+                        num_params += param.numel()
+                    if verbose:
+                        print(net)
+                    print('[Network %s] Total number of parameters : %.3f M' % (name, num_params / 1e6))
+
         print('-----------------------------------------------')
 
     def set_requires_grad(self, nets, requires_grad=False):
