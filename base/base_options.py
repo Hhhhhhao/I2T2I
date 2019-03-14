@@ -44,7 +44,7 @@ class BaseOptions():
         parser.add_argument('--which_set', type=str, default='train', help='chooses which set of data to use [train | valid | test]')
         parser.add_argument('--image_size', type=int, default=256, help='final image size to load')
         parser.add_argument('--num_workers', default=0, type=int, help='# threads for loading data')
-        parser.add_argument('--batch_size', type=int, default=2, help='input batch size')
+        parser.add_argument('--batch_size', type=int, default=64, help='input batch size')
         parser.add_argument('--validation_split', type=float, default=0.02, help='validation split of COCO')
 
         # additional parameters
