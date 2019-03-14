@@ -3,7 +3,7 @@
 #SBATCH -n 1	  # tasks requested
 #SBATCH --partition=LongJobs
 #SBATCH --gres=gpu:8
-#SBATCH --mem=84000  # memory in Mb
+#SBATCH --mem=72000  # memory in Mb
 #SBATCH --time=3-08:00:00
 
 export CUDA_HOME=/opt/cuda-9.0.176.1/
@@ -34,4 +34,4 @@ export DATASET_DIR=${TMP}/datasets/
 
 source /home/${STUDENT_ID}/anaconda3/bin/activate I2T2I
 cd ..
-python train.py --config config/coco_config.json
+python train.py --exp_name 'AttnGAN-Birds' --n_gpu 8  --dataset_name 'birds'
