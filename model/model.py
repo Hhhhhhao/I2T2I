@@ -271,6 +271,7 @@ class ConditionalGenerator(BaseModel):
 
         inputs = torch.cat((image_features, rand), 1)
         features = self.features_linear(inputs)
+        features = self.activation(features)
 
         if torch.cuda.is_available():
             return features.cuda()
