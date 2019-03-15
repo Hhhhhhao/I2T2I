@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b3134c42-5a5c-4eae-8274-2ca6fc32ab15" name="Default" comment="" />
+    <list default="true" id="b3134c42-5a5c-4eae-8274-2ca6fc32ab15" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_loader/datasets_custom.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_loader/datasets_custom.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gan_train.py" beforeDir="false" afterPath="$PROJECT_DIR$/gan_train.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/train.py" beforeDir="false" afterPath="$PROJECT_DIR$/train.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -16,24 +22,18 @@
     <SUITE FILE_PATH="coverage/I2T2I$datasets_custom.coverage" NAME="datasets_custom Coverage Results" MODIFIED="1550833709628" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/data_loader" />
     <SUITE FILE_PATH="coverage/I2T2I$data_loaders.coverage" NAME="data_loaders Coverage Results" MODIFIED="1550146192524" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/data_loader" />
     <SUITE FILE_PATH="coverage/I2T2I$model.coverage" NAME="model Coverage Results" MODIFIED="1550835916526" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/model" />
-    <SUITE FILE_PATH="coverage/I2T2I$gan_train.coverage" NAME="gan_train Coverage Results" MODIFIED="1552650410662" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/I2T2I$gan_train.coverage" NAME="gan_train Coverage Results" MODIFIED="1552691338384" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file leaf-file-name="train.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/train.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="260">
-              <caret line="23" selection-start-line="23" selection-end-line="23" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="loss.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/model/loss.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="20">
-              <caret line="2" selection-start-line="2" selection-end-line="2" />
+            <state relative-caret-position="-159">
+              <caret line="9" column="24" selection-start-line="9" selection-start-column="24" selection-end-line="9" selection-end-column="24" />
+              <folding>
+                <element signature="e#0#9#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -41,24 +41,53 @@
       <file leaf-file-name="datasets_custom.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/data_loader/datasets_custom.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="174">
-              <caret line="89" selection-start-line="89" selection-end-line="89" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="coco_config.json" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/config/coco_config.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1420">
-              <caret line="71" column="41" selection-start-line="71" selection-start-column="41" selection-end-line="71" selection-end-column="41" />
+            <state relative-caret-position="-6773">
+              <caret line="40" selection-start-line="40" selection-end-line="40" />
             </state>
           </provider>
         </entry>
       </file>
       <file leaf-file-name="gan_train.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/gan_train.py">
-          <provider selected="true" editor-type-id="text-editor" />
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1036">
+              <caret line="71" column="63" selection-start-line="71" selection-start-column="63" selection-end-line="71" selection-end-column="63" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="model.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/model/model.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="222">
+              <caret line="271" selection-start-line="271" selection-end-line="271" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="birds_config.json" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/config/birds_config.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="472">
+              <caret line="72" column="41" selection-start-line="72" selection-start-column="41" selection-end-line="72" selection-end-column="41" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="rollout.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/model/rollout.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="261">
+              <caret line="62" column="49" selection-start-line="62" selection-start-column="43" selection-end-line="62" selection-end-column="49" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="flowers_config.json" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/config/flowers_config.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1133" />
+          </provider>
         </entry>
       </file>
       <file leaf-file-name="data_loaders.py" pinned="false" current-in-tab="false">
@@ -68,7 +97,14 @@
       </file>
       <file leaf-file-name="gan_trainer.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/trainer/gan_trainer.py">
-          <provider selected="true" editor-type-id="text-editor" />
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1345">
+              <caret line="221" lean-forward="true" selection-start-line="221" selection-end-line="221" />
+              <folding>
+                <element signature="e#0#9#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
         </entry>
       </file>
     </leaf>
@@ -93,7 +129,6 @@
       <find>minitor</find>
       <find>example_dir</find>
       <find>state_dict</find>
-      <find>sample</find>
       <find>self.start_epoch</find>
       <find>self.train_logger</find>
       <find>sample_beam_search</find>
@@ -112,6 +147,7 @@
       <find>stop_words_en</find>
       <find>numpy</find>
       <find>images</find>
+      <find>sample</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -149,20 +185,20 @@
         <option value="$PROJECT_DIR$/utils/visualization.py" />
         <option value="$PROJECT_DIR$/model/__init__.py" />
         <option value="$PROJECT_DIR$/test.py" />
-        <option value="$PROJECT_DIR$/train.py" />
         <option value="$PROJECT_DIR$/utils/util.py" />
         <option value="$PROJECT_DIR$/utils/data_processing.py" />
         <option value="$PROJECT_DIR$/model/rollout.py" />
         <option value="$PROJECT_DIR$/data_loader/data_loaders.py" />
         <option value="$PROJECT_DIR$/base/base_gan_trainer.py" />
-        <option value="$PROJECT_DIR$/config/coco_config.json" />
-        <option value="$PROJECT_DIR$/trainer/gan_trainer.py" />
-        <option value="$PROJECT_DIR$/config/birds_config.json" />
         <option value="$PROJECT_DIR$/config/flowers_config.json" />
         <option value="$PROJECT_DIR$/model/loss.py" />
-        <option value="$PROJECT_DIR$/model/model.py" />
-        <option value="$PROJECT_DIR$/gan_train.py" />
         <option value="$PROJECT_DIR$/data_loader/datasets_custom.py" />
+        <option value="$PROJECT_DIR$/trainer/gan_trainer.py" />
+        <option value="$PROJECT_DIR$/config/coco_config.json" />
+        <option value="$PROJECT_DIR$/gan_train.py" />
+        <option value="$PROJECT_DIR$/train.py" />
+        <option value="$PROJECT_DIR$/model/model.py" />
+        <option value="$PROJECT_DIR$/config/birds_config.json" />
       </list>
     </option>
   </component>
@@ -176,10 +212,10 @@
     <packageJsonPaths />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1847" />
-    <option name="y" value="-42" />
-    <option name="width" value="1236" />
-    <option name="height" value="877" />
+    <option name="x" value="1598" />
+    <option name="y" value="-157" />
+    <option name="width" value="1572" />
+    <option name="height" value="999" />
   </component>
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -189,7 +225,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -231,6 +266,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -395,7 +431,8 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1847" y="-42" width="1236" height="877" extended-state="0" />
+    <frame x="1598" y="-157" width="1572" height="999" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
@@ -404,12 +441,12 @@
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Python Console" order="7" />
       <window_info anchor="bottom" id="Terminal" order="7" weight="0.17833553" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49915397" visible="true" weight="0.20938024" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4983108" visible="true" weight="0.16601308" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="right" id="Database" order="3" />
       <window_info anchor="right" id="SciView" order="3" />
-      <window_info id="Structure" order="1" sideWeight="0.500846" side_tool="true" weight="0.17938553" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.21796565" />
+      <window_info id="Structure" order="1" sideWeight="0.5016892" side_tool="true" weight="0.21273032" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.18771331" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -423,24 +460,24 @@
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info id="Favorites" order="2" side_tool="true" />
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.15857284" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.21985058" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.32977587" />
-      <window_info anchor="bottom" id="Python Console" order="10" />
+      <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Debug" order="3" visible="true" weight="0.27212682" />
       <window_info anchor="right" id="Database" order="4" />
       <window_info anchor="bottom" id="Terminal" order="11" />
       <window_info anchor="bottom" id="Event Log" order="12" side_tool="true" />
       <window_info anchor="bottom" id="Database Changes" order="9" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="right" id="SciView" order="3" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32977587" />
+      <window_info anchor="bottom" id="Python Console" order="10" />
     </layout-to-restore>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -454,63 +491,78 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/trainer/gan_trainer.py</url>
-          <line>249</line>
+          <line>300</line>
           <option name="timeStamp" value="274" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/trainer/gan_trainer.py</url>
-          <line>254</line>
+          <line>305</line>
           <option name="timeStamp" value="275" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/trainer/gan_trainer.py</url>
-          <line>269</line>
+          <line>319</line>
           <option name="timeStamp" value="276" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/trainer/gan_trainer.py</url>
-          <line>319</line>
+          <line>360</line>
           <option name="timeStamp" value="279" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/trainer/gan_trainer.py</url>
-          <line>265</line>
+          <line>317</line>
           <option name="timeStamp" value="281" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/trainer/gan_trainer.py</url>
-          <line>291</line>
+          <line>345</line>
           <option name="timeStamp" value="282" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/trainer/gan_trainer.py</url>
-          <line>256</line>
+          <line>307</line>
           <option name="timeStamp" value="324" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/trainer/gan_trainer.py</url>
-          <line>347</line>
-          <option name="timeStamp" value="327" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/model/model.py</url>
-          <line>268</line>
+          <line>284</line>
           <option name="timeStamp" value="332" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/data_loader/datasets_custom.py</url>
-          <line>40</line>
-          <option name="timeStamp" value="333" />
+          <url>file://$PROJECT_DIR$/model/model.py</url>
+          <line>271</line>
+          <option name="timeStamp" value="337" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/data_loader/datasets_custom.py</url>
-          <line>37</line>
-          <option name="timeStamp" value="335" />
+          <url>file://$PROJECT_DIR$/trainer/gan_trainer.py</url>
+          <line>121</line>
+          <option name="timeStamp" value="338" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/data_loader/datasets_custom.py</url>
-          <line>38</line>
-          <option name="timeStamp" value="336" />
+          <url>file://$PROJECT_DIR$/model/model.py</url>
+          <line>363</line>
+          <option name="timeStamp" value="340" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/trainer/gan_trainer.py</url>
+          <line>118</line>
+          <option name="timeStamp" value="341" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/model/model.py</url>
+          <line>295</line>
+          <option name="timeStamp" value="343" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/model/model.py</url>
+          <line>289</line>
+          <option name="timeStamp" value="344" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/model/model.py</url>
+          <line>298</line>
+          <option name="timeStamp" value="345" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
@@ -523,7 +575,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="337" />
+      <option name="time" value="352" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
@@ -682,37 +734,73 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/config/birds_config.json" />
-    <entry file="file://$PROJECT_DIR$/config/flowers_config.json" />
-    <entry file="file://$PROJECT_DIR$/model/rollout.py" />
-    <entry file="file://$PROJECT_DIR$/model/model.py" />
-    <entry file="file://$PROJECT_DIR$/train.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="260">
-          <caret line="23" selection-start-line="23" selection-end-line="23" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/data_loader/data_loaders.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/trainer/gan_trainer.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/gan_train.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data_loader/datasets_custom.py">
+    <entry file="file://$PROJECT_DIR$/model/rollout.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="174">
-          <caret line="89" selection-start-line="89" selection-end-line="89" />
+        <state relative-caret-position="261">
+          <caret line="62" column="49" selection-start-line="62" selection-start-column="43" selection-end-line="62" selection-end-column="49" />
         </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config/flowers_config.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1133" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/config/coco_config.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1420">
+        <state relative-caret-position="359">
           <caret line="71" column="41" selection-start-line="71" selection-start-column="41" selection-end-line="71" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data_loader/datasets_custom.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-6773">
+          <caret line="40" selection-start-line="40" selection-end-line="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gan_train.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1036">
+          <caret line="71" column="63" selection-start-line="71" selection-start-column="63" selection-end-line="71" selection-end-column="63" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/train.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-159">
+          <caret line="9" column="24" selection-start-line="9" selection-start-column="24" selection-end-line="9" selection-end-column="24" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model/model.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="222">
+          <caret line="271" selection-start-line="271" selection-end-line="271" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/trainer/gan_trainer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1345">
+          <caret line="221" lean-forward="true" selection-start-line="221" selection-end-line="221" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config/birds_config.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="472">
+          <caret line="72" column="41" selection-start-line="72" selection-start-column="41" selection-end-line="72" selection-end-column="41" />
         </state>
       </provider>
     </entry>

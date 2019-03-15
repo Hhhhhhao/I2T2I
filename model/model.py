@@ -296,7 +296,7 @@ class ConditionalGenerator(BaseModel):
         image_features = self.encoder(images)
         features = self.get_feature_linear_output(image_features)
         outputs = self.decoder(features, captions, caption_lengths)
-        return image_features, outputs
+        return features, outputs
 
     def reward_forward(self, images, evaluator, monte_carlo_count=18):
         '''
