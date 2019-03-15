@@ -36,6 +36,8 @@ class COCOTextImageDataset(Dataset):
             @:param which_set (string): "train:, "valid", "test"
         """
 
+        if '/' not in data_dir:
+            data_dir += '/'
         self.data_dir = data_dir
         self.which_set = which_set
         assert self.which_set in {'train', 'val', 'test'}
@@ -85,9 +87,9 @@ class COCOTextImageDataset(Dataset):
         wrong_embed = 0
 
         # Processing images
-        right_image = Image.open(os.path.join(self.data_dir + '/images/{}/'.format(self.which_set), right_image_path))
+        right_image = Image.open(os.path.join(self.data_dir + 'images/{}/'.format(self.which_set), right_image_path))
         right_image = right_image.convert("RGB")
-        wrong_image = Image.open(os.path.join(self.data_dir + '/images/{}/'.format(self.which_set), wrong_image_path))
+        wrong_image = Image.open(os.path.join(self.data_dir + 'images/{}/'.format(self.which_set), wrong_image_path))
         wrong_image = wrong_image.convert("RGB")
 
         right_image_32 = right_image.resize((32, 32))
