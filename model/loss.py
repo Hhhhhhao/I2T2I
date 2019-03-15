@@ -11,9 +11,12 @@ def cross_entropy_loss(output, target):
 
 
 class RLLoss(torch.nn.Module):
+    def __init__(self, eps=1e-8):
+        super(RLLoss, self).__init__()
+        self.eps = eps
 
     def forward(self, rewards, props):
-        loss = rewards * props
+        loss = rewards * torch.log(torch.clamp(props, min=self.eps, max=1.0))
         # loss = rewards * props
         loss = -torch.mean(loss)
         return loss
