@@ -257,10 +257,7 @@ class ConditionalGenerator(BaseModel):
 
         # image feature encoder
         self.encoder = EncoderCNN(self.image_embed_size)
-        self.features_linear = nn.Sequential(
-            nn.Linear(self.image_embed_size + noise_dim, self.image_embed_size),
-            nn.LeakyReLU(0.2)
-        )
+        self.features_linear = nn.Linear(self.image_embed_size + noise_dim, self.image_embed_size)
         self.decoder = DecoderRNN(self.word_embed_size, self.lstm_hidden_size, self.vocab_size, self.lstm_num_layers)
         self.rollout = Rollout(max_sentence_length)
 
