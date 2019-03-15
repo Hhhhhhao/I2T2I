@@ -5,7 +5,7 @@
     "models": {
         "Generator":{
             "type":"ConditionalGenerator",
-            "pretrain_path": "saved/Image-Caption-GAN-Flowers/0312_203605/pretrain_generator.pth",
+            "pretrain_path": "saved/Image-Caption-GAN-Flowers/0312_203605/hehe.pth",
             "args":{
                 "image_embed_size": 512,
                 "word_embed_size": 512,
@@ -25,7 +25,7 @@
         },
         "Discriminator": {
             "type": "Evaluator",
-            "pretrain_path": "saved/Image-Caption-GAN-Flowers/0312_203605/pretrain_discriminator.pth",
+            "pretrain_path": "saved/Image-Caption-GAN-Flowers/0312_203605/hehe.pth",
             "args": {
                 "image_embed_size": 512,
                 "word_embed_size": 512,
