@@ -159,7 +159,7 @@ def attangan_discriminator_loss(netD, real_imgs, fake_imgs, conditions,
         cond_wrong_logits = netD.module.COND_DNET(real_features[:(batch_size - 1)], conditions[1:batch_size])
         cond_wrong_errD = nn.MSELoss()(cond_wrong_logits, fake_labels[1:batch_size])
 
-        if netD.UNCOND_DNET is not None:
+        if netD.module.UNCOND_DNET is not None:
             real_logits = netD.module.UNCOND_DNET(real_features)
             fake_logits = netD.module.UNCOND_DNET(fake_features)
             real_errD = nn.MSELoss()(real_logits, real_labels)
