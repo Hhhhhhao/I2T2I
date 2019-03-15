@@ -13,7 +13,7 @@ def main(opt):
     # setup data_loader instances
     if opt.dataset_name == 'CoCo':
         data_loader = COCOTextImageDataLoader(
-            data_dir=opt.dataroot + '/coco',
+            data_dir=opt.dataroot + '/coco/',
             which_set=opt.which_set,
             image_size=opt.image_size,
             batch_size=opt.batch_size,
