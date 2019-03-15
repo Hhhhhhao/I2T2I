@@ -102,10 +102,10 @@ class BaseOptions():
         # save to the disk
         # setup directory for checkpoint saving
         start_time = datetime.datetime.now().strftime('%m%d_%H%M%S')
-        expr_dir = os.path.join(opt.checkpoints_dir, opt.exp_name, start_time)
-        opt.expr_dir = expr_dir
-        util.mkdirs(expr_dir)
-        file_name = os.path.join(expr_dir, 'opt.txt')
+        save_dir = os.path.join(opt.checkpoints_dir, opt.exp_name, start_time)
+        opt.save_dir = save_dir
+        util.mkdirs(save_dir)
+        file_name = os.path.join(save_dir, 'opt.txt')
         with open(file_name, 'wt') as opt_file:
             opt_file.write(message)
             opt_file.write('\n')

@@ -38,7 +38,7 @@ class BaseTrainer(ABC):
         self.batch_size = self.opt.batch_size
 
         # setup directory for checkpoint saving
-        self.save_dir = opt.expr_dir
+        self.save_dir = opt.save_dir
 
         self.loss_names = []
         self.model_names = []
