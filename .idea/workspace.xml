@@ -99,7 +99,7 @@
       <find>caotion_lengths</find>
       <find>captions</find>
       <find>caption</find>
-      <find>generator_caption_lengths = torch.LongTensor(generator_caption_lengths).to(self.device)</find>
+      <find />
       <find>generator_caption_lengths</find>
       <find>length</find>
       <find>stop_words_en</find>
@@ -168,7 +168,7 @@
   <component name="NodePackageJsonFileManager">
     <packageJsonPaths />
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="1">
     <option name="x" value="2014" />
     <option name="y" value="3" />
     <option name="width" value="1236" />
