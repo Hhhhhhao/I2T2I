@@ -3,6 +3,7 @@ import torch
 from torch import nn
 import torch.nn.functional as F
 from model.global_attention_modules import func_attention
+n_gpu = torch.cuda.device_count()
 
 
 def nll_loss(output, target):
@@ -145,26 +146,49 @@ def attangan_discriminator_loss(netD, real_imgs, fake_imgs, conditions,
     # Forward
     real_features = netD(real_imgs)
     fake_features = netD(fake_imgs.detach())
-    # loss
-    #
-    cond_real_logits = netD.COND_DNET(real_features, conditions)
-    cond_real_errD = nn.MSELoss()(cond_real_logits, real_labels)
-    cond_fake_logits = netD.COND_DNET(fake_features, conditions)
-    cond_fake_errD = nn.MSELoss()(cond_fake_logits, fake_labels)
-    #
-    batch_size = real_features.size(0)
-    cond_wrong_logits = netD.COND_DNET(real_features[:(batch_size - 1)], conditions[1:batch_size])
-    cond_wrong_errD = nn.MSELoss()(cond_wrong_logits, fake_labels[1:batch_size])
 
-    if netD.UNCOND_DNET is not None:
-        real_logits = netD.UNCOND_DNET(real_features)
-        fake_logits = netD.UNCOND_DNET(fake_features)
-        real_errD = nn.MSELoss()(real_logits, real_labels)
-        fake_errD = nn.MSELoss()(fake_logits, fake_labels)
-        errD = ((real_errD + cond_real_errD) / 2. +
-                (fake_errD + cond_fake_errD + cond_wrong_errD) / 3.)
+    if n_gpu > 1:
+        # loss
+        #
+        cond_real_logits = netD.module.COND_DNET(real_features, conditions)
+        cond_real_errD = nn.MSELoss()(cond_real_logits, real_labels)
+        cond_fake_logits = netD.module.COND_DNET(fake_features, conditions)
+        cond_fake_errD = nn.MSELoss()(cond_fake_logits, fake_labels)
+        #
+        batch_size = real_features.size(0)
+        cond_wrong_logits = netD.module.COND_DNET(real_features[:(batch_size - 1)], conditions[1:batch_size])
+        cond_wrong_errD = nn.MSELoss()(cond_wrong_logits, fake_labels[1:batch_size])
+
+        if netD.UNCOND_DNET is not None:
+            real_logits = netD.module.UNCOND_DNET(real_features)
+            fake_logits = netD.module.UNCOND_DNET(fake_features)
+            real_errD = nn.MSELoss()(real_logits, real_labels)
+            fake_errD = nn.MSELoss()(fake_logits, fake_labels)
+            errD = ((real_errD + cond_real_errD) / 2. +
+                    (fake_errD + cond_fake_errD + cond_wrong_errD) / 3.)
+        else:
+            errD = cond_real_errD + (cond_fake_errD + cond_wrong_errD) / 2.
     else:
-        errD = cond_real_errD + (cond_fake_errD + cond_wrong_errD) / 2.
+        # loss
+        #
+        cond_real_logits = netD.COND_DNET(real_features, conditions)
+        cond_real_errD = nn.MSELoss()(cond_real_logits, real_labels)
+        cond_fake_logits = netD.COND_DNET(fake_features, conditions)
+        cond_fake_errD = nn.MSELoss()(cond_fake_logits, fake_labels)
+        #
+        batch_size = real_features.size(0)
+        cond_wrong_logits = netD.COND_DNET(real_features[:(batch_size - 1)], conditions[1:batch_size])
+        cond_wrong_errD = nn.MSELoss()(cond_wrong_logits, fake_labels[1:batch_size])
+
+        if netD.UNCOND_DNET is not None:
+            real_logits = netD.UNCOND_DNET(real_features)
+            fake_logits = netD.UNCOND_DNET(fake_features)
+            real_errD = nn.MSELoss()(real_logits, real_labels)
+            fake_errD = nn.MSELoss()(fake_logits, fake_labels)
+            errD = ((real_errD + cond_real_errD) / 2. +
+                    (fake_errD + cond_fake_errD + cond_wrong_errD) / 3.)
+        else:
+            errD = cond_real_errD + (cond_fake_errD + cond_wrong_errD) / 2.
     return errD
 
 
@@ -175,37 +199,70 @@ def attangan_generator_loss(netsD, image_encoder, fake_imgs, real_labels,
     batch_size = real_labels.size(0)
     # Forward
     errG_total = 0
-    for i in range(numDs):
-        features = netsD[i](fake_imgs[i])
-        cond_logits = netsD[i].COND_DNET(features, sent_emb)
-        cond_errG = nn.MSELoss()(cond_logits, real_labels)
-        if netsD[i].UNCOND_DNET is  not None:
-            logits = netsD[i].UNCOND_DNET(features)
-            errG = nn.MSELoss()(logits, real_labels)
-            g_loss = errG + cond_errG
-        else:
-            g_loss = cond_errG
-        errG_total += g_loss
+    if n_gpu > 1:
+        for i in range(numDs):
+            features = netsD[i](fake_imgs[i])
+            cond_logits = netsD[i].module.COND_DNET(features, sent_emb)
+            cond_errG = nn.MSELoss()(cond_logits, real_labels)
+            if netsD[i].module.UNCOND_DNET is not None:
+                logits = netsD[i].module.UNCOND_DNET(features)
+                errG = nn.MSELoss()(logits, real_labels)
+                g_loss = errG + cond_errG
+            else:
+                g_loss = cond_errG
+            errG_total += g_loss
 
-        # Ranking loss
-        if i == (numDs - 1):
-            # words_features: batch_size x nef x 17 x 17
-            # sent_code: batch_size x nef
-            region_features, cnn_code = image_encoder(fake_imgs[i])
-            w_loss0, w_loss1, _ = words_loss(region_features, words_embs,
-                                             match_labels, cap_lens,
-                                             class_ids, batch_size, opt)
-            w_loss = (w_loss0 + w_loss1) * \
-                opt.g_lambda
-            # err_words = err_words + w_loss.data[0]
+            # Ranking loss
+            if i == (numDs - 1):
+                # words_features: batch_size x nef x 17 x 17
+                # sent_code: batch_size x nef
+                region_features, cnn_code = image_encoder(fake_imgs[i])
+                w_loss0, w_loss1, _ = words_loss(region_features, words_embs,
+                                                 match_labels, cap_lens,
+                                                 class_ids, batch_size, opt)
+                w_loss = (w_loss0 + w_loss1) * \
+                         opt.g_lambda
+                # err_words = err_words + w_loss.data[0]
 
-            s_loss0, s_loss1 = sent_loss(cnn_code, sent_emb,
-                                         match_labels, class_ids, batch_size, opt)
-            s_loss = (s_loss0 + s_loss1) * \
-                opt.g_lambda
-            # err_sent = err_sent + s_loss.data[0]
+                s_loss0, s_loss1 = sent_loss(cnn_code, sent_emb,
+                                             match_labels, class_ids, batch_size, opt)
+                s_loss = (s_loss0 + s_loss1) * \
+                         opt.g_lambda
+                # err_sent = err_sent + s_loss.data[0]
 
-            errG_total += w_loss + s_loss
+                errG_total += w_loss + s_loss
+    else:
+        for i in range(numDs):
+            features = netsD[i](fake_imgs[i])
+            cond_logits = netsD[i].COND_DNET(features, sent_emb)
+            cond_errG = nn.MSELoss()(cond_logits, real_labels)
+            if netsD[i].UNCOND_DNET is  not None:
+                logits = netsD[i].UNCOND_DNET(features)
+                errG = nn.MSELoss()(logits, real_labels)
+                g_loss = errG + cond_errG
+            else:
+                g_loss = cond_errG
+            errG_total += g_loss
+
+            # Ranking loss
+            if i == (numDs - 1):
+                # words_features: batch_size x nef x 17 x 17
+                # sent_code: batch_size x nef
+                region_features, cnn_code = image_encoder(fake_imgs[i])
+                w_loss0, w_loss1, _ = words_loss(region_features, words_embs,
+                                                 match_labels, cap_lens,
+                                                 class_ids, batch_size, opt)
+                w_loss = (w_loss0 + w_loss1) * \
+                    opt.g_lambda
+                # err_words = err_words + w_loss.data[0]
+
+                s_loss0, s_loss1 = sent_loss(cnn_code, sent_emb,
+                                             match_labels, class_ids, batch_size, opt)
+                s_loss = (s_loss0 + s_loss1) * \
+                    opt.g_lambda
+                # err_sent = err_sent + s_loss.data[0]
+
+                errG_total += w_loss + s_loss
     return errG_total
 
 
