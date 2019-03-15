@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b3134c42-5a5c-4eae-8274-2ca6fc32ab15" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/base/base_options.py" beforeDir="false" afterPath="$PROJECT_DIR$/base/base_options.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/trainer/base_trainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/trainer/base_trainer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/options/train_options.py" beforeDir="false" afterPath="$PROJECT_DIR$/options/train_options.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -37,8 +36,17 @@
       <file leaf-file-name="base_options.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/base/base_options.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="316">
-              <caret line="107" column="41" selection-start-line="107" selection-start-column="41" selection-end-line="107" selection-end-column="41" />
+            <state relative-caret-position="176">
+              <caret line="113" column="86" selection-start-line="113" selection-start-column="84" selection-end-line="113" selection-end-column="86" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="train_options.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/options/train_options.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="254">
+              <caret line="14" column="98" selection-start-line="14" selection-start-column="98" selection-end-line="14" selection-end-column="98" />
             </state>
           </provider>
         </entry>
@@ -77,20 +85,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="base_trainer.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="base_trainer.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/trainer/base_trainer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
-              <caret line="40" column="36" selection-start-line="40" selection-start-column="36" selection-end-line="40" selection-end-column="36" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="attngan_flowers.sh" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/cluster_experiment_scripts/attngan_flowers.sh">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="592">
-              <caret line="36" column="16" selection-start-line="36" selection-start-column="16" selection-end-line="36" selection-end-column="80" />
+            <state relative-caret-position="200">
+              <caret line="41" lean-forward="true" selection-start-line="41" selection-end-line="41" />
             </state>
           </provider>
         </entry>
@@ -120,7 +119,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>Upsample</find>
       <find>p</find>
       <find>to_list</find>
       <find>metrics</find>
@@ -150,6 +148,7 @@
       <find>checkpoints_dir</find>
       <find>expr_dir</find>
       <find>save_dir</find>
+      <find>visdom</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -205,10 +204,10 @@
         <option value="$PROJECT_DIR$/cluster_experiment_scripts/attngan_birds.sh" />
         <option value="$PROJECT_DIR$/cluster_experiment_scripts/attngan_flowers.sh" />
         <option value="$PROJECT_DIR$/cluster_experiment_scripts/attngan_coco.sh" />
-        <option value="$PROJECT_DIR$/options/train_options.py" />
         <option value="$PROJECT_DIR$/model/networks.py" />
         <option value="$PROJECT_DIR$/base/base_options.py" />
         <option value="$PROJECT_DIR$/trainer/base_trainer.py" />
+        <option value="$PROJECT_DIR$/options/train_options.py" />
       </list>
     </option>
   </component>
@@ -262,6 +261,11 @@
               <item name="I2T2I" type="b2602c69:ProjectViewProjectNode" />
               <item name="I2T2I" type="462c0819:PsiDirectoryNode" />
               <item name="model" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="I2T2I" type="b2602c69:ProjectViewProjectNode" />
+              <item name="I2T2I" type="462c0819:PsiDirectoryNode" />
+              <item name="options" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="I2T2I" type="b2602c69:ProjectViewProjectNode" />
@@ -456,7 +460,7 @@
       <window_info anchor="right" id="Database" order="3" />
       <window_info anchor="right" id="SciView" order="3" />
       <window_info id="Structure" order="1" sideWeight="0.50206894" side_tool="true" weight="0.16121212" />
-      <window_info anchor="bottom" id="Debug" order="3" visible="true" weight="0.22192867" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.22192867" />
       <window_info id="Favorites" order="2" sideWeight="0.50153375" side_tool="true" weight="0.1661085" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -734,7 +738,6 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/model/global_attention_modules.py" />
     <entry file="file://$PROJECT_DIR$/cluster_experiment_scripts/attngan_coco.sh" />
-    <entry file="file://$PROJECT_DIR$/options/train_options.py" />
     <entry file="file://$PROJECT_DIR$/cluster_experiment_scripts/attngan_birds.sh">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -785,13 +788,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/base/base_options.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="316">
-          <caret line="107" column="41" selection-start-line="107" selection-start-column="41" selection-end-line="107" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/utils/visualization.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="172">
@@ -804,8 +800,22 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/trainer/base_trainer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="40" column="36" selection-start-line="40" selection-start-column="36" selection-end-line="40" selection-end-column="36" />
+        <state relative-caret-position="200">
+          <caret line="41" lean-forward="true" selection-start-line="41" selection-end-line="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/base/base_options.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="176">
+          <caret line="113" column="86" selection-start-line="113" selection-start-column="84" selection-end-line="113" selection-end-column="86" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/options/train_options.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="254">
+          <caret line="14" column="98" selection-start-line="14" selection-start-column="98" selection-end-line="14" selection-end-column="98" />
         </state>
       </provider>
     </entry>
