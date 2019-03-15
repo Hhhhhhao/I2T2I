@@ -36,6 +36,8 @@ class COCOTextImageDataset(Dataset):
             @:param which_set (string): "train:, "valid", "test"
         """
 
+        if '/' not in data_dir:
+            data_dir += '/'
         self.data_dir = data_dir
         self.which_set = which_set
         assert self.which_set in {'train', 'val', 'test'}
