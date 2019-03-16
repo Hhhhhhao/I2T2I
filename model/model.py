@@ -146,93 +146,17 @@ class DecoderRNN(BaseModel):
         self.linear.bias.data.fill_(0)
         self.linear.weight.data.uniform_(-0.1, 0.1)
 
-    def forward(self, features, captions, caption_lengths):
+    def forward(self, states, captions, caption_lengths):
+        # states include features extracted from image and noise, also initial cell state
         self.lstm.flatten_parameters()
         # Embedding
         embeddings = self.embedding(captions)  # (batch_size, max_caption_length, embed_dim)
-        embeddings = torch.cat((features.unsqueeze(1), embeddings), 1)
-
+        # embeddings = torch.cat((features.unsqueeze(1), embeddings), 1)
         caption_lengths = caption_lengths.to("cpu").tolist()
-
         packed = pack_padded_sequence(embeddings, caption_lengths, batch_first=True)
-        hiddens, _ = self.lstm(packed)
+        hiddens, _ = self.lstm(packed, states)
         outputs = self.linear(hiddens[0])
         return outputs
-
-    def sample(self, features, states=None, max_len=20):
-        """Accept a pre-processed image tensor (inputs) and return predicted
-        sentence (list of tensor ids of length max_len). This is the greedy
-        search approach.
-        """
-        sampled_ids = []
-        inputs = features.unsqueeze(1)
-        for i in range(max_len):
-            hiddens, states = self.lstm(inputs, states) # (batch_size, 1, hidden_size)
-            outputs = self.linear(hiddens.squeeze(1))  # (batch_size, vocab_size)
-            # Get the index (in the vocabulary) of the most likely integer that
-            # represents a word
-            predicted = outputs.argmax(1)
-            sampled_ids.append(predicted.item())
-            inputs = self.embedding(predicted)
-            inputs = inputs.unsqueeze(1)
-        return sampled_ids
-
-    def sample_beam_search(self, features, max_len=20, beam_width=3, states=None):
-        """Accept a pre-processed image tensor and return the top predicted
-        sentences. This is the beam search approach.
-        """
-        # Top word idx sequences and their corresponding inputs and states
-        inputs = features.unsqueeze(1)
-        idx_sequences = [[[], 0.0, inputs, states]]
-        for _ in range(max_len):
-            # Store all the potential candidates at each step
-            all_candidates = []
-            # Predict the next word idx for each of the top sequences
-            for idx_seq in idx_sequences:
-                hiddens, states = self.lstm(idx_seq[2], idx_seq[3])
-                outputs = self.linear(hiddens.squeeze(1))
-                # Transform outputs to log probabilities to avoid floating-point
-                # underflow caused by multiplying very small probabilities
-                log_probs = F.log_softmax(outputs, -1)
-                top_log_probs, top_idx = log_probs.topk(beam_width, 1)
-                top_idx = top_idx.squeeze(0)
-                # create a new set of top sentences for next round
-                for i in range(beam_width):
-                    next_idx_seq, log_prob = idx_seq[0][:], idx_seq[1]
-                    next_idx_seq.append(top_idx[i].item())
-                    log_prob += top_log_probs[0][i].item()
-                    # Indexing 1-dimensional top_idx gives 0-dimensional tensors.
-                    # We have to expand dimensions before embedding them
-                    inputs = self.embedding(top_idx[i].unsqueeze(0)).unsqueeze(0)
-                    all_candidates.append([next_idx_seq, log_prob, inputs, states])
-            # Keep only the top sequences according to their total log probability
-            ordered = sorted(all_candidates, key=lambda x: x[1], reverse=True)
-            idx_sequences = ordered[:beam_width]
-        return [idx_seq[0] for idx_seq in idx_sequences]
-
-
-class ImageCaptionModel(BaseModel):
-    def __init__(self, image_embed_size, word_embed_size, lstm_hidden_size, vocab_size, lstm_num_layers=1):
-        super(ImageCaptionModel, self).__init__()
-        self.image_embed_size = image_embed_size
-        self.word_embed_size = word_embed_size
-        self.lstm_hidden_size = lstm_hidden_size
-        self.lstm_num_layers = lstm_num_layers
-        self.vocab_size = vocab_size
-
-        self.encoder = EncoderCNN(self.image_embed_size)
-        self.decoder = DecoderRNN(self.word_embed_size, self.lstm_hidden_size, self.vocab_size, self.lstm_num_layers)
-
-    def forward(self, images, captions, caption_lengths):
-        features = self.encoder(images)
-        outputs = self.decoder(features, captions, caption_lengths)
-        return outputs
-
-    def sample(self, features, max_len=20, states=None):
-        return self.decoder.sample(features, max_len, states)
-
-    def sample_beam_search(self, features, max_len=20, beam_width=5, states=None):
-        return self.decoder.sample_beam_search(features, max_len, beam_width, states)
 
 
 class ConditionalGenerator(BaseModel):
@@ -257,48 +181,33 @@ class ConditionalGenerator(BaseModel):
 
         # image feature encoder
         self.encoder = EncoderCNN(self.image_embed_size)
-        self.features_linear = nn.Linear(self.image_embed_size + noise_dim, self.image_embed_size)
+        self.features_linear = nn.Sequential(nn.Linear(self.image_embed_size + noise_dim, self.image_embed_size), nn.LeakyReLU(0.2))
         self.decoder = DecoderRNN(self.word_embed_size, self.lstm_hidden_size, self.vocab_size, self.lstm_num_layers)
         self.rollout = Rollout(max_sentence_length)
 
-        self.activation = nn.LeakyReLU(0.2)
-
-    def get_feature_linear_output(self, image_features):
+    def init_hidden(self, image_features):
+        # generate rand
         rand = self.distribution.sample((image_features.shape[0],))
+        rand = rand.to(device)
 
-        if torch.cuda.is_available():
-            rand = rand.cuda()
+        # hidden of shape (num_layers * num_directions, batch, hidden_size)
+        hidden = self.features_linear(torch.cat((image_features, rand), 1).unsqueeze(0))
+        hidden = hidden.to(device)
 
-        inputs = torch.cat((image_features, rand), 1)
-        features = self.features_linear(inputs)
-        features = self.activation(features)
+        # cell of shape (num_layers * num_directions, batch, hidden_size)
+        cell = Variable(torch.zeros(image_features.shape[0], self.image_embed_size).unsqueeze(0))
+        cell = cell.to(device)
 
-        if torch.cuda.is_available():
-            return features.cuda()
-        else:
-            return features
-
-    def init_states_from_features(self, features):
-        _, states = self.decoder.lstm(features)
-
-        if torch.cuda.is_available():
-            return (states[0].cuda(), states[1].cuda())
-        else:
-            return states
-
-    def caption_forward(self, images, captions, caption_lengths):
-        image_features = self.encoder(images)
-        features = self.activation(image_features)
-        outputs = self.decoder(features, captions, caption_lengths)
-        return image_features, outputs
+        return hidden, cell
 
     def forward(self, images, captions, caption_lengths):
         image_features = self.encoder(images)
-        features = self.get_feature_linear_output(image_features)
-        outputs = self.decoder(features, captions, caption_lengths)
-        return features, outputs
+        states = self.init_hidden(image_features)
+        outputs = self.decoder(states, captions, caption_lengths)
+        # return input featuers to LSTM and outputs from LSTM
+        return image_features, states[0], outputs
 
-    def reward_forward(self, images, evaluator, monte_carlo_count=18):
+    def reward_forward(self, image_features, evaluator, monte_carlo_count=18):
         '''
 
         :param image: image features from image encoder linear layer
@@ -307,28 +216,19 @@ class ConditionalGenerator(BaseModel):
         :return:
         '''
         self.decoder.lstm.flatten_parameters()
-        batch_size = images.size(0)
-        image_features = self.encoder(images)
+        batch_size = image_features.size(0)
+        states = self.init_hidden(image_features)
 
-        features = self.get_feature_linear_output(image_features)
-        # initialize hiddens states of lstm
-        states = self.init_states_from_features(features.unsqueeze(1))
         # initialize inputs of start symbol
         inputs = torch.zeros((batch_size, 1)).long()
-        current_generated_captions = torch.LongTensor(inputs)
+        inputs = inputs.to(device)
+        current_generated_captions = inputs
         rewards = torch.zeros(batch_size, self.max_sentence_length)
+        rewards = rewards.to(device)
         props = torch.zeros(batch_size, self.max_sentence_length)
-
-        if torch.cuda.is_available():
-            inputs = inputs.cuda()
-            rewards = rewards.cuda()
-            props = props.cuda()
-            current_generated_captions.cuda()
+        props = props.to(device)
 
         inputs = self.decoder.embedding(inputs)
-
-        if torch.cuda.is_available():
-            inputs = inputs.cuda()
 
         self.rollout.update(self)
 
@@ -356,52 +256,117 @@ class ConditionalGenerator(BaseModel):
             current_generated_captions = torch.cat([current_generated_captions, predicted.cpu()], dim=1)
             inputs = self.decoder.embedding(predicted)
 
-            reward = self.rollout.reward(images, current_generated_captions, states, monte_carlo_count, evaluator)
+            reward = self.rollout.reward(image_features, current_generated_captions, states, monte_carlo_count, evaluator)
             rewards[:, i] = reward.view(-1)
         return rewards, props
 
-    def sample(self, features, states=None):
-        return self.decoder.sample(features, states, self.max_sentence_length)
+    def feature_to_text(self, features, max_len=20):
+        generated_captions = []
+        inputs = features.permute(1, 0, 2)
+        for input in inputs:
+            generated_captions.append(self.sample(input.unsqueeze(0), states=None, max_len=max_len))
+        return generated_captions
 
-    def sample_beam_search(self, features, beam_width=3, states=None):
-        return self.decoder.sample_beam_search(features, self.max_sentence_length, beam_width, states)
+    def sample(self, features, states=None, max_len=20):
+        """Accept a pre-processed image tensor (inputs) and return predicted
+        sentence (list of tensor ids of length max_len). This is the greedy
+        search approach.
+        """
+        sampled_ids = []
+        inputs = features
+        for i in range(max_len):
+            hiddens, states = self.decoder.lstm(inputs, states) # (batch_size, 1, hidden_size)
+            outputs = self.decoder.linear(hiddens.squeeze(1))  # (batch_size, vocab_size)
+            # Get the index (in the vocabulary) of the most likely integer that
+            # represents a word
+            predicted = outputs.argmax(1)
+            sampled_ids.append(predicted.item())
+            inputs = self.decoder.embedding(predicted)
+            inputs = inputs.unsqueeze(1)
+        return sampled_ids
+
+    def sample_beam_search(self, features, max_len=20, beam_width=3, states=None):
+        """Accept a pre-processed image tensor and return the top predicted
+        sentences. This is the beam search approach.
+        """
+        # Top word idx sequences and their corresponding inputs and states
+        inputs = features.transpose(1, 0, 2)
+        idx_sequences = [[[], 0.0, inputs, states]]
+        for _ in range(max_len):
+            # Store all the potential candidates at each step
+            all_candidates = []
+            # Predict the next word idx for each of the top sequences
+            for idx_seq in idx_sequences:
+                hiddens, states = self.decoder.lstm(idx_seq[2], idx_seq[3])
+                outputs = self.decoder.linear(hiddens.squeeze(1))
+                # Transform outputs to log probabilities to avoid floating-point
+                # underflow caused by multiplying very small probabilities
+                log_probs = F.log_softmax(outputs, -1)
+                top_log_probs, top_idx = log_probs.topk(beam_width, 1)
+                top_idx = top_idx.squeeze(0)
+                # create a new set of top sentences for next round
+                for i in range(beam_width):
+                    next_idx_seq, log_prob = idx_seq[0][:], idx_seq[1]
+                    next_idx_seq.append(top_idx[i].item())
+                    log_prob += top_log_probs[0][i].item()
+                    # Indexing 1-dimensional top_idx gives 0-dimensional tensors.
+                    # We have to expand dimensions before embedding them
+                    inputs = self.decoder.embedding(top_idx[i].unsqueeze(0)).unsqueeze(0)
+                    all_candidates.append([next_idx_seq, log_prob, inputs, states])
+            # Keep only the top sequences according to their total log probability
+            ordered = sorted(all_candidates, key=lambda x: x[1], reverse=True)
+            idx_sequences = ordered[:beam_width]
+        return [idx_seq[0] for idx_seq in idx_sequences]
 
 
 class Evaluator(BaseModel):
     def __init__(self,
                  word_embed_size=512,
-                 image_embed_size=512,
                  sentence_embed_size=512,
                  lstm_hidden_size=1024,
                  vocab_size=100000,
                  lstm_num_layers=1):
         super(Evaluator, self).__init__()
-        self.image_embed_size = image_embed_size
-        self.sentence_embed_size = sentence_embed_size
         self.word_embed_size = word_embed_size
         self.lstm_hidden_size = lstm_hidden_size
         self.vocab_size = vocab_size
-        self.lstm_num_layers = lstm_num_layers
+        self.sentence_embed_size = sentence_embed_size
 
-        # image encoder
-        self.image_encoder = EncoderCNN(self.image_embed_size)
-        self.sentence_encoder = EncoderRNN(self.word_embed_size,
-                                           self.sentence_embed_size,
-                                           self.lstm_hidden_size,
-                                           self.vocab_size,
-                                           self.lstm_num_layers)
+        self.embedding = nn.Embedding(vocab_size, self.word_embed_size)  # embedding layer
+        self.lstm = nn.LSTM(self.word_embed_size, self.lstm_hidden_size, num_layers=lstm_num_layers, bias=True, batch_first=True)
+        self.linear = nn.Linear(lstm_hidden_size, sentence_embed_size)  # linear layer to find scores over vocabulary
+        self.init_weights()
         self.sigmoid = nn.Sigmoid()
-        self.linear = nn.Linear(1, 1, bias=False)
 
-    def forward(self, images, captions, caption_lengths):
+    def init_weights(self):
+        """
+        Initializes some parameters with values from the uniform distribution, for easier convergence.
+        """
+        self.embedding.weight.data.uniform_(-0.1, 0.1)
+        self.linear.bias.data.fill_(0)
+        self.linear.weight.data.uniform_(-0.1, 0.1)
+
+    def forward(self, image_features, captions, caption_lengths):
         """ Calculate reward score: r = logistic(dot_prod(f, h))"""
-        image_features = self.image_encoder(images)
-
         if image_features.size(0) != captions.size(0):
             monte_carlo_count = int(captions.size(0) / image_features.size(0))
             image_features = image_features.repeat(monte_carlo_count, 1)
 
-        sentence_features = self.sentence_encoder(captions, caption_lengths)
+        # get sentence features
+        self.lstm.flatten_parameters()
+        # Embedding
+        embeddings = self.embedding(captions)  # (batch_size, max_caption_length, embed_dim)
+        caption_lengths = caption_lengths.to("cpu").tolist()
+        total_length = captions.size(1)
+        packed = pack_padded_sequence(embeddings, caption_lengths, batch_first=True)
+        hiddens, _ = self.lstm(packed)
+        # print("hiddens shape {}".format(hiddens[0].shape))
+        padded = pad_packed_sequence(hiddens, batch_first=True, total_length=total_length)
+        last_padded_indices = [index-1 for index in padded[1]]
+        hidden_outputs = padded[0][range(captions.size(0)), last_padded_indices, :]
+        # print("hidden_outputs shape:{}".format(hidden_outputs.shape))
+        sentence_features = self.linear(hidden_outputs)
+
         dot_product = torch.bmm(image_features.unsqueeze(1), sentence_features.unsqueeze(1).transpose(2,1))
         dot_product = dot_product.unsqueeze(-1)
         # similarity = self.linear(dot_product)
@@ -447,7 +412,6 @@ if __name__ == '__main__':
 
     discriminator = Evaluator(
         word_embed_size=512,
-        image_embed_size=512,
         sentence_embed_size=512,
         lstm_hidden_size=1024,
         vocab_size=len(data_loader.dataset.vocab))

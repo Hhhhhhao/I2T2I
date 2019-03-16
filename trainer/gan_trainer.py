@@ -62,7 +62,7 @@ class Trainer(BaseGANTrainer):
             batch_caption_lengths = data["right_caption_lengths"].to(self.device)
 
             self.generator_optimizer.zero_grad()
-            _, outputs = self.generator.module.caption_forward(batch_images, batch_captions, batch_caption_lengths)
+            _, _, outputs = self.generator(batch_images, batch_captions, batch_caption_lengths)
             targets = pack_padded_sequence(batch_captions, batch_caption_lengths, batch_first=True)[0]
             loss = self.losses["Generator_CrossEntropyLoss"](outputs, targets)
             loss.backward()
@@ -87,7 +87,6 @@ class Trainer(BaseGANTrainer):
             'Generator_CrossEntropyLoss': total_loss / len(self.train_data_loader),
             'metrics': (total_metrics / len(self.train_data_loader)).tolist()
         }
-
         return log
 
     def _train_discriminator_epoch(self, epoch):
@@ -103,8 +102,7 @@ class Trainer(BaseGANTrainer):
                 > return log
             The metrics in log must have the key 'metrics'.
         """
-        for p in self.generator.parameters():
-            p.requires_grad = False
+        self.generator.eval()
         self.discriminator.train()
         total_loss = 0
         total_metrics = np.zeros(len(self.metrics))
@@ -116,22 +114,19 @@ class Trainer(BaseGANTrainer):
             other_caption_lengths = data["wrong_caption_lengths"].to(self.device)
 
             # use generator to generator image features and captions (one-hot)
-            image_features, generator_outputs = self.generator(batch_images, batch_captions, batch_caption_lengths)
-            generator_captions = []
-            for image_feature in image_features:
-                generator_captions.append(self.generator.module.sample(image_feature.unsqueeze(0)))
+            image_features, features, generator_outputs = self.generator(batch_images, batch_captions, batch_caption_lengths)
+            generator_captions = self.generator.module.feature_to_text(features)
             generator_captions, generator_caption_lengths = get_caption_lengths(generator_captions)
             generator_captions.to(self.device)
             generator_caption_lengths.to(self.device)
 
             self.discriminator_optimizer.zero_grad()
-            evaluator_scores = self.discriminator(batch_images, batch_captions, batch_caption_lengths)
-            generator_scores = self.discriminator(batch_images, generator_captions, generator_caption_lengths)
-            other_scores = self.discriminator(batch_images, other_captions, other_caption_lengths)
-
+            evaluator_scores = self.discriminator(image_features.detach(), batch_captions, batch_caption_lengths)
+            generator_scores = self.discriminator(image_features.detach(), generator_captions, generator_caption_lengths)
+            other_scores = self.discriminator(image_features.detach(), other_captions, other_caption_lengths)
             loss = self.losses["Discriminator_Loss"](evaluator_scores, generator_scores, other_scores)
             loss.backward()
-            self.generator_optimizer.step()
+            self.discriminator_optimizer.step()
 
             self.writer.set_step((epoch - 1) * len(self.train_data_loader) + batch_idx)
             self.writer.add_scalar('Evaluator_Loss', loss.item())
@@ -191,42 +186,35 @@ class Trainer(BaseGANTrainer):
             other_captions = data["wrong_captions"].to(self.device)
             other_caption_lengths = data["wrong_caption_lengths"].to(self.device)
 
-            # train the generator first
-            for p in self.generator.parameters():
-                p.requires_grad = True
-            for p in self.discriminator.parameters():
-                p.requires_grad = False
-            self.generator_optimizer.zero_grad()
-
-            image_features, outputs = self.generator(batch_images, batch_captions, batch_caption_lengths)
-            targets = pack_padded_sequence(batch_captions, batch_caption_lengths, batch_first=True)[0]
-            generator_cce_loss = self.losses["Generator_CrossEntropyLoss"](outputs, targets)
-
-            rewards, props = self.generator.module.reward_forward(batch_images, self.discriminator, monte_carlo_count=16)
-            generator_rl_loss = self.losses["Generator_RLLoss"](rewards, props)
-            generator_loss = self.lambda_1 * generator_cce_loss + self.lambda_2 * generator_rl_loss
-            generator_loss.backward()
-            self.generator_optimizer.step()
-
-            # train the discriminator
-            for p in self.generator.parameters():
-                p.requires_grad = False
+            # train the discriminator first
             for p in self.discriminator.parameters():
                 p.requires_grad = True
-            self.discriminator_optimizer.zero_grad()
-            generator_captions = []
-            for image_feature in image_features:
-                generator_captions.append(self.generator.module.sample(image_feature.unsqueeze(0)))
+
+            # forward
+            image_features, features, outputs = self.generator(batch_images, batch_captions, batch_caption_lengths)
+            generator_captions = self.generator.module.feature_to_text(features)
             generator_captions, generator_caption_lengths = get_caption_lengths(generator_captions)
             generator_captions.to(self.device)
             generator_caption_lengths.to(self.device)
 
-            evaluator_scores = self.discriminator(batch_images, batch_captions, batch_caption_lengths)
-            generator_scores = self.discriminator(batch_images, generator_captions, generator_caption_lengths)
-            other_scores = self.discriminator(batch_images, other_captions, other_caption_lengths)
+            # D backward
+            self.discriminator_optimizer.zero_grad()
+            evaluator_scores = self.discriminator(image_features.detach(), batch_captions, batch_caption_lengths)
+            generator_scores = self.discriminator(image_features.detach(), generator_captions, generator_caption_lengths)
+            other_scores = self.discriminator(image_features.detach(), other_captions, other_caption_lengths)
             discriminator_loss = self.losses["Discriminator_Loss"](evaluator_scores, generator_scores, other_scores)
             discriminator_loss.backward()
             self.discriminator_optimizer.step()
+
+            # G backward
+            self.generator_optimizer.zero_grad()
+            targets = pack_padded_sequence(batch_captions, batch_caption_lengths, batch_first=True)[0]
+            generator_cce_loss = self.losses["Generator_CrossEntropyLoss"](outputs, targets)
+            rewards, props = self.generator.module.reward_forward(image_features, self.discriminator, monte_carlo_count=16)
+            generator_rl_loss = self.losses["Generator_RLLoss"](rewards, props)
+            generator_loss = self.lambda_1 * generator_cce_loss + self.lambda_2 * generator_rl_loss
+            generator_loss.backward()
+            self.generator_optimizer.step()
 
             self.writer.set_step((epoch - 1) * len(self.train_data_loader) + batch_idx)
             self.writer.add_scalar('Generator_Total_Loss', generator_loss.item())
@@ -266,8 +254,9 @@ class Trainer(BaseGANTrainer):
         self.predict(self.valid_data_loader, epoch)
 
         if self.do_validation:
-            val_log = self._valid_epoch(epoch)
-            log = {**log, **val_log}
+            pass
+            # val_log = self._valid_epoch(epoch)
+            # log = {**log, **val_log}
 
         return log
 
@@ -348,11 +337,8 @@ class Trainer(BaseGANTrainer):
             if not os.path.exists('{0}/results/{1}_{2}'.format(self.checkpoint_dir, name, epoch)):
                 os.makedirs('{0}/results/{1}_{2}'.format(self.checkpoint_dir, name, epoch))
 
-            image_features, outputs = self.generator(batch_images, batch_captions, batch_caption_lengths)
-            generator_captions = []
-            for image_feature in image_features:
-                generator_captions.append(
-                    self.generator.module.sample(image_feature.unsqueeze(0)))
+            image_features, features, outputs = self.generator(batch_images, batch_captions, batch_caption_lengths)
+            generator_captions = self.generator.module.feature_to_text(features)
 
             for generated_caption, image in zip(generator_captions, batch_images):
                 generated_sentence = convert_back_to_text(generated_caption, self.train_data_loader.dataset.vocab)

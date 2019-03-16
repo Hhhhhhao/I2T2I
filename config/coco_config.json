@@ -9,7 +9,7 @@
             "args":{
                 "image_embed_size": 512,
                 "word_embed_size": 512,
-                "lstm_hidden_size":1024,
+                "lstm_hidden_size":512,
                 "noise_dim":100,
                 "vocab_size":11502,
                 "lstm_num_layers":1,
@@ -27,10 +27,9 @@
             "type": "Evaluator",
             "pretrain_path": "random",
             "args": {
-                "image_embed_size": 512,
                 "word_embed_size": 512,
                 "sentence_embed_size": 512,
-                "lstm_hidden_size": 1024,
+                "lstm_hidden_size": 512,
                 "vocab_size": 11502,
                 "lstm_num_layers": 1
             },
@@ -68,7 +67,7 @@
     "metrics": [],
     "trainer": {
         "epochs": 50,
-        "pretrain_generator_epochs":0,
+        "pretrain_generator_epochs":1,
         "pretrain_discriminator_epochs":1,
         "lambda_1": 0.0,
         "lambda_2": 1.0,
