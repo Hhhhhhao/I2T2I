@@ -31,7 +31,7 @@
                 "word_embed_size": 512,
                 "sentence_embed_size": 512,
                 "lstm_hidden_size": 1024,
-                "vocab_size": 1044,
+                "vocab_size": 11502,
                 "lstm_num_layers": 1
             },
             "optimizer":{
@@ -68,7 +68,7 @@
     "metrics": [],
     "trainer": {
         "epochs": 50,
-        "pretrain_generator_epochs":1,
+        "pretrain_generator_epochs":0,
         "pretrain_discriminator_epochs":1,
         "lambda_1": 0.0,
         "lambda_2": 1.0,
