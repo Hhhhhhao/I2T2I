@@ -11,9 +11,10 @@ from matplotlib import pyplot as plt
 
 dirname = os.path.dirname(__file__)
 main_dirname = os.path.dirname(dirname)
-birds_damsm = os.path.join(main_dirname, 'output/Deep-Attentional-Multimodal-Similarity-Birds/0313_164150/model_best.pth')
-flowers_damsm = os.path.join(main_dirname, 'output/Deep-Attentional-Multimodal-Similarity-Flowers/0311_235759/model_best.pth')
-coco_damsm = os.path.join(main_dirname, 'output/Deep-Attentional-Multimodal-Similarity-CoCo/0226_180051/model_best.pth')
+birds_damsm = os.path.join(main_dirname, 'output/Deep-Attentional-Multimodal-Similarity-Birds/0315_235622/model_best.pth')
+flowers_damsm = os.path.join(main_dirname, 'output/Deep-Attentional-Multimodal-Similarity-Flowers/0316_120632/model_best.pth')
+coco_damsm = os.path.join(main_dirname, 'output/Deep-Attentional-Multimodal-Similarity-CoCo/0313_161600/model_best.pth')
+
 
 
 class Trainer(BaseGANTrainer):
