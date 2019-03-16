@@ -391,6 +391,7 @@ class Evaluator(BaseModel):
                                            self.vocab_size,
                                            self.lstm_num_layers)
         self.sigmoid = nn.Sigmoid()
+        self.linear = nn.Linear(1, 1, bias=False)
 
     def forward(self, images, captions, caption_lengths):
         """ Calculate reward score: r = logistic(dot_prod(f, h))"""
@@ -402,8 +403,11 @@ class Evaluator(BaseModel):
 
         sentence_features = self.sentence_encoder(captions, caption_lengths)
         dot_product = torch.bmm(image_features.unsqueeze(1), sentence_features.unsqueeze(1).transpose(2,1))
+        dot_product = dot_product.unsqueeze(-1)
+        # similarity = self.linear(dot_product)
         similarity = self.sigmoid(dot_product)
-        similarity = similarity.squeeze(-1)
+
+        # similarity = similarity
         return similarity
 
 

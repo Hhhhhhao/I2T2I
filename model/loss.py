@@ -17,7 +17,7 @@ class RLLoss(torch.nn.Module):
         self.eps = eps
 
     def forward(self, rewards, props):
-        loss = rewards * torch.log(torch.clamp(props, min=self.eps, max=1.0))
+        loss = rewards * props # torch.log(torch.clamp(props, min=self.eps, max=1.0))
         # loss = rewards * props
         loss = -torch.mean(loss)
         return loss
@@ -30,6 +30,7 @@ class EvaluatorLoss(torch.nn.Module):
         self.alpha = alpha
         self.beta = beta
         self.loss = torch.nn.BCELoss()
+        # self.loss = torch.nn.MSELoss()
         n_gpu = torch.cuda.device_count()
         self.device = torch.device('cuda:0' if n_gpu > 0 else 'cpu')
 
