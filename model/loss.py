@@ -17,8 +17,8 @@ class RLLoss(torch.nn.Module):
         self.eps = eps
 
     def forward(self, rewards, props):
-        loss = rewards * props # torch.log(torch.clamp(props, min=self.eps, max=1.0))
-        # loss = rewards * props
+        # loss = rewards * torch.log(torch.clamp(props, min=self.eps, max=1.0))
+        loss = rewards * props
         loss = -torch.mean(loss)
         return loss
 
