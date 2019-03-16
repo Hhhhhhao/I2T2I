@@ -8,9 +8,9 @@ from model.damsm_modules import DAMSM_RNN_Encoder, DAMSM_CNN_Encoder
 
 dirname = os.path.dirname(__file__)
 main_dirname = os.path.dirname(dirname)
-birds_damsm = os.path.join(main_dirname, 'output/Deep-Attentional-Multimodal-Similarity-Birds/0313_164150/model_best.pth')
-flowers_damsm = os.path.join(main_dirname, 'output/Deep-Attentional-Multimodal-Similarity-Flowers/0311_235759/model_best.pth')
-coco_damsm = os.path.join(main_dirname, 'output/Deep-Attentional-Multimodal-Similarity-CoCo/0226_180051/model_best.pth')
+birds_damsm = os.path.join(main_dirname, 'output/Deep-Attentional-Multimodal-Similarity-Birds/0315_235622/model_best.pth')
+flowers_damsm = os.path.join(main_dirname, 'output/Deep-Attentional-Multimodal-Similarity-Flowers/0316_120632/model_best.pth')
+coco_damsm = os.path.join(main_dirname, 'output/Deep-Attentional-Multimodal-Similarity-CoCo/0313_161600/model_best.pth')
 
 
 ###############################################################################
@@ -41,6 +41,7 @@ def get_scheduler(optimizer, opt):
     else:
         return NotImplementedError('learning rate policy [%s] is not implemented', opt.lr_policy)
     return scheduler
+
 
 def init_weights(net, init_type='normal', init_gain=0.02):
     """Initialize network weights.
@@ -118,7 +119,7 @@ def define_G(opt, init_type='normal', init_gain=0.02, gpu_ids=[]):
     elif opt.netG == 'synthesis':
         net = G_NET(opt)
     else:
-        raise NotImplementedError('Generator model name [%s] is not recognized' % netG)
+        raise NotImplementedError('Generator model name [%s] is not recognized' % opt.netG)
 
     return init_net(net, init_type, init_gain, gpu_ids)
 

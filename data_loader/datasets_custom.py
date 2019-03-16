@@ -78,13 +78,13 @@ class COCOTextImageDataset(Dataset):
         right_image_path = self.coco.loadImgs(right_img_id)[0]["file_name"]
         class_id = self.classes[right_img_id]
         # TODO use DAMSM model to get embedding
-        right_embed = 0
+        right_embed = [0]
 
         wrong_img_id = self.find_wrong_img_id(right_img_id)
         wrong_txt = str(np.array(self.find_wrond_txt(right_img_id)))
         wrong_image_path = self.coco.loadImgs(wrong_img_id)[0]["file_name"]
         # TODO use DAMSM model to get embedding
-        wrong_embed = 0
+        wrong_embed = [0]
 
         # Processing images
         right_image = Image.open(os.path.join(self.data_dir + 'images/{}/'.format(self.which_set), right_image_path))
