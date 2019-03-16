@@ -28,16 +28,19 @@ class EvaluatorLoss(torch.nn.Module):
         super().__init__()
         self.alpha = alpha
         self.beta = beta
+        self.loss = torch.nn.CrossEntropyLoss()
 
     def forward(self, evaluator_outputs, generator_outputs, other_outputs):
-        generator_outputs = 1 - generator_outputs
-        other_outputs = 1 - other_outputs
-        temp = 1e-5
-        evaluator_outputs = evaluator_outputs.clamp(min=temp)
-        generator_outputs = generator_outputs.clamp(min=temp)
-        other_outputs = other_outputs.clamp(min=temp)
-        t1, t2, t3 = torch.log(evaluator_outputs), self.alpha * torch.log(generator_outputs), self.beta * torch.log(
-            other_outputs)
-        result = t1 + t2 + t3
-        result = -result
-        return result.mean()
+        batch_size = evaluator_outputs.size(0)
+        true_labels = torch.ones((batch_size, 1)).long()
+        fake_labels = torch.zeros((batch_size, 1)).long()
+
+        if torch.cuda.is_available():
+            true_labels = true_labels.cuda()
+            fake_labels = fake_labels.cuda()
+
+        true_loss = self.loss(evaluator_outputs, true_labels)
+        fake_loss = self.loss(generator_outputs, fake_labels)
+        other_loss = self.loss(other_outputs, fake_labels)
+        loss = true_loss + self.alpha * fake_loss + self.beta * other_loss
+        return loss

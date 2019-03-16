@@ -402,15 +402,7 @@ class Evaluator(BaseModel):
 
         sentence_features = self.sentence_encoder(captions, caption_lengths)
         dot_product = torch.bmm(image_features.unsqueeze(1), sentence_features.unsqueeze(1).transpose(2,1)).squeeze()
-        return self.sigmoid(dot_product)
-
-    def freeze(self):
-        for param in self.parameters():
-            param.requires_grad = False
-
-    def unfreeze(self):
-        for param in self.parameters():
-            param.requires_grad = True
+        return self.sigmoid(dot_product).unsqueeze(1)
 
 
 if __name__ == '__main__':
