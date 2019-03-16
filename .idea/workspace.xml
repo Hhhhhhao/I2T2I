@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b3134c42-5a5c-4eae-8274-2ca6fc32ab15" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/trainer/gan_trainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/trainer/gan_trainer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/loss.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/loss.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -40,20 +40,20 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="loss.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="loss.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/model/loss.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-10">
-              <caret line="11" selection-start-line="11" selection-end-line="11" />
+            <state relative-caret-position="356">
+              <caret line="22" column="8" selection-start-line="22" selection-start-column="8" selection-end-line="22" selection-end-column="8" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="model.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="model.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/model/model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="348">
-              <caret line="283" selection-start-line="283" selection-end-line="283" />
+            <state relative-caret-position="468">
+              <caret line="289" column="52" lean-forward="true" selection-start-line="289" selection-start-column="52" selection-end-line="289" selection-end-column="52" />
             </state>
           </provider>
         </entry>
@@ -182,8 +182,8 @@
         <option value="$PROJECT_DIR$/model/model.py" />
         <option value="$PROJECT_DIR$/config/coco_config.json" />
         <option value="$PROJECT_DIR$/config/birds_config.json" />
-        <option value="$PROJECT_DIR$/model/loss.py" />
         <option value="$PROJECT_DIR$/trainer/gan_trainer.py" />
+        <option value="$PROJECT_DIR$/model/loss.py" />
       </list>
     </option>
   </component>
@@ -426,12 +426,12 @@
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Python Console" order="7" />
       <window_info anchor="bottom" id="Terminal" order="7" weight="0.17833553" />
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4983108" visible="true" weight="0.24024284" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4983108" visible="true" weight="0.24024284" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="right" id="Database" order="3" />
       <window_info anchor="right" id="SciView" order="3" />
       <window_info id="Structure" order="1" sideWeight="0.5016892" side_tool="true" weight="0.21273032" />
-      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.17609392" />
+      <window_info anchor="bottom" id="Debug" order="3" visible="true" weight="0.17609392" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -692,13 +692,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/config/flowers_config.json" />
-    <entry file="file://$PROJECT_DIR$/model/loss.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-10">
-          <caret line="11" selection-start-line="11" selection-end-line="11" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/config/birds_config.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-890" />
@@ -720,8 +713,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/model/model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="348">
-          <caret line="283" selection-start-line="283" selection-end-line="283" />
+        <state relative-caret-position="468">
+          <caret line="289" column="52" lean-forward="true" selection-start-line="289" selection-start-column="52" selection-end-line="289" selection-end-column="52" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model/loss.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="356">
+          <caret line="22" column="8" selection-start-line="22" selection-start-column="8" selection-end-line="22" selection-end-column="8" />
         </state>
       </provider>
     </entry>
