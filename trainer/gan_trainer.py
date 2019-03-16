@@ -128,6 +128,7 @@ class Trainer(BaseGANTrainer):
             evaluator_scores = self.discriminator(batch_images, batch_captions, batch_caption_lengths)
             generator_scores = self.discriminator(batch_images, generator_captions, generator_caption_lengths)
             other_scores = self.discriminator(batch_images, other_captions, other_caption_lengths)
+
             loss = self.losses["Discriminator_Loss"](evaluator_scores, generator_scores, other_scores)
             loss.backward()
             self.generator_optimizer.step()

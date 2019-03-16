@@ -2,8 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b3134c42-5a5c-4eae-8274-2ca6fc32ab15" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/coco_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/coco_config.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/model/loss.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/loss.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/model/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/trainer/gan_trainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/trainer/gan_trainer.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -19,14 +22,14 @@
     <SUITE FILE_PATH="coverage/I2T2I$datasets_custom.coverage" NAME="datasets_custom Coverage Results" MODIFIED="1550833709628" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/data_loader" />
     <SUITE FILE_PATH="coverage/I2T2I$data_loaders.coverage" NAME="data_loaders Coverage Results" MODIFIED="1550146192524" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/data_loader" />
     <SUITE FILE_PATH="coverage/I2T2I$model.coverage" NAME="model Coverage Results" MODIFIED="1550835916526" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/model" />
-    <SUITE FILE_PATH="coverage/I2T2I$gan_train.coverage" NAME="gan_train Coverage Results" MODIFIED="1552734782119" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/I2T2I$gan_train.coverage" NAME="gan_train Coverage Results" MODIFIED="1552737515866" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file leaf-file-name="train.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/train.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="20">
+            <state relative-caret-position="-333">
               <caret line="28" column="47" selection-start-line="28" selection-start-column="47" selection-end-line="28" selection-end-column="47" />
             </state>
           </provider>
@@ -41,20 +44,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="gan_train.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/gan_train.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-493">
-              <caret line="42" column="35" selection-start-line="42" selection-start-column="35" selection-end-line="42" selection-end-column="35" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="coco_config.json" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/config/coco_config.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-488">
-              <caret line="23" column="13" selection-start-line="23" selection-start-column="13" selection-end-line="23" selection-end-column="13" />
+            <state relative-caret-position="357">
+              <caret line="70" column="37" selection-start-line="70" selection-start-column="37" selection-end-line="70" selection-end-column="37" />
             </state>
           </provider>
         </entry>
@@ -62,17 +56,8 @@
       <file leaf-file-name="model.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/model/model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="514">
+            <state relative-caret-position="468">
               <caret line="404" selection-start-line="404" selection-end-line="404" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="rollout.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/model/rollout.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1160">
-              <caret line="62" column="49" selection-start-line="62" selection-start-column="43" selection-end-line="62" selection-end-column="49" />
             </state>
           </provider>
         </entry>
@@ -86,11 +71,39 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="loss.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="loss.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/model/loss.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="494">
-              <caret line="38" column="26" selection-start-line="38" selection-start-column="26" selection-end-line="38" selection-end-column="26" />
+            <state relative-caret-position="527">
+              <caret line="46" selection-start-line="46" selection-end-line="46" />
+              <folding>
+                <element signature="e#0#12#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="base_trainer.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/base/base_trainer.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="490">
+              <caret line="79" column="8" selection-start-line="79" selection-start-column="8" selection-end-line="79" selection-end-column="67" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="flowers_config.json" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/config/flowers_config.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1133" />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="birds_config.json" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/config/birds_config.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="287">
+              <caret line="71" column="37" selection-start-line="71" selection-start-column="37" selection-end-line="71" selection-end-column="37" />
             </state>
           </provider>
         </entry>
@@ -98,8 +111,8 @@
       <file leaf-file-name="gan_trainer.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/trainer/gan_trainer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="302">
-              <caret line="130" selection-start-line="130" selection-end-line="130" />
+            <state relative-caret-position="322">
+              <caret line="131" selection-start-line="131" selection-end-line="131" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -191,14 +204,14 @@
         <option value="$PROJECT_DIR$/data_loader/data_loaders.py" />
         <option value="$PROJECT_DIR$/base/base_gan_trainer.py" />
         <option value="$PROJECT_DIR$/data_loader/datasets_custom.py" />
-        <option value="$PROJECT_DIR$/trainer/gan_trainer.py" />
         <option value="$PROJECT_DIR$/train.py" />
         <option value="$PROJECT_DIR$/config/birds_config.json" />
         <option value="$PROJECT_DIR$/config/flowers_config.json" />
         <option value="$PROJECT_DIR$/gan_train.py" />
-        <option value="$PROJECT_DIR$/config/coco_config.json" />
         <option value="$PROJECT_DIR$/model/model.py" />
+        <option value="$PROJECT_DIR$/trainer/gan_trainer.py" />
         <option value="$PROJECT_DIR$/model/loss.py" />
+        <option value="$PROJECT_DIR$/config/coco_config.json" />
       </list>
     </option>
   </component>
@@ -211,7 +224,7 @@
   <component name="NodePackageJsonFileManager">
     <packageJsonPaths />
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="1">
     <option name="x" value="1494" />
     <option name="y" value="-157" />
     <option name="width" value="1572" />
@@ -441,12 +454,12 @@
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Python Console" order="7" />
       <window_info anchor="bottom" id="Terminal" order="7" weight="0.17833553" />
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4983108" visible="true" weight="0.17385621" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4983108" visible="true" weight="0.17385621" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="right" id="Database" order="3" />
       <window_info anchor="right" id="SciView" order="3" />
       <window_info id="Structure" order="1" sideWeight="0.5016892" side_tool="true" weight="0.21273032" />
-      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.18771331" />
+      <window_info anchor="bottom" id="Debug" order="3" visible="true" weight="0.18771331" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -491,103 +504,73 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/trainer/gan_trainer.py</url>
-          <line>300</line>
+          <line>301</line>
           <option name="timeStamp" value="274" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/trainer/gan_trainer.py</url>
-          <line>305</line>
+          <line>306</line>
           <option name="timeStamp" value="275" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/trainer/gan_trainer.py</url>
-          <line>319</line>
+          <line>320</line>
           <option name="timeStamp" value="276" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/trainer/gan_trainer.py</url>
-          <line>360</line>
+          <line>361</line>
           <option name="timeStamp" value="279" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/trainer/gan_trainer.py</url>
-          <line>317</line>
+          <line>318</line>
           <option name="timeStamp" value="281" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/trainer/gan_trainer.py</url>
-          <line>345</line>
+          <line>346</line>
           <option name="timeStamp" value="282" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/trainer/gan_trainer.py</url>
-          <line>307</line>
+          <line>308</line>
           <option name="timeStamp" value="324" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/trainer/gan_trainer.py</url>
-          <line>126</line>
-          <option name="timeStamp" value="354" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/trainer/gan_trainer.py</url>
-          <line>127</line>
-          <option name="timeStamp" value="355" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/trainer/gan_trainer.py</url>
-          <line>128</line>
-          <option name="timeStamp" value="356" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/trainer/gan_trainer.py</url>
-          <line>129</line>
-          <option name="timeStamp" value="357" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/trainer/gan_trainer.py</url>
-          <line>130</line>
+          <line>131</line>
           <option name="timeStamp" value="358" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/model/loss.py</url>
-          <line>35</line>
+          <line>38</line>
           <option name="timeStamp" value="365" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/model/loss.py</url>
-          <line>43</line>
+          <line>44</line>
           <option name="timeStamp" value="366" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/model/loss.py</url>
-          <line>41</line>
+          <line>42</line>
           <option name="timeStamp" value="367" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/model/loss.py</url>
-          <line>42</line>
+          <line>43</line>
           <option name="timeStamp" value="368" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/model/loss.py</url>
-          <line>44</line>
+          <line>45</line>
           <option name="timeStamp" value="369" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/model/loss.py</url>
-          <line>45</line>
+          <line>46</line>
           <option name="timeStamp" value="370" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/model/model.py</url>
-          <line>403</line>
-          <option name="timeStamp" value="371" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/model/model.py</url>
-          <line>404</line>
-          <option name="timeStamp" value="372" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
@@ -600,7 +583,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="373" />
+      <option name="time" value="377" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
@@ -750,35 +733,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/base/base_trainer.py" />
     <entry file="file://$PROJECT_DIR$/base/base_gan_trainer.py" />
     <entry file="file://$PROJECT_DIR$/model/rollout.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1160">
           <caret line="62" column="49" selection-start-line="62" selection-start-column="43" selection-end-line="62" selection-end-column="49" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/config/birds_config.json" />
-    <entry file="file://$PROJECT_DIR$/config/flowers_config.json" />
-    <entry file="file://$PROJECT_DIR$/data_loader/datasets_custom.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="627">
-          <caret line="40" selection-start-line="40" selection-end-line="40" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/train.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="20">
-          <caret line="28" column="47" selection-start-line="28" selection-start-column="47" selection-end-line="28" selection-end-column="47" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/config/coco_config.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-488">
-          <caret line="23" column="13" selection-start-line="23" selection-start-column="13" selection-end-line="23" selection-end-column="13" />
         </state>
       </provider>
     </entry>
@@ -796,17 +755,38 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/data_loader/datasets_custom.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="627">
+          <caret line="40" selection-start-line="40" selection-end-line="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/train.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-333">
+          <caret line="28" column="47" selection-start-line="28" selection-start-column="47" selection-end-line="28" selection-end-column="47" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/model/model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="514">
+        <state relative-caret-position="468">
           <caret line="404" selection-start-line="404" selection-end-line="404" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/base/base_trainer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="490">
+          <caret line="79" column="8" selection-start-line="79" selection-start-column="8" selection-end-line="79" selection-end-column="67" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/trainer/gan_trainer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="302">
-          <caret line="130" selection-start-line="130" selection-end-line="130" />
+        <state relative-caret-position="322">
+          <caret line="131" selection-start-line="131" selection-end-line="131" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
@@ -815,9 +795,31 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/model/loss.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="494">
-          <caret line="38" column="26" selection-start-line="38" selection-start-column="26" selection-end-line="38" selection-end-column="26" />
+        <state relative-caret-position="527">
+          <caret line="46" selection-start-line="46" selection-end-line="46" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
         </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config/coco_config.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="70" column="37" selection-start-line="70" selection-start-column="37" selection-end-line="70" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config/birds_config.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="287">
+          <caret line="71" column="37" selection-start-line="71" selection-start-column="37" selection-end-line="71" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config/flowers_config.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1133" />
       </provider>
     </entry>
   </component>

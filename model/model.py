@@ -401,8 +401,10 @@ class Evaluator(BaseModel):
             image_features = image_features.repeat(monte_carlo_count, 1)
 
         sentence_features = self.sentence_encoder(captions, caption_lengths)
-        dot_product = torch.bmm(image_features.unsqueeze(1), sentence_features.unsqueeze(1).transpose(2,1)).squeeze()
-        return self.sigmoid(dot_product).unsqueeze(1)
+        dot_product = torch.bmm(image_features.unsqueeze(1), sentence_features.unsqueeze(1).transpose(2,1))
+        similarity = self.sigmoid(dot_product)
+        similarity = similarity.squeeze(-1)
+        return similarity
 
 
 if __name__ == '__main__':

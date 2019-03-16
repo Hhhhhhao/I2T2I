@@ -1,5 +1,6 @@
 import torch
 import torch.nn.functional as F
+from torch.autograd import Variable
 
 
 def nll_loss(output, target):
@@ -28,16 +29,16 @@ class EvaluatorLoss(torch.nn.Module):
         super().__init__()
         self.alpha = alpha
         self.beta = beta
-        self.loss = torch.nn.CrossEntropyLoss()
+        self.loss = torch.nn.BCELoss()
+        n_gpu = torch.cuda.device_count()
+        self.device = torch.device('cuda:0' if n_gpu > 0 else 'cpu')
 
     def forward(self, evaluator_outputs, generator_outputs, other_outputs):
         batch_size = evaluator_outputs.size(0)
-        true_labels = torch.ones((batch_size, 1)).long()
-        fake_labels = torch.zeros((batch_size, 1)).long()
-
-        if torch.cuda.is_available():
-            true_labels = true_labels.cuda()
-            fake_labels = fake_labels.cuda()
+        true_labels = torch.ones(batch_size)
+        fake_labels = torch.zeros(batch_size)
+        true_labels = Variable(true_labels).to(self.device)
+        fake_labels = Variable(fake_labels).to(self.device)
 
         true_loss = self.loss(evaluator_outputs, true_labels)
         fake_loss = self.loss(generator_outputs, fake_labels)
