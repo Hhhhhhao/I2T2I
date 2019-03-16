@@ -1,9 +1,26 @@
+import os
 import torch
 import numpy as np
 from torch.autograd import Variable
 from .base_trainer import BaseTrainer
 from model import networks
 from model.loss import attangan_discriminator_loss, attangan_generator_loss, KL_loss
+from utils.util import convert_back_to_text
+from collections import OrderedDict
+dirname = os.path.dirname(__file__)
+
+# For visualization ################################################
+COLOR_DIC = {0:[128,64,128],  1:[244, 35,232],
+             2:[70, 70, 70],  3:[102,102,156],
+             4:[190,153,153], 5:[153,153,153],
+             6:[250,170, 30], 7:[220, 220, 0],
+             8:[107,142, 35], 9:[152,251,152],
+             10:[70,130,180], 11:[220,20, 60],
+             12:[255, 0, 0],  13:[0, 0, 142],
+             14:[119,11, 32], 15:[0, 60,100],
+             16:[0, 80, 100], 17:[0, 0, 230],
+             18:[0,  0, 70],  19:[0, 0,  0]}
+FONT_MAX = 50
 
 
 class AttnGANtrainer(BaseTrainer):
@@ -166,6 +183,24 @@ class AttnGANtrainer(BaseTrainer):
         self.optimizer_G.zero_grad()  # set G's gradients to zero
         self.backward_G()  # calculate graidents for G
         self.optimizer_G.step()  # udpate G's weights
+
+    def get_current_visuals(self, vocab):
+        """Return visualization images. train.py will display these images with visdom, and save the images to a HTML"""
+        visual_ret = OrderedDict()
+        wordidarray = self.right_captions.detach().cpu().numpy()
+        for j, name in enumerate(self.visual_names):
+            if isinstance(name, str):
+                results = getattr(self, name)
+                if type(results) is list:
+                    for i, size in enumerate(['64', '128', '256']):
+                        title = name + '-' + size
+                        if i == 0 and j == 0 :
+                            title = convert_back_to_text(wordidarray[0], vocab)
+                        visual_ret[title] = results[i]
+                else:
+                    visual_ret[name] = results
+
+        return visual_ret
 
 
 

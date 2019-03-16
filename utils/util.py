@@ -258,3 +258,13 @@ def mkdir(path):
     """
     if not os.path.exists(path):
         os.makedirs(path)
+
+
+def convert_back_to_text(word_idx_array, vocab):
+    from itertools import takewhile
+    blacklist = [vocab.word2idx[word] for word in [vocab.start_word]]
+    predicate = lambda word_id: vocab.idx2word[word_id] != vocab.end_word
+    sampled_caption = [vocab.idx2word[word_id] for word_id in takewhile(predicate, word_idx_array) if word_id not in blacklist]
+
+    sentence = '-'.join(sampled_caption)
+    return sentence
