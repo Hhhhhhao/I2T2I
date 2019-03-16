@@ -2,8 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b3134c42-5a5c-4eae-8274-2ca6fc32ab15" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/coco_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/coco_config.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/model/loss.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/loss.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -81,8 +79,8 @@
       <file leaf-file-name="loss.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/model/loss.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="400">
-              <caret line="20" column="8" selection-start-line="20" selection-start-column="8" selection-end-line="20" selection-end-column="8" />
+            <state relative-caret-position="172">
+              <caret line="22" column="32" lean-forward="true" selection-start-line="22" selection-start-column="32" selection-end-line="22" selection-end-column="32" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
               </folding>
@@ -204,9 +202,9 @@
         <option value="$PROJECT_DIR$/config/birds_config.json" />
         <option value="$PROJECT_DIR$/config/flowers_config.json" />
         <option value="$PROJECT_DIR$/gan_train.py" />
-        <option value="$PROJECT_DIR$/trainer/gan_trainer.py" />
         <option value="$PROJECT_DIR$/model/model.py" />
         <option value="$PROJECT_DIR$/config/coco_config.json" />
+        <option value="$PROJECT_DIR$/trainer/gan_trainer.py" />
         <option value="$PROJECT_DIR$/model/loss.py" />
       </list>
     </option>
@@ -455,7 +453,7 @@
       <window_info anchor="right" id="Database" order="3" />
       <window_info anchor="right" id="SciView" order="3" />
       <window_info id="Structure" order="1" sideWeight="0.5016892" side_tool="true" weight="0.21273032" />
-      <window_info anchor="bottom" id="Debug" order="3" visible="true" weight="0.18771331" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.18771331" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -545,7 +543,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/model/loss.py</url>
-          <line>21</line>
+          <line>22</line>
           <option name="timeStamp" value="380" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -798,8 +796,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/model/loss.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="400">
-          <caret line="20" column="8" selection-start-line="20" selection-start-column="8" selection-end-line="20" selection-end-column="8" />
+        <state relative-caret-position="172">
+          <caret line="22" column="32" lean-forward="true" selection-start-line="22" selection-start-column="32" selection-end-line="22" selection-end-column="32" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
           </folding>
