@@ -57,6 +57,9 @@ class Trainer(BaseGANTrainer):
         total_loss = 0.0
         total_metrics = np.zeros(len(self.metrics))
         for batch_idx, data in enumerate(self.train_data_loader):
+            if batch_idx == len(self.train_data_loader) -1 :
+                break
+
             batch_images = data["right_images_{}".format(self.image_size)].to(self.device)
             batch_captions = data["right_captions"].to(self.device)
             batch_caption_lengths = data["right_caption_lengths"].to(self.device)
@@ -80,6 +83,8 @@ class Trainer(BaseGANTrainer):
                     self.train_data_loader.n_samples,
                     100.0 * batch_idx / len(self.train_data_loader),
                     loss.item()))
+
+            break
 
         self.predict(self.valid_data_loader, epoch, name='pretrain_epoch')
 
@@ -107,6 +112,9 @@ class Trainer(BaseGANTrainer):
         total_loss = 0
         total_metrics = np.zeros(len(self.metrics))
         for batch_idx, data in enumerate(self.train_data_loader):
+            if batch_idx == len(self.train_data_loader) -1 :
+                break
+
             batch_images = data["right_images_{}".format(self.image_size)].to(self.device)
             batch_captions = data["right_captions"].to(self.device)
             batch_caption_lengths = data["right_caption_lengths"].to(self.device)
