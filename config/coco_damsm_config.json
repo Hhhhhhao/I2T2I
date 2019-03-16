@@ -47,7 +47,7 @@
     "loss": "cross_entropy_loss",
     "metrics": [],
     "trainer": {
-        "epochs": 10,
+        "epochs": 50,
         "save_dir": "saved/",
         "save_period": 1,
         "verbosity": 2,
@@ -58,7 +58,7 @@
         "clip_grad":0.25,
 
         "monitor": "min val_loss",
-        "early_stop": 2,
+        "early_stop": 5,
 
         "tensorboardX": true,
         "log_dir": "saved/runs"
