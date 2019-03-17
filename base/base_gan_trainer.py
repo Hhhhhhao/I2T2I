@@ -25,9 +25,6 @@ class BaseGANTrainer:
         if len(self.device_ids) > 1:
             self.generator = torch.nn.DataParallel(self.generator, device_ids=self.device_ids)
             self.discriminator = torch.nn.DataParallel(self.discriminator, device_ids=self.device_ids)
-        else:
-            self.generator = torch.nn.DataParallel(self.generator, device_ids=self.device_ids)
-            self.discriminator = torch.nn.DataParallel(self.discriminator, device_ids=self.device_ids)
 
         self.losses = losses
         self.metrics = metrics

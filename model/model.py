@@ -146,15 +146,14 @@ class DecoderRNN(BaseModel):
         self.linear.bias.data.fill_(0)
         self.linear.weight.data.uniform_(-0.1, 0.1)
 
-    def forward(self, states, captions, caption_lengths):
+    def forward(self, features, captions, caption_lengths):
         # states include features extracted from image and noise, also initial cell state
-        self.lstm.flatten_parameters()
         # Embedding
         embeddings = self.embedding(captions)  # (batch_size, max_caption_length, embed_dim)
-        # embeddings = torch.cat((features.unsqueeze(1), embeddings), 1)
+        embeddings = torch.cat((features.unsqueeze(1), embeddings), 1)
         caption_lengths = caption_lengths.to("cpu").tolist()
         packed = pack_padded_sequence(embeddings, caption_lengths, batch_first=True)
-        hiddens, _ = self.lstm(packed, states)
+        hiddens, _ = self.lstm(packed)
         outputs = self.linear(hiddens[0])
         return outputs
 
@@ -185,27 +184,27 @@ class ConditionalGenerator(BaseModel):
         self.decoder = DecoderRNN(self.word_embed_size, self.lstm_hidden_size, self.vocab_size, self.lstm_num_layers)
         self.rollout = Rollout(max_sentence_length)
 
-    def init_hidden(self, image_features):
+    def init_features(self, image_features):
         # generate rand
         rand = self.distribution.sample((image_features.shape[0],))
         rand = rand.to(device)
 
         # hidden of shape (num_layers * num_directions, batch, hidden_size)
-        hidden = self.features_linear(torch.cat((image_features, rand), 1).unsqueeze(0))
-        hidden = hidden.to(device)
+        features = self.features_linear(torch.cat((image_features, rand), 1))
+        features = features.to(device)
 
-        # cell of shape (num_layers * num_directions, batch, hidden_size)
-        cell = Variable(torch.zeros(image_features.shape[0], self.image_embed_size).unsqueeze(0))
-        cell = cell.to(device)
+        # # cell of shape (num_layers * num_directions, batch, hidden_size)
+        # cell = Variable(torch.zeros(image_features.shape[0], self.image_embed_size).unsqueeze(0))
+        # cell = cell.to(device)
 
-        return hidden, cell
+        return features
 
     def forward(self, images, captions, caption_lengths):
         image_features = self.encoder(images)
-        states = self.init_hidden(image_features)
-        outputs = self.decoder(states, captions, caption_lengths)
+        features = self.init_features(image_features)
+        outputs = self.decoder(features, captions, caption_lengths)
         # return input featuers to LSTM and outputs from LSTM
-        return image_features, states[0], outputs
+        return image_features, features, outputs
 
     def reward_forward(self, image_features, evaluator, monte_carlo_count=18):
         '''
@@ -215,26 +214,22 @@ class ConditionalGenerator(BaseModel):
         :param monte_carlo_count: monte carlo count
         :return:
         '''
-        self.decoder.lstm.flatten_parameters()
         batch_size = image_features.size(0)
-        states = self.init_hidden(image_features)
+        features = self.init_features(image_features)
 
         # initialize inputs of start symbol
-        inputs = torch.zeros((batch_size, 1)).long()
-        inputs = inputs.to(device)
+        inputs = self.decoder.embedding(features.unsqueeze(1))
         current_generated_captions = inputs.cpu()
         rewards = torch.zeros(batch_size, self.max_sentence_length)
         rewards = rewards.to(device)
         props = torch.zeros(batch_size, self.max_sentence_length)
         props = props.to(device)
 
-        inputs = self.decoder.embedding(inputs)
-
         self.rollout.update(self)
 
         for i in range(self.max_sentence_length):
 
-            hiddens, states = self.decoder.lstm(inputs, states)
+            hiddens, states = self.decoder.lstm(inputs)
             # squeeze the hidden output size from (batch_siz, 1, hidden_size) to (batch_size, hidden_size)
             outputs = self.decoder.linear(hiddens.squeeze(1))
 
@@ -352,8 +347,6 @@ class Evaluator(BaseModel):
             monte_carlo_count = int(captions.size(0) / image_features.size(0))
             image_features = image_features.repeat(monte_carlo_count, 1)
 
-        # get sentence features
-        self.lstm.flatten_parameters()
         # Embedding
         embeddings = self.embedding(captions)  # (batch_size, max_caption_length, embed_dim)
         caption_lengths = caption_lengths.to("cpu").tolist()
