@@ -16,7 +16,6 @@ flowers_damsm = os.path.join(main_dirname, 'output/Deep-Attentional-Multimodal-S
 coco_damsm = os.path.join(main_dirname, 'output/Deep-Attentional-Multimodal-Similarity-CoCo/0313_161600/model_best.pth')
 
 
-
 class Trainer(BaseGANTrainer):
     """
     Example Trainer class
