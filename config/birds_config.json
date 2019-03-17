@@ -1,6 +1,6 @@
 {
     "name": "Image-Caption-GAN-Birds",
-    "n_gpu": 8,
+    "n_gpu": 1,
     
     "models": {
         "Generator":{
@@ -68,7 +68,7 @@
     "metrics": [],
     "trainer": {
         "epochs": 50,
-        "pretrain_generator_epochs":3,
+        "pretrain_generator_epochs":2,
         "pretrain_discriminator_epochs":1,
         "lambda_1": 0.0,
         "lambda_2": 1.0,
