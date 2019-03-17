@@ -351,6 +351,7 @@ class Trainer(BaseGANTrainer):
 
             image_features, features, outputs = self.generator(batch_images, batch_captions, batch_caption_lengths)
             generator_captions = self.generator.feature_to_text(features)
+
             count = 0
             for generated_caption, image in zip(generator_captions, batch_images):
                 generated_sentence = convert_back_to_text(generated_caption, self.train_data_loader.dataset.vocab)
