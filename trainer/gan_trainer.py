@@ -150,7 +150,7 @@ class Trainer(BaseGANTrainer):
                     100.0 * batch_idx / len(self.train_data_loader),
                     loss.item()))
 
-            if batch_idx == int(len(self.train_data_loader) / 4):
+            if batch_idx == int(len(self.train_data_loader) / 16):
                 if "CoCo" in self.config["name"]:
                     break
 
