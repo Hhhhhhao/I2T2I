@@ -32,7 +32,7 @@ class Rollout:
             for _ in range(steps):
                 states = (h.repeat(1, monte_carlo_count, 1), c.repeat(1, monte_carlo_count, 1))
                 inputs = generated_captions[:, -1].unsqueeze(1)
-                inputs.to(device)
+                inputs = inputs.to(device)
                 current_captions = generated_captions
                 inputs = self.embedding(inputs)
 

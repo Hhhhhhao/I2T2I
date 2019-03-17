@@ -222,7 +222,7 @@ class ConditionalGenerator(BaseModel):
         # initialize inputs of start symbol
         inputs = torch.zeros((batch_size, 1)).long()
         inputs = inputs.to(device)
-        current_generated_captions = inputs
+        current_generated_captions = inputs.cpu()
         rewards = torch.zeros(batch_size, self.max_sentence_length)
         rewards = rewards.to(device)
         props = torch.zeros(batch_size, self.max_sentence_length)
@@ -274,14 +274,12 @@ class ConditionalGenerator(BaseModel):
         """
         sampled_ids = []
         inputs = features
-        print("features : {}".format(features))
         for i in range(max_len):
             hiddens, states = self.decoder.lstm(inputs, states) # (batch_size, 1, hidden_size)
             outputs = self.decoder.linear(hiddens.squeeze(1))  # (batch_size, vocab_size)
             # Get the index (in the vocabulary) of the most likely integer that
             # represents a word
             predicted = outputs.argmax(1)
-            print("predicted  : {}".format(predicted))
             sampled_ids.append(predicted.item())
             inputs = self.decoder.embedding(predicted)
             inputs = inputs.unsqueeze(1)

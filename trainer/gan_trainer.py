@@ -84,8 +84,6 @@ class Trainer(BaseGANTrainer):
                     100.0 * batch_idx / len(self.train_data_loader),
                     loss.item()))
 
-            break
-
         self.predict(self.valid_data_loader, epoch, name='pretrain_epoch')
 
         log = {
