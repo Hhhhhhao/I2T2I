@@ -257,9 +257,8 @@ class ConditionalGenerator(BaseModel):
 
     def feature_to_text(self, features, max_len=20):
         generated_captions = []
-        inputs = features.permute(1, 0, 2)
-        for input in inputs:
-            generated_captions.append(self.sample(input.unsqueeze(0), states=None, max_len=max_len))
+        for feature in features:
+            generated_captions.append(self.sample(feature.unsqueeze(0), states=None, max_len=max_len))
         return generated_captions
 
     def sample(self, features, states=None, max_len=20):
@@ -268,9 +267,9 @@ class ConditionalGenerator(BaseModel):
         search approach.
         """
         sampled_ids = []
-        inputs = features
+        inputs = self.decoder.embedding(features.unsqueeze(1))
         for i in range(max_len):
-            hiddens, states = self.decoder.lstm(inputs, states) # (batch_size, 1, hidden_size)
+            hiddens, states = self.decoder.lstm(inputs, states)  # (batch_size, 1, hidden_size)
             outputs = self.decoder.linear(hiddens.squeeze(1))  # (batch_size, vocab_size)
             # Get the index (in the vocabulary) of the most likely integer that
             # represents a word
