@@ -132,7 +132,8 @@ class Trainer(BaseGANTrainer):
             evaluator_scores = self.discriminator(image_features.detach(), batch_captions, batch_caption_lengths)
             generator_scores = self.discriminator(image_features.detach(), generator_captions, generator_caption_lengths)
             other_scores = self.discriminator(image_features.detach(), other_captions, other_caption_lengths)
-            loss = self.losses["Discriminator_Loss"](evaluator_scores, generator_scores, other_scores)
+            batch_size = evaluator_scores.size(0)
+            loss = self.losses["Discriminator_Loss"](evaluator_scores.view(batch_size, -1), generator_scores.view(batch_size, -1), other_scores.view(batch_size, -1))
             loss.backward()
             self.discriminator_optimizer.step()
 
@@ -152,6 +153,7 @@ class Trainer(BaseGANTrainer):
             if batch_idx == int(len(self.train_data_loader) / 4):
                 if "CoCo" in self.config["name"]:
                     break
+
         log = {
             'Evaluator_Loss': total_loss / len(self.train_data_loader),
             'metrics': (total_metrics / len(self.train_data_loader)).tolist()
@@ -200,7 +202,7 @@ class Trainer(BaseGANTrainer):
 
             # forward
             image_features, features, outputs = self.generator(batch_images, batch_captions, batch_caption_lengths)
-            generator_captions = self.generator.features_to_text(features)
+            generator_captions = self.generator.feature_to_text(features)
             generator_captions, generator_caption_lengths = get_caption_lengths(generator_captions)
             generator_captions.to(self.device)
             generator_caption_lengths.to(self.device)
@@ -210,7 +212,8 @@ class Trainer(BaseGANTrainer):
             evaluator_scores = self.discriminator(image_features.detach(), batch_captions, batch_caption_lengths)
             generator_scores = self.discriminator(image_features.detach(), generator_captions, generator_caption_lengths)
             other_scores = self.discriminator(image_features.detach(), other_captions, other_caption_lengths)
-            discriminator_loss = self.losses["Discriminator_Loss"](evaluator_scores, generator_scores, other_scores)
+            batch_size = evaluator_scores.size(0)
+            discriminator_loss = self.losses["Discriminator_Loss"](evaluator_scores.view(batch_size, -1), generator_scores.view(batch_size, -1), other_scores.view(batch_size, -1))
             discriminator_loss.backward()
             self.discriminator_optimizer.step()
 
@@ -250,6 +253,7 @@ class Trainer(BaseGANTrainer):
                     generator_loss.item(),
                     discriminator_loss.item()
                 ))
+
 
         log = {
             'Generator_CrossEntropyLoss': total_generator_cce_loss / len(self.train_data_loader),

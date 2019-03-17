@@ -38,8 +38,8 @@ class EvaluatorLoss(torch.nn.Module):
 
     def forward(self, evaluator_outputs, generator_outputs, other_outputs):
         batch_size = evaluator_outputs.size(0)
-        true_labels = torch.ones(batch_size)
-        fake_labels = torch.zeros(batch_size)
+        true_labels = torch.ones(batch_size, 1)
+        fake_labels = torch.zeros(batch_size, 1)
         true_labels = Variable(true_labels).to(self.device)
         fake_labels = Variable(fake_labels).to(self.device)
 
