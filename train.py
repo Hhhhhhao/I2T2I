@@ -45,7 +45,7 @@ def main(opt):
         epoch_iter = 0                  # the number of training iterations in current epoch, reset to 0 every epoch
 
         for i, data in enumerate(data_loader):  # inner loop within one epoch
-            # donot forward the last batch
+            # donot forward the last batchepochs
             if i == len(data_loader) -1:
                 break
 
