@@ -218,13 +218,17 @@ class ConditionalGenerator(BaseModel):
         features = self.init_features(image_features)
 
         # initialize inputs of start symbol
-        h = features.unsqueeze(0)
-        c = Variable(torch.zeros(batch_size, self.image_embed_size).unsqueeze(0)).to(device)
-        states = h, c
+        # h = features.unsqueeze(0)
+        # c = Variable(torch.zeros(batch_size, self.image_embed_size).unsqueeze(0)).to(device)
+        # states = h, c
 
-        inputs = torch.zeros(batch_size, 1).long()
-        current_generated_captions = inputs
-        inputs = self.decoder.embedding(inputs.to(device))
+        # inputs = torch.zeros(batch_size, 1).long()
+        # current_generated_captions = inputs
+        # inputs = self.decoder.embedding(inputs.to(device))
+
+        inputs = features.unsqueeze(1)
+        states = None
+        current_generated_captions = None
 
         rewards = torch.zeros(batch_size, self.max_sentence_length)
         rewards = rewards.to(device)
@@ -233,7 +237,7 @@ class ConditionalGenerator(BaseModel):
 
         self.rollout.update(self)
 
-        for i in range(self.max_sentence_length):
+        for i in range(self.max_sentence_length+1):
 
             hiddens, states = self.decoder.lstm(inputs, states)
             # squeeze the hidden output size from (batch_siz, 1, hidden_size) to (batch_size, hidden_size)
@@ -243,9 +247,11 @@ class ConditionalGenerator(BaseModel):
             outputs = F.softmax(outputs, -1)
 
             # use multinomial to random sample
-            # predicted = outputs.argmax(1)
-            # predicted = (predicted.unsqueeze(1)).long()
-            predicted = outputs.multinomial(1)
+            if i == 0:
+                predicted = outputs.argmax(1)
+                predicted = (predicted.unsqueeze(1)).long()
+            else:
+                predicted = outputs.multinomial(1)
 
             # if torch.cuda.is_available():
             #   predicted = predicted.cuda()
