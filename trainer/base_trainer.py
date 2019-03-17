@@ -170,6 +170,7 @@ class BaseTrainer(ABC):
                             save_filename = '%s_net_%s_%s.pth' % (epoch, name, size)
                             save_path = os.path.join(self.save_dir, save_filename)
                             torch.save(net[i].module.cpu().state_dict(), save_path)
+                            net[i].cuda(self.gpu_ids[0])
                     else:
                         torch.save(net.module.cpu().state_dict(), save_path)
                         net.cuda(self.gpu_ids[0])
