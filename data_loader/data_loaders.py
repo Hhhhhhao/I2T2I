@@ -6,13 +6,14 @@ from data_loader.datasets_custom import TextImageDataset, COCOTextImageDataset
 from base import BaseDataLoader
 
 
+
 def text_image_collate_fn(data):
     collate_data = {}
     # Sort a data list by right caption length (descending order).
     data.sort(key=lambda x: x['right_caption'].size(0), reverse=True)
 
     collate_data['right_img_id'] = []
-    collate_data['class_id'] = []
+    # collate_data['class_id'] = []
     collate_data['right_txt'] = []
     class_ids = []
     right_captions = []
