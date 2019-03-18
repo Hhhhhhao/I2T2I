@@ -13,6 +13,7 @@ from eval_metrics.eval import compute_score
 from torchvision import transforms
 main_dir = os.path.dirname(__file__)
 
+
 def main(config, resume):
     # setup data_loader instances
     # batch size must be one
@@ -71,8 +72,8 @@ def main(config, resume):
     gts = {}
     res = {}
 
-    mean = torch.tensor([0.485, 0.456, 0.406], dtype=torch.float32)
-    std = torch.tensor([0.229, 0.224, 0.225], dtype=torch.float32)
+    mean = torch.tensor([0.5, 0.5, 0.5], dtype=torch.float32)
+    std = torch.tensor([0.5, 0.5, 0.5], dtype=torch.float32)
 
     transform = transforms.Compose([
             transforms.Normalize(mean=(-mean/std).tolist(), std=(1.0/std).tolist()),
@@ -86,19 +87,24 @@ def main(config, resume):
             batch_caption_lengths = data["right_caption_lengths"]
 
             batch_images, batch_captions = batch_images.to(device), batch_captions.to(device)
-            # batch_caption_lengths = [l - 1 for l in batch_caption_lengths]
+            batch_caption_lengths = batch_caption_lengths.to(device)
 
-            img_id = data["img_id"][0][:-2]
-            batch_features = model.encoder(batch_images)
-            pred_captions = model.decoder.sample_beam_search(batch_features)
+            img_id = data["right_img_id"][0]
 
-            pred_sentence = convert_back_to_text(list(pred_captions[0]), data_loader.dataset.vocab)
+            _, features, _ = model.forward(batch_images, batch_captions, batch_caption_lengths)
+
+            generated_captions = model.feature_to_text(features)
+            
+            # batch_features = model.encoder(batch_images)
+            # pred_captions = model.decoder.sample_beam_search(batch_features)
+
+            pred_sentence = convert_back_to_text(list(generated_captions[0]), data_loader.dataset.vocab)
             target_sentence = convert_back_to_text(batch_captions.cpu().tolist()[0], data_loader.dataset.vocab)
 
-            if i % 500 == 0:
+            if i % 10 == 0:
                 image = batch_images[0]
                 image = transform(image.cpu())
-                image.save(os.path.join(example_dir, config["name"], '{}_{}.png'.format(img_id, pred_sentence)))
+                image.save(os.path.join(example_dir, '{}_{}.png'.format(img_id, pred_sentence.split('-'))))
 
             # save sample images, or do something with output here
             if img_id not in gts.keys() and img_id not in res.keys():
@@ -137,7 +143,7 @@ def main(config, resume):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='PyTorch Template')
 
-    parser.add_argument('-r', '--resume', default='/Users/leon/Projects/I2T2I/saved/Show-and-Tell-Birds/0212_192726/checkpoint-epoch6.pth', type=str,
+    parser.add_argument('-r', '--resume', default='output/Image-Caption-GAN-Birds/0317_145331/checkpoint-epoch11.pth', type=str,
                            help='path to latest checkpoint (default: None)')
     parser.add_argument('-d', '--device', default=None, type=str,
                            help='indices of GPUs to enable (default: all)')
