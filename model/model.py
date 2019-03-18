@@ -230,9 +230,9 @@ class ConditionalGenerator(BaseModel):
         states = None
         current_generated_captions = None
 
-        rewards = torch.zeros(batch_size, self.max_sentence_length)
+        rewards = torch.zeros(batch_size, self.max_sentence_length+1)
         rewards = rewards.to(device)
-        props = torch.zeros(batch_size, self.max_sentence_length)
+        props = torch.zeros(batch_size, self.max_sentence_length+1)
         props = props.to(device)
 
         self.rollout.update(self)
