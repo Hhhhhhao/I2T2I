@@ -82,7 +82,7 @@ def main(opt):
             model.save_networks(epoch)
 
         print('End of epoch %d / %d \t Time Taken: %d sec' % (epoch, opt.epochs + opt.nepoch_decay, time.time() - epoch_start_time))
-        model.update_learning_rate()                     # update learning rates at the end of every epoch.
+        # model.update_learning_rate()                     # update learning rates at the end of every epoch.
 
 
 if __name__ == '__main__':
