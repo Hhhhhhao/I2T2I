@@ -13,6 +13,7 @@ from eval_metrics.eval import compute_score
 from torchvision import transforms
 main_dir = os.path.dirname(__file__)
 
+
 def main(config, resume):
     # setup data_loader instances
     # batch size must be one
@@ -89,6 +90,9 @@ def main(config, resume):
             # batch_caption_lengths = [l - 1 for l in batch_caption_lengths]
 
             img_id = data["img_id"][0][:-2]
+
+            feature_to_text
+            
             batch_features = model.encoder(batch_images)
             pred_captions = model.decoder.sample_beam_search(batch_features)
 
