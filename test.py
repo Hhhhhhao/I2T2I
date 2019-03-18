@@ -89,7 +89,7 @@ def main(config, resume):
             batch_images, batch_captions = batch_images.to(device), batch_captions.to(device)
             batch_caption_lengths = batch_caption_lengths.to(device)
 
-            img_id = data["right_img_id"]
+            img_id = data["right_img_id"][0]
 
             _, features, _ = model.forward(batch_images, batch_captions, batch_caption_lengths)
 
@@ -104,7 +104,7 @@ def main(config, resume):
             if i % 10 == 0:
                 image = batch_images[0]
                 image = transform(image.cpu())
-                image.save(os.path.join(example_dir, config["name"], '{}_{}.png'.format(img_id, pred_sentence)))
+                image.save(os.path.join(example_dir, '{}_{}.png'.format(img_id, pred_sentence.split('-'))))
 
             # save sample images, or do something with output here
             if img_id not in gts.keys() and img_id not in res.keys():
