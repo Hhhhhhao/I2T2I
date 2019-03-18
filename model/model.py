@@ -230,14 +230,14 @@ class ConditionalGenerator(BaseModel):
         states = None
         current_generated_captions = None
 
-        rewards = torch.zeros(batch_size, self.max_sentence_length+1)
+        rewards = torch.zeros(batch_size, self.max_sentence_length)
         rewards = rewards.to(device)
-        props = torch.zeros(batch_size, self.max_sentence_length+1)
+        props = torch.zeros(batch_size, self.max_sentence_length)
         props = props.to(device)
 
         self.rollout.update(self)
 
-        for i in range(self.max_sentence_length+1):
+        for i in range(self.max_sentence_length):
 
             hiddens, states = self.decoder.lstm(inputs, states)
             # squeeze the hidden output size from (batch_siz, 1, hidden_size) to (batch_size, hidden_size)
