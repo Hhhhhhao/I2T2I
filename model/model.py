@@ -226,9 +226,14 @@ class ConditionalGenerator(BaseModel):
         # current_generated_captions = inputs
         # inputs = self.decoder.embedding(inputs.to(device))
 
-        inputs = features.unsqueeze(1)
-        states = None
-        current_generated_captions = None
+        # inputs = features.unsqueeze(1)
+        # states = None
+        # current_generated_captions = None
+
+        inputs = torch.zeros(batch_size, 1).long()
+        current_generated_captions = inputs
+        inputs = self.decoder.embedding(inputs.to(device))
+        _, states = self.decoder.lstm(features.unsqueeze(1))
 
         rewards = torch.zeros(batch_size, self.max_sentence_length)
         rewards = rewards.to(device)
@@ -247,11 +252,11 @@ class ConditionalGenerator(BaseModel):
             outputs = F.softmax(outputs, -1)
 
             # use multinomial to random sample
-            if i == 0:
-                predicted = outputs.argmax(1)
-                predicted = (predicted.unsqueeze(1)).long()
-            else:
-                predicted = outputs.multinomial(1)
+            # if i == 0:
+            #     predicted = outputs.argmax(1)
+            #     predicted = (predicted.unsqueeze(1)).long()
+            # else:
+            predicted = outputs.multinomial(1)
 
             # if torch.cuda.is_available():
             #   predicted = predicted.cuda()
@@ -260,15 +265,16 @@ class ConditionalGenerator(BaseModel):
             props[:, i] = prop.view(-1)
 
             # embed the next inputs, unsqueeze is required cause of shape (batch_size, vocab_size)
-            if current_generated_captions is None:
-                current_generated_captions = predicted.cpu()
-            else:
-                current_generated_captions = torch.cat([current_generated_captions, predicted.cpu()], dim=1)
+            # if current_generated_captions is None:
+            #     current_generated_captions = predicted.cpu()
+            # else:
+            current_generated_captions = torch.cat([current_generated_captions, predicted.cpu()], dim=1)
 
             inputs = self.decoder.embedding(predicted)
 
             reward = self.rollout.reward(image_features, current_generated_captions, states, monte_carlo_count, evaluator)
             rewards[:, i] = reward.view(-1)
+
         return rewards, props
 
     def feature_to_text(self, features, max_len=20):

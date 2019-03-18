@@ -142,6 +142,7 @@ class Trainer(BaseGANTrainer):
             total_loss += loss.item()
             total_metrics += self._eval_metrics(generator_scores, evaluator_scores)
 
+
             if self.verbosity >= 2 and batch_idx % self.log_step == 0:
                 self.logger.info('Discriminator Pre-Train Epoch: {} [{}/{} ({:.0f}%)] Evaluator Loss: {:.6f}'.format(
                     epoch,
