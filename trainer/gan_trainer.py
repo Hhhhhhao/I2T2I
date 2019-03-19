@@ -2,7 +2,6 @@ import os
 import numpy as np
 import torch
 from torchvision import transforms
-from torchvision.utils import make_grid
 from torch.nn.utils.rnn import pack_padded_sequence
 from base import BaseGANTrainer
 from utils import get_caption_lengths, convert_back_to_text
@@ -81,8 +80,6 @@ class Trainer(BaseGANTrainer):
                     100.0 * batch_idx / len(self.train_data_loader),
                     loss.item()))
 
-            break
-
         self.predict(self.valid_data_loader, epoch, name='pretrain_epoch')
 
         log = {
@@ -120,7 +117,7 @@ class Trainer(BaseGANTrainer):
             other_caption_lengths = data["wrong_caption_lengths"].to(self.device)
 
             # use generator to generator image features and captions (one-hot)
-            features = self.generator.feature_forward(batch_images, batch_captions, batch_caption_lengths)
+            features = self.generator.feature_forward(batch_images)
             generator_captions = self.generator.feature_to_text(features)
             generator_captions, generator_caption_lengths = get_caption_lengths(generator_captions)
             generator_captions.to(self.device)
@@ -151,8 +148,6 @@ class Trainer(BaseGANTrainer):
             if batch_idx == int(len(self.train_data_loader) / 16):
                 if "CoCo" in self.config["name"]:
                     break
-
-            break
 
         log = {
             'Evaluator_Loss': total_loss / len(self.train_data_loader),
@@ -243,9 +238,6 @@ class Trainer(BaseGANTrainer):
                     generator_loss.item(),
                     discriminator_loss.item()
                 ))
-
-            break
-
 
         log = {
             'Generator_RLLoss': total_generator_rl_loss / len(self.train_data_loader),
