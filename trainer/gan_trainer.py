@@ -40,10 +40,6 @@ class Trainer(BaseGANTrainer):
         self.log_step = int(np.sqrt(data_loader.batch_size))
 
         self.image_size = self.config["train_data_loader"]["args"]["image_size"]
-        # loss weight for generator cross entropy loss
-        self.lambda_1 = self.config["trainer"]["lambda_1"]
-        # loss weight for generator roll out loss
-        self.lambda_2 = self.config["trainer"]["lambda_2"]
 
     def _eval_metrics(self, output, target):
         acc_metrics = np.zeros(len(self.metrics))
@@ -84,6 +80,8 @@ class Trainer(BaseGANTrainer):
                     self.train_data_loader.n_samples,
                     100.0 * batch_idx / len(self.train_data_loader),
                     loss.item()))
+
+            break
 
         self.predict(self.valid_data_loader, epoch, name='pretrain_epoch')
 
@@ -153,6 +151,8 @@ class Trainer(BaseGANTrainer):
             if batch_idx == int(len(self.train_data_loader) / 16):
                 if "CoCo" in self.config["name"]:
                     break
+
+            break
 
         log = {
             'Evaluator_Loss': total_loss / len(self.train_data_loader),
@@ -232,8 +232,6 @@ class Trainer(BaseGANTrainer):
             total_generator_rl_loss += generator_rl_loss.item()
             total_discriminator_loss += discriminator_loss.item()
             total_metrics += self._eval_metrics(rewards, props)
-            
-            # break            
 
             if self.verbosity >= 2 and batch_idx % self.log_step == 0:
                 self.logger.info('Train Epoch: {} [{}/{} ({:.0f}%)] '
@@ -247,6 +245,8 @@ class Trainer(BaseGANTrainer):
                     generator_loss.item(),
                     discriminator_loss.item()
                 ))
+
+            break
 
 
         log = {
