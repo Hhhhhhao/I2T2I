@@ -224,17 +224,17 @@ class ConditionalGenerator(BaseModel):
         features = self.init_features(image_features)
 
         # initialize inputs of start symbol
-        h = features.unsqueeze(0)
-        c = Variable(torch.zeros(batch_size, self.image_embed_size).unsqueeze(0)).to(device)
-        states = h, c
+        # h = features.unsqueeze(0)
+        # c = Variable(torch.zeros(batch_size, self.image_embed_size).unsqueeze(0)).to(device)
+        # states = h, c
 
-        inputs = torch.zeros(batch_size, 1).long()
-        current_generated_captions = inputs
-        inputs = self.decoder.embedding(inputs.to(device))
+        # inputs = torch.zeros(batch_size, 1).long()
+        # current_generated_captions = inputs
+        # inputs = self.decoder.embedding(inputs.to(device))
 
-        # inputs = features.unsqueeze(1)
-        # states = None
-        # current_generated_captions = None
+        inputs = features.unsqueeze(1)
+        states = None
+        current_generated_captions = None
 
         # inputs = torch.zeros(batch_size, 1).long()
         # current_generated_captions = inputs
@@ -271,10 +271,10 @@ class ConditionalGenerator(BaseModel):
             props[:, i] = prop.view(-1)
 
             # embed the next inputs, unsqueeze is required cause of shape (batch_size, vocab_size)
-            # if current_generated_captions is None:
-            #     current_generated_captions = predicted.cpu()
-            # else:
-            current_generated_captions = torch.cat([current_generated_captions, predicted.cpu()], dim=1)
+            if current_generated_captions is None:
+                current_generated_captions = predicted.cpu()
+            else:
+                current_generated_captions = torch.cat([current_generated_captions, predicted.cpu()], dim=1)
 
             inputs = self.decoder.embedding(predicted)
 
