@@ -4,7 +4,7 @@ import numpy as np
 from torch.autograd import Variable
 from .base_trainer import BaseTrainer
 from model import networks
-from model.loss import attangan_discriminator_loss, attangan_generator_loss, KL_loss
+from model.loss import AttnDiscriminatorLoss, AttnGeneratorLoss, KLLoss
 from utils.util import convert_back_to_text
 from collections import OrderedDict
 dirname = os.path.dirname(__file__)
@@ -51,9 +51,9 @@ class AttnGANtrainer(BaseTrainer):
         self.netD = networks.define_D(opt=opt, gpu_ids=self.gpu_ids)
         self.rnn_encoder, self.cnn_encoder = networks.define_DAMSM(opt=opt, gpu_ids=self.gpu_ids)
 
-        self.generator_loss = attangan_generator_loss
-        self.discriminator_loss = attangan_discriminator_loss
-        self.KL_loss = KL_loss
+        self.generator_loss = AttnGeneratorLoss(opt)
+        self.discriminator_loss = AttnDiscriminatorLoss()
+        self.KL_loss = KLLoss()
 
         # initialize optimizers; schedulers will be automatically created by function <BaseModel.setup>.
         self.optimizer_G = torch.optim.Adam(self.netG.parameters(), lr=opt.g_lr, betas=(opt.beta_1, 0.999))

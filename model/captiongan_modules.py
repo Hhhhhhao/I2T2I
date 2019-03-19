@@ -161,10 +161,10 @@ class DecoderRNN(BaseModel):
 class ConditionalGenerator(BaseModel):
 
     def __init__(self,
-                 image_embed_size=512,
-                 word_embed_size=512,
-                 lstm_hidden_size=1024,
-                 noise_dim=128,
+                 image_embed_size=256,
+                 word_embed_size=256,
+                 lstm_hidden_size=256,
+                 noise_dim=100,
                  vocab_size=10000,
                  lstm_num_layers=1,
                  max_sentence_length=20):
@@ -342,9 +342,9 @@ class ConditionalGenerator(BaseModel):
 
 class Evaluator(BaseModel):
     def __init__(self,
-                 word_embed_size=512,
-                 sentence_embed_size=512,
-                 lstm_hidden_size=1024,
+                 word_embed_size=256,
+                 sentence_embed_size=256,
+                 lstm_hidden_size=256,
                  vocab_size=100000,
                  lstm_num_layers=1):
         super(Evaluator, self).__init__()
@@ -358,7 +358,7 @@ class Evaluator(BaseModel):
         self.linear = nn.Linear(lstm_hidden_size, sentence_embed_size)  # linear layer to find scores over vocabulary
         self.init_weights()
         # self.sigmoid = nn.Sigmoid()
-        self.output_linear(1, 1)
+        self.output_linear = nn.Linear(1, 1)
         self.cnn_encoder = EncoderCNN(image_embed_size=sentence_embed_size)
 
     def init_weights(self):
@@ -393,7 +393,7 @@ class Evaluator(BaseModel):
 
         dot_product = torch.bmm(image_features.unsqueeze(1), sentence_features.unsqueeze(1).transpose(2,1))
         dot_product = dot_product.unsqueeze(-1)
-        similarity = self.output(dot_product)
+        similarity = self.output_linear(dot_product)
         # similarity = self.sigmoid(dot_product)
 
         # similarity = similarity

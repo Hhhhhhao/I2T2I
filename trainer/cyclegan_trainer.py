@@ -31,8 +31,8 @@ class CycleGANTrainer(BaseTrainer):
             parser.add_argument('--gamma2', type=float, default=5.0, help='gamma 2 for damsm')
             parser.add_argument('--gamma3', type=float, default=10.0, help='gamma 3 for damsm')
             parser.add_argument('--g_lambda', type=float, default=5.0, help='gamma 3 for damsm')
-            parser.add_argument('--lambda_I', type=float, default=5.0, help='gamma 1 for damsm')
-            parser.add_argument('--lambda_S', type=float, default=5.0, help='gamma 2 for damsm')
+            parser.add_argument('--lambda_I', type=float, default=10.0, help='gamma 1 for damsm')
+            parser.add_argument('--lambda_S', type=float, default=10.0, help='gamma 2 for damsm')
 
         return parser
 
@@ -47,7 +47,8 @@ class CycleGANTrainer(BaseTrainer):
         # specify the training losses you want to print out. The training/test scripts will call <BaseModel.get_current_losses>
         self.loss_names = ['G_S', 'D_S', 'Cycle_S', 'G_I', 'D_I', 'Cycle_I']
         # specify the images you want to save/display. The training/test scripts will call <BaseModel.get_current_visuals>
-        self.visual_names = []
+        self.visual_names = ['real_imgs', 'fake_imgs', 'rec_images']
+        self.caption_names = ['real_captions', 'fake_captions', 'rec_captions']
 
         # specify the models you want to save to the disk. The training/test scripts will call <BaseModel.save_networks> and <BaseModel.load_networks>
         self.model_names = ['G_S', 'D_S', 'G_I', 'D_I']
@@ -69,16 +70,16 @@ class CycleGANTrainer(BaseTrainer):
         # define loss functions
         self.caption_generator_loss = CaptGANGeneratorLoss()
         self.caption_discriminator_loss = CaptGANDiscriminatorLoss()
-        self.synthesis_generator_loss = AttnGeneratorLoss()
+        self.synthesis_generator_loss = AttnGeneratorLoss(opt)
         self.synthesis_discriminator_loss = AttnDiscriminatorLoss()
         self.synthesis_kl_loss = KLLoss()
         self.cycle_consistency_loss = torch.nn.L1Loss()
 
         # initialize optimizers
-        self.optimizer_G = torch.optim.Adam((self.netG_S.parameters(), self.netG_I.parameters()), lr=opt.g_lr, betas=(opt.beta_1, 0.999))
+        self.optimizer_G = torch.optim.Adam(itertools.chain(self.netG_S.parameters(), self.netG_I.parameters()), lr=opt.g_lr, betas=(opt.beta_1, 0.999))
         self.optimizers.append(self.optimizer_G)
         self.optimizer_D = torch.optim.Adam(
-            (self.netD_S.parameters(), self.netD_I[0].parameters(), self.netD_I[1].parameters(), self.netD_I[2].parameters()),
+            itertools.chain(self.netD_S.parameters(), self.netD_I[0].parameters(), self.netD_I[1].parameters(), self.netD_I[2].parameters()),
             lr=opt.d_lr, betas=(opt.beta_1, 0.999))
         self.optimizers.append(self.optimizer_D)
 
@@ -98,8 +99,8 @@ class CycleGANTrainer(BaseTrainer):
         self.real_imgs.append(data["right_images_64"].to(self.device))
         self.real_imgs.append(data["right_images_128"].to(self.device))
         self.real_imgs.append(data["right_images_256"].to(self.device))
-        self.right_captions = data["right_captions"].to(self.device)
-        self.right_caption_lengths = data["right_caption_lengths"].to(self.device)
+        self.real_captions = data["right_captions"].to(self.device)
+        self.real_caption_lengths = data["right_caption_lengths"].to(self.device)
         self.class_ids = np.array(data['class_id'])
         self.labels = torch.LongTensor(range(self.batch_size)).to(self.device)
 
@@ -123,45 +124,72 @@ class CycleGANTrainer(BaseTrainer):
         return real_labels, fake_labels, match_labels
 
     def forward(self):
+
+        # Forward from sentence to image G(S) = I
+        self.fake_imgs, self.mu, self.logvar, self.real_words_embs, self.real_sent_emb = self.forward_G_I(self.real_captions, self.real_caption_lengths)
+
+        # Reconstruction from fake image to rec sentence F(G(S)) = S_hat
+        _, _, self.rec_captions, self.rec_caption_lengths = self.forward_G_S(self.fake_imgs[-1])
+
+        # Forward from image to sentence F(I) = S
+        self.rewards, self.props, self.fake_captions, self.fake_caption_lengths = self.forward_G_S(self.real_imgs[-1])
+
+        # Reconstruction from fake sentence to rec images G(F(I)) = I_hat
+        self.rec_images, _, _ , _, _ = self.forward_G_I(self.fake_captions, self.fake_caption_lengths)
+
+
+        ###### Compute images feauters
+        _, self.rec_sent_emb = self.rnn_encoder(self.rec_captions, self.rec_caption_lengths)
+        _, self.rec_image_emb = self.cnn_encoder(self.rec_images[-1])
+        _, self.real_image_emb = self.cnn_encoder(self.real_imgs[-1])
+
+
+    def forward_G_S(self, images):
+
+        """ Forward through the generator of CaptGAN"""
+        ####### Forward CaptGAN Generator #########
+        # feature forward to get genrated captions for training the discriminator
+        features = self.netG_S.feature_forward(images)
+        fake_captions = self.netG_S.feature_to_text(features)
+        fake_captions, fake_caption_lengths = get_caption_lengths(fake_captions)
+        fake_captions = fake_captions.detach()
+        fake_captions.to(self.device)
+        fake_caption_lengths.to(self.device)
+
+        # reward forward for training CaptGAN generator
+        rewards, props = self.netG_S.reward_forward(images, self.netD_S, monte_carlo_count=18)
+
+        return rewards, props, fake_captions, fake_caption_lengths
+
+    def forward_G_I(self, captions, caption_lengths):
+
+        """ Forward through the generator of AttnGAN """
         ####### Forward AttnGAN Generator #########
         # words_embs: batch_size x nef x seq_len
         # sent_emb: batch_size x nef
-        self.words_embs, self.sent_emb = self.rnn_encoder(self.right_captions, self.right_caption_lengths)
-        self.words_embs, self.sent_emb = self.words_embs.detach(), self.sent_emb.detach()
-        mask = (self.right_captions == 0)
-        num_words = self.words_embs.size(2)
+        words_embs, sent_emb = self.rnn_encoder(captions, caption_lengths)
+        words_embs, sent_emb = words_embs.detach(), sent_emb.detach()
+        mask = (captions == 0)
+        num_words = words_embs.size(2)
         if mask.size(1) > num_words:
             mask = mask[:, :num_words]
         self.noise.data.normal_(0, 1)
-        self.fake_imgs, _, self.mu, self.logvar = self.netG_I(self.noise, self.sent_emb, self.words_embs, mask)
+        fake_imgs, _, mu, logvar = self.netG_I(self.noise, sent_emb, words_embs, mask)
 
-        ####### Forward CaptGAN Generator #########
-        # feature forward to get genrated captions for training the discriminator
-        features = self.netG_S.feature_forward(self.real_imgs[-1])
-        generated_captions = self.netG_S.feature_to_text(features)
-        self.generated_captions, self.generated_caption_lengths = get_caption_lengths(generated_captions)
-        self.generated_captions = self.generated_captions.detach()
-        self.generated_captions.to(self.device)
-        self.generated_caption_lengths.to(self.device)
-
-        # reward forward for training CaptGAN generator
-        self.rewards, self.props = self.netG_S.reward_forward(self.real_imgs[-1], self.netD_S, monte_carlo_count=18)
-
-        ###### Compute images feauters
-        self.fake_sent_emb = self.rnn_encoder(self.generated_captions, self.generated_caption_lengths)
-        _, self.image_emb = self.cnn_encoder(self.real_imgs[-1])
-        _, self.fake_image_emb = self.cnn_encoder(self.fake_imgs[-1])
+        return fake_imgs, mu, logvar, words_embs, sent_emb
 
     def backward_D_S(self):
         """Calculate loss for the discriminator of CaptGAN"""
         self.netD_S.zero_grad()
-        evaluator_scores = self.netD_S(self.real_imgs[-1], self.right_captions, self.right_caption_lengths)
-        generator_scores = self.netD_S(self.real_imgs[-1], self.generated_captions, self.generated_caption_lengths)
+        evaluator_scores = self.netD_S(self.real_imgs[-1], self.real_captions, self.real_caption_lengths)
+        generator_scores = self.netD_S(self.real_imgs[-1], self.fake_captions, self.fake_caption_lengths)
         other_scores = self.netD_S(self.real_imgs[-1], self.wrong_captions, self.wrong_caption_lengths)
         batch_size = evaluator_scores.size(0)
-        self.loss_D_S = self.caption_discriminator_loss(evaluator_scores.view(batch_size, -1),
-                                                             generator_scores.view(batch_size, -1),
-                                                             other_scores.view(batch_size, -1))
+        self.loss_D_S = self.caption_discriminator_loss(evaluator_scores.view(batch_size),
+                                                        generator_scores.view(batch_size),
+                                                        other_scores.view(batch_size),
+                                                        self.real_labels,
+                                                        self.fake_labels)
         self.loss_D_S.backward()
 
     def backward_D_I(self):
@@ -169,8 +197,8 @@ class CycleGANTrainer(BaseTrainer):
         self.loss_D_I = 0
         for i in range(len(self.netD_I)):
             self.netD_I[i].zero_grad()
-            loss = self.synthesis_discriminator_loss(self.netD_S[i], self.real_imgs[i], self.fake_imgs[i],
-                                      self.sent_emb, self.real_labels, self.fake_labels)
+            loss = self.synthesis_discriminator_loss(self.netD_I[i], self.real_imgs[i], self.fake_imgs[i],
+                                      self.real_sent_emb, self.real_labels, self.fake_labels)
             # backward and update parameters
             loss.backward()
             # optimizersD[i].step()
@@ -181,8 +209,8 @@ class CycleGANTrainer(BaseTrainer):
         # compute total loss for training attention generator for synthesis #
         self.netG_I.zero_grad()
         self.loss_G_I = self.synthesis_generator_loss(self.netD_I, self.cnn_encoder, self.fake_imgs, self.real_labels,
-                                           self.words_embs, self.sent_emb, self.match_labels,
-                                           self.right_caption_lengths, self.class_ids, self.opt)
+                                           self.real_words_embs, self.real_sent_emb, self.match_labels,
+                                           self.real_caption_lengths, self.class_ids)
         kl_loss = self.synthesis_kl_loss(self.mu, self.logvar)
         self.loss_G_I += kl_loss
 
@@ -190,9 +218,9 @@ class CycleGANTrainer(BaseTrainer):
         self.loss_G_S = self.caption_generator_loss(self.rewards, self.props)
 
         # compute perceptually cycle consistency loss using DAMSM
-        self.loss_cycle_S = self.cycle_consistency_loss(self.sent_emb, self.fake_sent_emb) * self.lambda_S
+        self.loss_cycle_S = self.cycle_consistency_loss(self.real_sent_emb, self.rec_sent_emb) * self.lambda_S
 
-        self.loss_cycle_I = self.cycle_consistency_loss(self.image_emb, self.fake_image_emb) * self.lambda_I
+        self.loss_cycle_I = self.cycle_consistency_loss(self.real_image_emb, self.rec_sent_emb) * self.lambda_I
 
         # backward and update parameters
         self.loss_G = self.loss_G_I + self.loss_G_S + self.loss_cycle_I + self.loss_cycle_S
@@ -219,18 +247,22 @@ class CycleGANTrainer(BaseTrainer):
     def get_current_visuals(self, vocab):
         """Return visualization images. train.py will display these images with visdom, and save the images to a HTML"""
         visual_ret = OrderedDict()
-        wordidarray = self.right_captions.detach().cpu().numpy()
-        for j, name in enumerate(self.visual_names):
+        caption_ret = OrderedDict()
+
+        for name in self.caption_names:
             if isinstance(name, str):
                 results = getattr(self, name)
-                if type(results) is list:
-                    for i, size in enumerate(['64', '128', '256']):
-                        title = name + '-' + size
-                        if i == 0 and j == 0 :
-                            title = convert_back_to_text(wordidarray[0], vocab)
-                        visual_ret[title] = results[i]
-                else:
-                    visual_ret[name] = results
+                results = results.detach().cpu().numpy()
+                for s in results
+                    caption_ret[name] = convert_back_to_text(, vocab)
+
+        count = 0
+        for vis_name, cap_name in zip(self.visual_names, self.caption_names):
+            if isinstance(vis_name, str):
+                results = getattr(self, vis_name)
+                results = results[-1]
+                title = caption_ret[cap_name] + '-' + str(count)
+                visual_ret[title] = results
 
         return visual_ret
 

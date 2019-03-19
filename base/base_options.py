@@ -20,12 +20,12 @@ class BaseOptions():
         """Define the common options that are used in both training and test."""
         # basic parameters
         parser.add_argument('--dataroot', default='data/', help='path to images')
-        parser.add_argument('--exp_name', type=str, default='AttnGAN', help='name of the experiment. It decides where to store samples and models')
+        parser.add_argument('--exp_name', type=str, default='CycleGAN', help='name of the experiment. It decides where to store samples and models')
         parser.add_argument('--checkpoints_dir', type=str, default='./saved', help='models are saved here')
         parser.add_argument('--n_gpu', type=int, default=8, help='number of gpu')
 
         # model parameters
-        parser.add_argument('--model', type=str, default='attngan', help='chooses which model to use. [attngan | captiongan | cyclegan]')
+        parser.add_argument('--model', type=str, default='cyclegan', help='chooses which model to use. [attngan | captiongan | cyclegan]')
 
 
         # parameters for attnGAN generator
