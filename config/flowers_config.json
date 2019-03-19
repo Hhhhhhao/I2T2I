@@ -10,7 +10,7 @@
                 "image_embed_size": 512,
                 "word_embed_size": 512,
                 "lstm_hidden_size":512,
-                "noise_dim":512,
+                "noise_dim":128,
                 "vocab_size":1302,
                 "lstm_num_layers":1,
                 "max_sentence_length":20
@@ -70,8 +70,6 @@
         "epochs": 50,
         "pretrain_generator_epochs":1,
         "pretrain_discriminator_epochs":1,
-        "lambda_1": 0.0,
-        "lambda_2": 1.0,
         "save_dir": "saved/",
         "save_period": 1,
         "verbosity": 2,

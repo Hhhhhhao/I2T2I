@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b3134c42-5a5c-4eae-8274-2ca6fc32ab15" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/rollout.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/rollout.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/trainer/gan_trainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/trainer/gan_trainer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/birds_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/birds_config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/flowers_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/flowers_config.json" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -25,33 +23,22 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="loss.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/model/loss.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="674">
-              <caret line="50" selection-start-line="50" selection-end-line="50" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="data_loaders.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/data_loader/data_loaders.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1560">
-              <caret line="83" column="23" selection-start-line="83" selection-start-column="23" selection-end-line="83" selection-end-column="23" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="test.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2340">
+            <state relative-caret-position="670">
               <caret line="129" column="60" selection-start-line="129" selection-start-column="60" selection-end-line="129" selection-end-column="60" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
             </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="gan_train.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/gan_train.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-283" />
           </provider>
         </entry>
       </file>
@@ -64,10 +51,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="model.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="model.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/model/model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="506">
+            <state relative-caret-position="-2093">
               <caret line="60" column="47" selection-start-line="60" selection-start-column="47" selection-end-line="60" selection-end-column="47" />
             </state>
           </provider>
@@ -78,6 +65,33 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="680">
               <caret line="55" column="49" selection-start-line="55" selection-start-column="49" selection-end-line="55" selection-end-column="49" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="birds_config.json" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/config/birds_config.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="240">
+              <caret line="12" column="31" selection-start-line="12" selection-start-column="31" selection-end-line="12" selection-end-column="31" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="coco_config.json" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/config/coco_config.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="510">
+              <caret line="69" column="19" selection-start-line="69" selection-start-column="19" selection-end-line="69" selection-end-column="19" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="flowers_config.json" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/config/flowers_config.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1420">
+              <caret line="71" column="42" selection-start-line="71" selection-start-column="42" selection-end-line="71" selection-end-column="42" />
             </state>
           </provider>
         </entry>
@@ -95,24 +109,6 @@
               <folding>
                 <element signature="e#12941#16217#0" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="datasets_custom.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/data_loader/datasets_custom.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="5920">
-              <caret line="304" column="31" selection-start-line="304" selection-start-column="17" selection-end-line="304" selection-end-column="31" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="birds_config.json" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/config/birds_config.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1360">
-              <caret line="68" column="6" selection-start-line="68" selection-start-column="6" selection-end-line="68" selection-end-column="6" />
             </state>
           </provider>
         </entry>
@@ -204,13 +200,13 @@
         <option value="$PROJECT_DIR$/model/loss.py" />
         <option value="$PROJECT_DIR$/train.py" />
         <option value="$PROJECT_DIR$/config/coco_config.json" />
-        <option value="$PROJECT_DIR$/config/flowers_config.json" />
-        <option value="$PROJECT_DIR$/config/birds_config.json" />
         <option value="$PROJECT_DIR$/data_loader/data_loaders.py" />
         <option value="$PROJECT_DIR$/test.py" />
         <option value="$PROJECT_DIR$/model/rollout.py" />
         <option value="$PROJECT_DIR$/trainer/gan_trainer.py" />
         <option value="$PROJECT_DIR$/model/model.py" />
+        <option value="$PROJECT_DIR$/config/birds_config.json" />
+        <option value="$PROJECT_DIR$/config/flowers_config.json" />
       </list>
     </option>
   </component>
@@ -665,35 +661,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/config/coco_config.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="510">
-          <caret line="69" column="19" selection-start-line="69" selection-start-column="19" selection-end-line="69" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/config/flowers_config.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="552">
-          <caret line="70" column="37" selection-start-line="70" selection-start-column="37" selection-end-line="70" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/config/birds_config.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1360">
-          <caret line="68" column="6" selection-start-line="68" selection-start-column="6" selection-end-line="68" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/train.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="380">
-          <caret line="28" column="34" selection-start-line="28" selection-start-column="34" selection-end-line="28" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/gan_train.py" />
     <entry file="file://$PROJECT_DIR$/data_loader/datasets_custom.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="5920">
@@ -705,16 +672,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1560">
           <caret line="83" column="23" selection-start-line="83" selection-start-column="23" selection-end-line="83" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2340">
-          <caret line="129" column="60" selection-start-line="129" selection-start-column="60" selection-end-line="129" selection-end-column="60" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -747,8 +704,51 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/model/model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="506">
+        <state relative-caret-position="-2093">
           <caret line="60" column="47" selection-start-line="60" selection-start-column="47" selection-end-line="60" selection-end-column="47" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/train.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="380">
+          <caret line="28" column="34" selection-start-line="28" selection-start-column="34" selection-end-line="28" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="670">
+          <caret line="129" column="60" selection-start-line="129" selection-start-column="60" selection-end-line="129" selection-end-column="60" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gan_train.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-283" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config/birds_config.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="12" column="31" selection-start-line="12" selection-start-column="31" selection-end-line="12" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config/coco_config.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="510">
+          <caret line="69" column="19" selection-start-line="69" selection-start-column="19" selection-end-line="69" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config/flowers_config.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1420">
+          <caret line="71" column="42" selection-start-line="71" selection-start-column="42" selection-end-line="71" selection-end-column="42" />
         </state>
       </provider>
     </entry>
