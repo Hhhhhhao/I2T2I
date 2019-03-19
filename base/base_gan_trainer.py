@@ -265,8 +265,8 @@ class BaseGANTrainer:
         self.mnt_best = checkpoint['monitor_best']
 
         # load architecture params from checkpoint.
-        if checkpoint['config']['generator_arch'] != self.config['generator_arch'] or\
-           checkpoint['config']['discriminator_arch'] != self.config['discriminator_arch']:
+        if checkpoint['config']['generator_arch'] != self.config['Generator'] or\
+           checkpoint['config']['discriminator_arch'] != self.config['Discriminator']:
             self.logger.warning(
                 'Warning: Architecture configuration given in config file is different from that of checkpoint. ' + \
                 'This may yield an exception while state_dict is being loaded.')
