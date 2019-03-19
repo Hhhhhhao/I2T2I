@@ -159,8 +159,6 @@ class Trainer(BaseGANTrainer):
             'metrics': (total_metrics / len(self.train_data_loader)).tolist()
         }
 
-        for p in self.generator.parameters():
-            p.requires_grad = True
         return log
 
     def _train_epoch(self, epoch):
@@ -335,13 +333,15 @@ class Trainer(BaseGANTrainer):
                 break
 
             batch_images = data["right_images_{}".format(self.image_size)].to(self.device)
-            batch_captions = data["right_captions"].to(self.device)
-            batch_caption_lengths = data["right_caption_lengths"].to(self.device)
+            batch_txt = data["right_txt"]
 
             if not os.path.exists('{0}/results/{1}_{2}'.format(self.checkpoint_dir, name, epoch)):
                 os.makedirs('{0}/results/{1}_{2}'.format(self.checkpoint_dir, name, epoch))
 
-            features = self.generator.feature_forward(batch_images, batch_captions, batch_caption_lengths)
+            if not os.path.exists('{0}/grount_truths/{1}_{2}'.format(self.checkpoint_dir, name, epoch)):
+                os.makedirs('{0}/grount_truths/{1}_{2}'.format(self.checkpoint_dir, name, epoch))
+
+            features = self.generator.feature_forward(batch_images)
             generator_captions = self.generator.feature_to_text(features)
 
             count = 0
@@ -349,6 +349,7 @@ class Trainer(BaseGANTrainer):
                 generated_sentence = convert_back_to_text(generated_caption, self.train_data_loader.dataset.vocab)
                 image = transform(image.cpu())
                 image.save('{0}/results/{1}_{2}/{3}_{4}.png'.format(self.checkpoint_dir, name, epoch, generated_sentence.replace("/", "")[:100], count))
+                image.save('{0}/grount_truths/{1}_{2}/{3}_{4}.png'.format(self.checkpoint_dir, name, epoch, batch_txt[count].replace("/", "")[:100], count))
                 count += 1
 
 
