@@ -58,7 +58,7 @@ class EncoderCNN(BaseModel):
         for p in self.resnet.parameters():
             p.requires_grad = False
         # If fine-tuning, only fine tune convolutional blocks 2 through 4
-        for c in list(self.resnet.children())[6:]:
+        for c in list(self.resnet.children())[4:]:
             for p in c.parameters():
                 p.requires_grad = fine_tune
 
@@ -206,7 +206,12 @@ class ConditionalGenerator(BaseModel):
         # return input featuers to LSTM and outputs from LSTM
         return image_features, features, outputs
 
-    def reward_forward(self, image_features, evaluator, monte_carlo_count=18):
+    def feature_forward(self, images):
+        image_features = self.encoder(images)
+        features = self.init_features(image_features)
+        return features
+
+    def reward_forward(self, images, evaluator, monte_carlo_count=18):
         '''
 
         :param image: image features from image encoder linear layer
@@ -214,7 +219,8 @@ class ConditionalGenerator(BaseModel):
         :param monte_carlo_count: monte carlo count
         :return:
         '''
-        batch_size = image_features.size(0)
+        batch_size = images.size(0)
+        image_features = self.encoder(images)
         features = self.init_features(image_features)
 
         # initialize inputs of start symbol
@@ -272,7 +278,7 @@ class ConditionalGenerator(BaseModel):
 
             inputs = self.decoder.embedding(predicted)
 
-            reward = self.rollout.reward(image_features, current_generated_captions, states, monte_carlo_count, evaluator)
+            reward = self.rollout.reward(images, current_generated_captions, states, monte_carlo_count, evaluator)
             rewards[:, i] = reward.view(-1)
 
         return rewards, props
@@ -354,6 +360,8 @@ class Evaluator(BaseModel):
         self.init_weights()
         self.sigmoid = nn.Sigmoid()
 
+        self.cnn_encoder = EncoderCNN(image_embed_size=sentence_embed_size)
+
     def init_weights(self):
         """
         Initializes some parameters with values from the uniform distribution, for easier convergence.
@@ -362,8 +370,11 @@ class Evaluator(BaseModel):
         self.linear.bias.data.fill_(0)
         self.linear.weight.data.uniform_(-0.1, 0.1)
 
-    def forward(self, image_features, captions, caption_lengths):
+    def forward(self, images, captions, caption_lengths):
         """ Calculate reward score: r = logistic(dot_prod(f, h))"""
+
+        image_features = self.cnn_encoder(images)
+
         if image_features.size(0) != captions.size(0):
             monte_carlo_count = int(captions.size(0) / image_features.size(0))
             image_features = image_features.repeat(monte_carlo_count, 1)

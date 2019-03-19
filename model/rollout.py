@@ -17,13 +17,13 @@ class Rollout:
         self.max_sentence_length = max_sentence_length
         self.output_linear = None
 
-    def reward(self, images_features, generated_captions, states, monte_carlo_count, evaluator, steps=1):
+    def reward(self, images, generated_captions, states, monte_carlo_count, evaluator, steps=1):
 
         assert monte_carlo_count % steps == 0, "Monte Carlo Count can't be divided by Steps"
         monte_carlo_count //= steps
 
         with torch.no_grad():
-            batch_size = images_features.size(0)
+            batch_size = images.size(0)
             result = torch.zeros(batch_size, 1).to(device)
             remaining = self.max_sentence_length - generated_captions.shape[1]
             h, c = states
@@ -53,7 +53,7 @@ class Rollout:
                 caption_lengths.to(device)
                 # caption_lengths = [self.max_sentence_length] * current_captions.size(0)
                 # captions = current_captions
-                reward = evaluator.forward(images_features, captions, caption_lengths)
+                reward = evaluator.forward(images, captions, caption_lengths)
                 reward = reward.view(batch_size, monte_carlo_count, -1).sum(1)
                 result += reward
                 result /= monte_carlo_count
