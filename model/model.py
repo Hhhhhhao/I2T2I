@@ -218,22 +218,22 @@ class ConditionalGenerator(BaseModel):
         features = self.init_features(image_features)
 
         # initialize inputs of start symbol
-        # h = features.unsqueeze(0)
-        # c = Variable(torch.zeros(batch_size, self.image_embed_size).unsqueeze(0)).to(device)
-        # states = h, c
+        h = features.unsqueeze(0)
+        c = Variable(torch.zeros(batch_size, self.image_embed_size).unsqueeze(0)).to(device)
+        states = h, c
 
-        # inputs = torch.zeros(batch_size, 1).long()
-        # current_generated_captions = inputs
-        # inputs = self.decoder.embedding(inputs.to(device))
+        inputs = torch.zeros(batch_size, 1).long()
+        current_generated_captions = inputs
+        inputs = self.decoder.embedding(inputs.to(device))
 
         # inputs = features.unsqueeze(1)
         # states = None
         # current_generated_captions = None
 
-        inputs = torch.zeros(batch_size, 1).long()
-        current_generated_captions = inputs
-        inputs = self.decoder.embedding(inputs.to(device))
-        _, states = self.decoder.lstm(features.unsqueeze(1))
+        # inputs = torch.zeros(batch_size, 1).long()
+        # current_generated_captions = inputs
+        # inputs = self.decoder.embedding(inputs.to(device))
+        # _, states = self.decoder.lstm(features.unsqueeze(1))
 
         rewards = torch.zeros(batch_size, self.max_sentence_length)
         rewards = rewards.to(device)

@@ -10,7 +10,7 @@
                 "image_embed_size": 512,
                 "word_embed_size": 512,
                 "lstm_hidden_size":512,
-                "noise_dim":100,
+                "noise_dim":512,
                 "vocab_size":1302,
                 "lstm_num_layers":1,
                 "max_sentence_length":20
