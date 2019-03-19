@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b3134c42-5a5c-4eae-8274-2ca6fc32ab15" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/trainer/gan_trainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/trainer/gan_trainer.py" afterDir="false" />
-    </list>
+    <list default="true" id="b3134c42-5a5c-4eae-8274-2ca6fc32ab15" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -85,10 +83,11 @@
       <file leaf-file-name="gan_trainer.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/trainer/gan_trainer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1490">
-              <caret line="239" column="18" selection-start-line="239" selection-start-column="18" selection-end-line="239" selection-end-column="18" />
+            <state relative-caret-position="846">
+              <caret line="256" selection-start-line="256" selection-end-line="256" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
+                <element signature="e#12138#15414#0" />
               </folding>
             </state>
           </provider>
@@ -200,7 +199,7 @@
   <component name="NodePackageJsonFileManager">
     <packageJsonPaths />
   </component>
-  <component name="ProjectFrameBounds" extendedState="1">
+  <component name="ProjectFrameBounds">
     <option name="x" value="45" />
     <option name="y" value="23" />
     <option name="width" value="1395" />
@@ -446,7 +445,7 @@
       <window_info anchor="right" id="Database" order="3" />
       <window_info anchor="right" id="SciView" order="3" />
       <window_info id="Structure" order="1" sideWeight="0.50259066" side_tool="true" weight="0.20400259" />
-      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.21796565" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.21796565" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -513,11 +512,6 @@
           <url>file://$PROJECT_DIR$/trainer/gan_trainer.py</url>
           <line>131</line>
           <option name="timeStamp" value="498" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/trainer/gan_trainer.py</url>
-          <line>195</line>
-          <option name="timeStamp" value="499" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/trainer/gan_trainer.py</url>
@@ -756,10 +750,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/trainer/gan_trainer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1490">
-          <caret line="239" column="18" selection-start-line="239" selection-start-column="18" selection-end-line="239" selection-end-column="18" />
+        <state relative-caret-position="846">
+          <caret line="256" selection-start-line="256" selection-end-line="256" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
+            <element signature="e#12138#15414#0" />
           </folding>
         </state>
       </provider>
