@@ -152,6 +152,7 @@ def get_end_symbol_index(caption_list):
     else:
         return len(caption_list)
 
+
 def get_caption_lengths(captions_list):
     caption_lengths = [get_end_symbol_index(caption) for caption in captions_list]
     caption_lengths.sort(reverse=True)

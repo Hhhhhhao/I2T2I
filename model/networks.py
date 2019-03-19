@@ -5,6 +5,7 @@ from torch.optim import lr_scheduler
 
 from model.attngan_modules import D_NET64, D_NET128, D_NET256, G_NET
 from model.damsm_modules import DAMSM_RNN_Encoder, DAMSM_CNN_Encoder
+from model.captiongan_modules import ConditionalGenerator, Evaluator
 
 dirname = os.path.dirname(__file__)
 main_dirname = os.path.dirname(dirname)
@@ -114,8 +115,11 @@ def define_G(opt, init_type='normal', init_gain=0.02, gpu_ids=[]):
     net = None
 
     if opt.netG == 'caption':
-        # TODO add caption generator
-        pass
+        net = ConditionalGenerator(
+                 image_embed_size=opt.image_embedding_dim,
+                 word_embed_size=opt.image_embedding_dim,
+                 noise_dim=opt.noise_dim,
+                 vocab_size=opt.vocab_size)
     elif opt.netG == 'synthesis':
         net = G_NET(opt)
     else:
@@ -137,10 +141,11 @@ def define_D(opt, init_type='normal', init_gain=0.02, gpu_ids=[]):
     net = None
 
     if opt.netD == 'caption':
-        # TODO add caption discriminator
-        pass
-        # TODO uncomment
-        # return init_net(net, init_type, init_gain, gpu_ids)
+        net = Evaluator(
+                 word_embed_size=opt.image_embedding_dim,
+                 sentence_embed_size=opt.image_embedding_dim,
+                 vocab_size=opt.vocab_size,)
+        return init_net(net, init_type, init_gain, gpu_ids)
     elif opt.netD == 'synthesis':  # more options
         net = []
         net_64 = D_NET64(opt)

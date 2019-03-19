@@ -27,17 +27,25 @@ class BaseOptions():
         # model parameters
         parser.add_argument('--model', type=str, default='attngan', help='chooses which model to use. [attngan | captiongan | cyclegan]')
 
+
+        # parameters for attnGAN generator
         parser.add_argument('--ngf', type=int, default=64, help='# of gen filters in the last conv layer')
-        parser.add_argument('--text_embedding_dim', type=int, default=256, help='text embedding dimension')
+        parser.add_argument('--text_embedding_dim', type=int, default=256, help='text embedding dimension of damsm')
         parser.add_argument('--condition_dim', type=int, default=128, help='condition augmentation dimension')
         parser.add_argument('--noise_dim', type=int, default=100, help='noise dim for generator')
         parser.add_argument('--branch_num', type=int, default=3, help='generate what size images [1 for 64 | 2 for 128 | 3 for 256]')
-
         parser.add_argument('--ndf', type=int, default=64, help='# of discrim filters in the first conv layer')
-        parser.add_argument('--netD', type=str, default='synthesis', help='specify discriminator architecture [caption | synthesis].')
-        parser.add_argument('--netG', type=str, default='synthesis', help='specify generator architecture [caption | synthesis]')
+        # parser.add_argument('--netD_I', type=str, default='synthesis', help='specify discriminator architecture [caption | synthesis].')
+        # parser.add_argument('--netG_I', type=str, default='synthesis', help='specify generator architecture [caption | synthesis]')
         parser.add_argument('--init_type', type=str, default='normal', help='network initialization [normal | xavier | kaiming | orthogonal]')
         parser.add_argument('--init_gain', type=float, default=0.02, help='scaling factor for normal, xavier and orthogonal.')
+
+
+        # parameters for image Caption GAN
+        # parser.add_argument('--netD_S', type=str, default='caption', help='specify discriminator architecture [caption | synthesis].')
+        # parser.add_argument('--netG_S', type=str, default='caption', help='specify generator architecture [caption | synthesis]')
+        parser.add_argument('--image_embedding_dim', type=int, default=256, help='image feature dimension for CaptGAN')
+
 
         # dataset parameters
         parser.add_argument('--dataset_name', type=str, default='flowers', help='chooses which datasets to loaded. [ birds | flowers | CoCo]')
