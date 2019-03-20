@@ -26,7 +26,7 @@ class EncoderCNN(BaseModel):
         # Remove average pooling layers
         modules = list(resnet.children())[:-3]
         self.resnet = nn.Sequential(*modules)
-        self.sa_layer = SelfAttention2d(256, 256)
+        # self.sa_layer = SelfAttention2d(256, 256)
         self.adaptive_pool = nn.AdaptiveAvgPool2d((adaptive_pool_size, adaptive_pool_size))
         self.fc_in_features = 256 * adaptive_pool_size ** 2
         self.linear = nn.Linear(self.fc_in_features, image_embed_size)
@@ -45,7 +45,7 @@ class EncoderCNN(BaseModel):
         """
 
         features = self.resnet(images)
-        features = self.sa_layer(features)
+        # features = self.sa_layer(features)
         features = self.adaptive_pool(features)
         features = features.view(features.size(0), -1)
         features = self.linear(features)
@@ -231,13 +231,14 @@ class ConditionalGenerator(BaseModel):
         # c = Variable(torch.zeros(batch_size, self.image_embed_size).unsqueeze(0)).to(device)
         # states = h, c
 
-        # inputs = torch.zeros(batch_size, 1).long()
-        # current_generated_captions = inputs
-        # inputs = self.decoder.embedding(inputs.to(device))
+        inputs = torch.zeros(batch_size, 1).long()
+        current_generated_captions = inputs
+        inputs = self.decoder.embedding(inputs.to(device))
+        _, states = self.decoder.lstm(features.unsqueeze(1))
 
-        inputs = features.unsqueeze(1)
-        states = None
-        current_generated_captions = None
+        # inputs = features.unsqueeze(1)
+        # states = None
+        # current_generated_captions = None
 
         # inputs = torch.zeros(batch_size, 1).long()
         # current_generated_captions = inputs
@@ -260,15 +261,14 @@ class ConditionalGenerator(BaseModel):
             # outputs of size (batch_size, vocab_size)
             outputs = F.softmax(outputs, -1)
 
-
-            if current_generated_captions is None:
-                predicted = outputs.argmax(1)
-                predicted = (predicted.unsqueeze(1)).long()
-                current_generated_captions = predicted.cpu()
-            else:
-                predicted = outputs.multinomial(1)
-                current_generated_captions = torch.cat([current_generated_captions, predicted.cpu()], dim=1)
-
+            #
+            # if current_generated_captions is None:
+            #     predicted = outputs.argmax(1)
+            #     predicted = (predicted.unsqueeze(1)).long()
+            #     current_generated_captions = predicted.cpu()
+            # else:
+            predicted = outputs.multinomial(1)
+            current_generated_captions = torch.cat([current_generated_captions, predicted.cpu()], dim=1)
 
             # use multinomial to random sample
             # if i == 0:
