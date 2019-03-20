@@ -316,7 +316,7 @@ class ConditionalGenerator(BaseModel):
             # represents a word
 
             # outputs of size (batch_size, vocab_size)
-            outputs = F.softmax(outputs, -1)
+            # outputs = F.softmax(outputs, -1)
 
             predicted = outputs.argmax(1)
             sampled_ids.append(predicted.item())
