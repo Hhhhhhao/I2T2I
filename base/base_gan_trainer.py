@@ -265,8 +265,8 @@ class BaseGANTrainer:
         self.mnt_best = checkpoint['monitor_best']
 
         # load architecture params from checkpoint.
-        if checkpoint['config']['Generator'] != self.config['Generator'] or\
-           checkpoint['config']['Discriminator'] != self.config['Discriminator']:
+        if checkpoint['config']['models']['Generator'] != self.config['models']['Generator'] or\
+           checkpoint['config']['models']['Discriminator'] != self.config['models']['Discriminator']:
             self.logger.warning(
                 'Warning: Architecture configuration given in config file is different from that of checkpoint. ' + \
                 'This may yield an exception while state_dict is being loaded.')
@@ -274,8 +274,8 @@ class BaseGANTrainer:
         self.discriminator.load_state_dict(checkpoint['discriminator_state_dict'])
 
         # load optimizer state from checkpoint only when optimizer type is not changed.
-        if checkpoint['config']['Generator']['optimizer']['type'] != self.config['optimizer']['Generator']['type'] \
-            or checkpoint['config']['Discriminator']['optimizer']['type'] != self.config['Discriminator']['optimizer']['type']:
+        if checkpoint['config']['models']['Generator']['optimizer']['type'] != self.config['models']['Generator']['optimizer']['type'] \
+            or checkpoint['config']['models']['Discriminator']['optimizer']['type'] != self.config['models']['Discriminator']['optimizer']['type']:
             self.logger.warning('Warning: Optimizer type given in config file is different from that of checkpoint. ' + \
                                 'Optimizer parameters not being resumed.')
         else:
