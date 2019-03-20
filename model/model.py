@@ -7,6 +7,7 @@ from torch.autograd import Variable
 from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 from base import BaseModel
 from model.rollout import Rollout
+from torchgan.layers import SelfAttention2d
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -25,6 +26,7 @@ class EncoderCNN(BaseModel):
         # Remove average pooling layers
         modules = list(resnet.children())[:-3]
         self.resnet = nn.Sequential(*modules)
+        self.sa_layer = SelfAttention2d(256, 256)
         self.adaptive_pool = nn.AdaptiveAvgPool2d((adaptive_pool_size, adaptive_pool_size))
         self.fc_in_features = 256 * adaptive_pool_size ** 2
         self.linear = nn.Linear(self.fc_in_features, image_embed_size)
@@ -43,6 +45,7 @@ class EncoderCNN(BaseModel):
         """
 
         features = self.resnet(images)
+        features = self.sa_layer(features)
         features = self.adaptive_pool(features)
         features = features.view(features.size(0), -1)
         features = self.linear(features)
@@ -257,12 +260,22 @@ class ConditionalGenerator(BaseModel):
             # outputs of size (batch_size, vocab_size)
             outputs = F.softmax(outputs, -1)
 
+
+            if current_generated_captions is None:
+                predicted = outputs.argmax(1)
+                predicted = (predicted.unsqueeze(1)).long()
+                current_generated_captions = predicted.cpu()
+            else:
+                predicted = outputs.multinomial(1)
+                current_generated_captions = torch.cat([current_generated_captions, predicted.cpu()], dim=1)
+
+
             # use multinomial to random sample
             # if i == 0:
             #     predicted = outputs.argmax(1)
             #     predicted = (predicted.unsqueeze(1)).long()
             # else:
-            predicted = outputs.multinomial(1)
+            # predicted = outputs.multinomial(1)
 
             # if torch.cuda.is_available():
             #   predicted = predicted.cuda()
@@ -271,10 +284,10 @@ class ConditionalGenerator(BaseModel):
             props[:, i] = prop.view(-1)
 
             # embed the next inputs, unsqueeze is required cause of shape (batch_size, vocab_size)
-            if current_generated_captions is None:
-                current_generated_captions = predicted.cpu()
-            else:
-                current_generated_captions = torch.cat([current_generated_captions, predicted.cpu()], dim=1)
+            # if current_generated_captions is None:
+            #     current_generated_captions = predicted.cpu()
+            # else:
+            #     current_generated_captions = torch.cat([current_generated_captions, predicted.cpu()], dim=1)
 
             inputs = self.decoder.embedding(predicted)
 
@@ -301,6 +314,10 @@ class ConditionalGenerator(BaseModel):
             outputs = self.decoder.linear(hiddens.squeeze(1))  # (batch_size, vocab_size)
             # Get the index (in the vocabulary) of the most likely integer that
             # represents a word
+
+            # outputs of size (batch_size, vocab_size)
+            outputs = F.softmax(outputs, -1)
+
             predicted = outputs.argmax(1)
             sampled_ids.append(predicted.item())
             inputs = self.decoder.embedding(predicted)

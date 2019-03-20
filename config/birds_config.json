@@ -7,8 +7,8 @@
             "type":"ConditionalGenerator",
             "pretrain_path": "saved/Image-Caption-GAN-Birds/0312_194953/hehe.pth",
             "args":{
-                "image_embed_size": 512,
-                "word_embed_size": 512,
+                "image_embed_size": 256,
+                "word_embed_size": 256,
                 "lstm_hidden_size":512,
                 "noise_dim":100,
                 "vocab_size":1044,
@@ -27,8 +27,8 @@
             "type": "Evaluator",
             "pretrain_path": "saved/Image-Caption-GAN-Birds/0312_194953/hehe.pth",
             "args": {
-                "word_embed_size": 512,
-                "sentence_embed_size": 512,
+                "word_embed_size": 256,
+                "sentence_embed_size": 256,
                 "lstm_hidden_size": 512,
                 "vocab_size": 1044,
                 "lstm_num_layers": 1
@@ -68,7 +68,7 @@
     "metrics": [],
     "trainer": {
         "epochs": 50,
-        "pretrain_generator_epochs":2,
+        "pretrain_generator_epochs":1,
         "pretrain_discriminator_epochs":1,
         "save_dir": "saved/",
         "save_period": 1,
