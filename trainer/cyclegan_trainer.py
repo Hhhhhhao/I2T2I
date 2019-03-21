@@ -216,12 +216,12 @@ class CycleGANTrainer(BaseTrainer):
         self.loss_G_S = self.caption_generator_loss(self.rewards, self.props)
 
         # compute perceptually cycle consistency loss using DAMSM
-        self.loss_cycle_S = self.cycle_consistency_loss(self.real_sent_emb, self.rec_sent_emb) * self.lambda_S
+        self.loss_Cycle_S = self.cycle_consistency_loss(self.real_sent_emb, self.rec_sent_emb) * self.lambda_S
 
-        self.loss_cycle_I = self.cycle_consistency_loss(self.real_image_emb, self.rec_sent_emb) * self.lambda_I
+        self.loss_Cycle_I = self.cycle_consistency_loss(self.real_image_emb, self.rec_sent_emb) * self.lambda_I
 
         # backward and update parameters
-        self.loss_G = self.loss_G_I + self.loss_G_S + self.loss_cycle_I + self.loss_cycle_S
+        self.loss_G = self.loss_G_I + self.loss_G_S + self.lambda_I * self.loss_Cycle_I + self.lambda_S * self.loss_Cycle_S
         self.loss_G.backward()
 
     def optimize_parameters(self):
