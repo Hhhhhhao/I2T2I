@@ -175,7 +175,7 @@ def define_DAMSM(opt, gpu_ids=[]):
     )
     cnn_encoder = DAMSM_CNN_Encoder(embedding_size=256)
 
-    if len(gpu_ids) > 1:
+    if len(gpu_ids) > 2:
         assert(torch.cuda.is_available())
         device = torch.device('cuda:0')
         rnn_encoder.to(gpu_ids[0])
