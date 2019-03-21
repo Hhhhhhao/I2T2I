@@ -364,8 +364,8 @@ class Evaluator(BaseModel):
         self.lstm = nn.LSTM(self.word_embed_size, self.lstm_hidden_size, num_layers=lstm_num_layers, bias=True, batch_first=True)
         self.linear = nn.Linear(lstm_hidden_size, sentence_embed_size)  # linear layer to find scores over vocabulary
         self.init_weights()
-        # self.sigmoid = nn.Sigmoid()
-        self.output_linear = nn.Linear(1, 1)
+        self.sigmoid = nn.Sigmoid()
+        # self.output_linear = nn.Linear(1, 1)
         self.cnn_encoder = EncoderCNN(image_embed_size=sentence_embed_size)
 
     def init_weights(self):
@@ -400,8 +400,8 @@ class Evaluator(BaseModel):
 
         dot_product = torch.bmm(image_features.unsqueeze(1), sentence_features.unsqueeze(1).transpose(2,1))
         dot_product = dot_product.unsqueeze(-1)
-        similarity = self.output_linear(dot_product)
-        # similarity = self.sigmoid(dot_product)
+        # similarity = self.output_linear(dot_product)
+        similarity = self.sigmoid(dot_product)
 
         # similarity = similarity
         return similarity
