@@ -31,8 +31,8 @@ class EvaluatorLoss(torch.nn.Module):
         super().__init__()
         self.alpha = alpha
         self.beta = beta
-        # self.loss = torch.nn.BCELoss()
-        self.loss = torch.nn.MSELoss()
+        self.loss = torch.nn.BCELoss()
+        # self.loss = torch.nn.MSELoss()
         n_gpu = torch.cuda.device_count()
         self.device = torch.device('cuda:0' if n_gpu > 0 else 'cpu')
 
