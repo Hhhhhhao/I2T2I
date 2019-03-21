@@ -175,13 +175,13 @@ def define_DAMSM(opt, gpu_ids=[]):
     )
     cnn_encoder = DAMSM_CNN_Encoder(embedding_size=256)
 
-    if len(gpu_ids) > 2:
+    if len(gpu_ids) > 1:
         assert(torch.cuda.is_available())
         device = torch.device('cuda:0')
         rnn_encoder.to(gpu_ids[0])
         cnn_encoder.to(gpu_ids[0])
-        rnn_encoder = torch.nn.DataParallel(rnn_encoder, gpu_ids)  # multi-GPUs
-        cnn_encoder = torch.nn.DataParallel(cnn_encoder, gpu_ids)
+        # rnn_encoder = torch.nn.DataParallel(rnn_encoder, gpu_ids)  # multi-GPUs
+        # cnn_encoder = torch.nn.DataParallel(cnn_encoder, gpu_ids)
     else:
         # # TODO add here for test on computer
         # rnn_encoder = torch.nn.DataParallel(rnn_encoder, gpu_ids)  # multi-GPUs
