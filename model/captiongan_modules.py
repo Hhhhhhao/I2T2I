@@ -263,11 +263,11 @@ class ConditionalGenerator(BaseModel):
 
             #
             # if current_generated_captions is None:
-            predicted = outputs.argmax(1)
-            predicted = (predicted.unsqueeze(1)).long()
+            # predicted = outputs.argmax(1)
+            # predicted = (predicted.unsqueeze(1)).long()
             #     current_generated_captions = predicted.cpu()
             # else:
-            # predicted = outputs.multinomial(1)
+            predicted = outputs.multinomial(1)
             current_generated_captions = torch.cat([current_generated_captions, predicted.cpu()], dim=1)
 
             # if torch.cuda.is_available():

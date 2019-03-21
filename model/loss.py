@@ -316,7 +316,7 @@ class CaptGANGeneratorLoss(torch.nn.Module):
         # TODO decide to take log or not
         # loss = rewards * torch.log(props)
         # loss = rewards * props
-        loss = -torch.mean(loss)
+        loss = -torch.sum(loss)
         return loss
 
 
@@ -327,7 +327,7 @@ class CaptGANDiscriminatorLoss(torch.nn.Module):
         self.alpha = alpha
         self.beta = beta
         # self.loss = torch.nn.BCELoss()
-        self.loss = torch.nn.BCELoss()
+        self.loss = torch.nn.CrossEntropyLoss()
         n_gpu = torch.cuda.device_count()
         self.device = torch.device('cuda:0' if n_gpu > 0 else 'cpu')
 
