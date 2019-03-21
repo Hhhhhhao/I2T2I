@@ -233,6 +233,10 @@ class G_NET(nn.Module):
         att_maps = []
         c_code, mu, logvar = self.ca_net(sent_emb)
 
+        if torch.cuda.is_available():
+            c_code = c_code.cuda()
+            z_code = z_code.cuda()
+
         if self.opt.branch_num  > 0:
             h_code1 = self.h_net1(z_code, c_code)
             fake_img1 = self.img_net1(h_code1)

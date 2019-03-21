@@ -102,8 +102,8 @@
       <file leaf-file-name="attngan_modules.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/model/attngan_modules.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="468">
-              <caret line="209" column="29" selection-start-line="209" selection-start-column="29" selection-end-line="209" selection-end-column="29" />
+            <state relative-caret-position="609">
+              <caret line="237" column="33" selection-start-line="237" selection-start-column="33" selection-end-line="237" selection-end-column="33" />
             </state>
           </provider>
         </entry>
@@ -130,7 +130,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>self.optimizers</find>
       <find>config</find>
       <find>opt</find>
       <find>ENVED</find>
@@ -160,6 +159,7 @@
       <find>right_caption_lengths</find>
       <find>verbose</find>
       <find>512</find>
+      <find>z_code</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -818,8 +818,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/model/attngan_modules.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="468">
-          <caret line="209" column="29" selection-start-line="209" selection-start-column="29" selection-end-line="209" selection-end-column="29" />
+        <state relative-caret-position="609">
+          <caret line="237" column="33" selection-start-line="237" selection-start-column="33" selection-end-line="237" selection-end-column="33" />
         </state>
       </provider>
     </entry>
