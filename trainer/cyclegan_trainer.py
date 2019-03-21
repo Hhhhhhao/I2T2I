@@ -168,7 +168,7 @@ class CycleGANTrainer(BaseTrainer):
         # words_embs: batch_size x nef x seq_len
         # sent_emb: batch_size x nef
         words_embs, sent_emb = self.rnn_encoder(captions, caption_lengths)
-        words_embs, sent_emb = words_embs.detach(), sent_emb.detach().cpu()
+        words_embs, sent_emb = words_embs.detach(), sent_emb.detach()
         mask = (captions == 0)
         num_words = words_embs.size(2)
         if mask.size(1) > num_words:

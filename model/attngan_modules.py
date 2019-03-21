@@ -7,6 +7,8 @@ import torch.nn.functional as F
 from base import BaseModel
 from model.global_attention_modules import GlobalAttentionGeneral as ATT_NET
 
+n_gpu = torch.cuda.device_count()
+device = torch.device('cuda:0' if n_gpu > 0 else 'cpu')
 
 class GLU(nn.Module):
     def __init__(self):
@@ -96,6 +98,8 @@ class CAEmbedding(BaseModel):
 
     def forward(self, text_embedding):
         mean, log_var = self.encode(text_embedding)
+        mean = mean.to(device)
+        log_var = log_var.to(device)
         c_code = self.reparametrize(mean, log_var)
         return c_code, mean, log_var
 

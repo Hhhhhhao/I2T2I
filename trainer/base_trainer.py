@@ -53,6 +53,7 @@ class BaseTrainer(ABC):
         setup GPU device if available, move model into configured device
         """
         n_gpu = torch.cuda.device_count()
+
         if n_gpu_use > 0 and n_gpu == 0:
             self.logger.warning("Warning: There\'s no GPU available on this machine, training will be performed on CPU.")
             n_gpu_use = 0
