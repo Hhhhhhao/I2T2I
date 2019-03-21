@@ -223,13 +223,13 @@ class ConditionalGenerator(BaseModel):
         features = self.init_features(image_features)
 
         # initialize inputs of start symbol
-        h = features.unsqueeze(0)
-        c = Variable(torch.zeros(batch_size, self.image_embed_size).unsqueeze(0)).to(device)
-        states = h, c
-
-        inputs = torch.zeros(batch_size, 1).long()
-        current_generated_captions = inputs
-        inputs = self.decoder.embedding(inputs.to(device))
+        # h = features.unsqueeze(0)
+        # c = Variable(torch.zeros(batch_size, self.image_embed_size).unsqueeze(0)).to(device)
+        # states = h, c
+        #
+        # inputs = torch.zeros(batch_size, 1).long()
+        # current_generated_captions = inputs
+        # inputs = self.decoder.embedding(inputs.to(device))
 
         # inputs = features.unsqueeze(1)
         # states = None
@@ -239,6 +239,11 @@ class ConditionalGenerator(BaseModel):
         # current_generated_captions = inputs
         # inputs = self.decoder.embedding(inputs.to(device))
         # _, states = self.decoder.lstm(features.unsqueeze(1))
+
+        inputs = torch.zeros(batch_size, 1).long()
+        current_generated_captions = inputs
+        inputs = self.decoder.embedding(inputs.to(device))
+        _, states = self.decoder.lstm(features.unsqueeze(1))
 
         rewards = torch.zeros(batch_size, self.max_sentence_length)
         rewards = rewards.to(device)
@@ -256,12 +261,14 @@ class ConditionalGenerator(BaseModel):
             # outputs of size (batch_size, vocab_size)
             outputs = F.softmax(outputs, -1)
 
-            # use multinomial to random sample
-            # if i == 0:
-            #     predicted = outputs.argmax(1)
-            #     predicted = (predicted.unsqueeze(1)).long()
+            #
+            # if current_generated_captions is None:
+            predicted = outputs.argmax(1)
+            predicted = (predicted.unsqueeze(1)).long()
+            #     current_generated_captions = predicted.cpu()
             # else:
-            predicted = outputs.multinomial(1)
+            # predicted = outputs.multinomial(1)
+            current_generated_captions = torch.cat([current_generated_captions, predicted.cpu()], dim=1)
 
             # if torch.cuda.is_available():
             #   predicted = predicted.cuda()
@@ -273,7 +280,7 @@ class ConditionalGenerator(BaseModel):
             # if current_generated_captions is None:
             #     current_generated_captions = predicted.cpu()
             # else:
-            current_generated_captions = torch.cat([current_generated_captions, predicted.cpu()], dim=1)
+            # current_generated_captions = torch.cat([current_generated_captions, predicted.cpu()], dim=1)
 
             inputs = self.decoder.embedding(predicted)
 
