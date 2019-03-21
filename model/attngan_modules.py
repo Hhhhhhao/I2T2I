@@ -98,8 +98,8 @@ class CAEmbedding(BaseModel):
 
     def forward(self, text_embedding):
         mean, log_var = self.encode(text_embedding)
-        mean = mean.to(device)
-        log_var = log_var.to(device)
+        # mean = mean.to(device)
+        # log_var = log_var.to(device)
         c_code = self.reparametrize(mean, log_var)
         return c_code, mean, log_var
 
