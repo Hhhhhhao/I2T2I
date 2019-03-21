@@ -326,15 +326,15 @@ class CaptGANDiscriminatorLoss(torch.nn.Module):
         super().__init__()
         self.alpha = alpha
         self.beta = beta
-        # self.loss = torch.nn.BCELoss()
+        self.loss = torch.nn.BCELoss()
         self.loss = torch.nn.CrossEntropyLoss()
         n_gpu = torch.cuda.device_count()
         self.device = torch.device('cuda:0' if n_gpu > 0 else 'cpu')
 
     def forward(self, evaluator_outputs, generator_outputs, other_outputs):
         batch_size = evaluator_outputs.size(0)
-        real_labels = torch.ones(batch_size, 1)
-        fake_labels = torch.zeros(batch_size, 1)
+        real_labels = torch.ones(batch_size, 1).astype(torch.LongTensor)
+        fake_labels = torch.zeros(batch_size, 1).astype(torch.LongTensor)
         real_labels = Variable(real_labels).to(self.device)
         fake_labels = Variable(fake_labels).to(self.device)
 
