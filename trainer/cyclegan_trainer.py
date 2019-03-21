@@ -247,22 +247,12 @@ class CycleGANTrainer(BaseTrainer):
     def get_current_visuals(self, vocab):
         """Return visualization images. train.py will display these images with visdom, and save the images to a HTML"""
         visual_ret = OrderedDict()
-        caption_ret = OrderedDict()
 
-        for name in self.caption_names:
-            if isinstance(name, str):
-                results = getattr(self, name)
-                results = results.detach().cpu().numpy()
-                for s in results
-                    caption_ret[name] = convert_back_to_text(, vocab)
-
-        count = 0
         for vis_name, cap_name in zip(self.visual_names, self.caption_names):
             if isinstance(vis_name, str):
                 results = getattr(self, vis_name)
                 results = results[-1]
-                title = caption_ret[cap_name] + '-' + str(count)
-                visual_ret[title] = results
+                visual_ret[vis_name] = results
 
         return visual_ret
 

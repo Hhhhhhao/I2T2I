@@ -58,10 +58,6 @@ def main(opt):
             model.set_input(data)         # unpack data from dataset and apply preprocessing
             model.optimize_parameters()   # calculate loss functions, get gradients, update network weights
 
-            save_result = total_iters % opt.update_html_freq == 0
-            model.compute_visuals()
-            visualizer.display_current_results(model.get_current_visuals(data_loader.dataset.vocab), epoch, save_result)
-
             if total_iters % opt.display_freq == 0:   # display images on visdom and save images to a HTML file
                 save_result = total_iters % opt.update_html_freq == 0
                 model.compute_visuals()

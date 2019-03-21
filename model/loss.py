@@ -327,7 +327,7 @@ class CaptGANDiscriminatorLoss(torch.nn.Module):
         self.alpha = alpha
         self.beta = beta
         # self.loss = torch.nn.BCELoss()
-        self.loss = torch.nn.MSELoss()
+        self.loss = torch.nn.BCELoss()
         n_gpu = torch.cuda.device_count()
         self.device = torch.device('cuda:0' if n_gpu > 0 else 'cpu')
 

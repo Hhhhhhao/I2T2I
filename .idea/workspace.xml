@@ -3,19 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="b3134c42-5a5c-4eae-8274-2ca6fc32ab15" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/base/base_options.py" beforeDir="false" afterPath="$PROJECT_DIR$/base/base_options.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cluster_experiment_scripts/attngan_birds.sh" beforeDir="false" afterPath="$PROJECT_DIR$/cluster_experiment_scripts/birds.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cluster_experiment_scripts/attngan_coco.sh" beforeDir="false" afterPath="$PROJECT_DIR$/cluster_experiment_scripts/coco.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cluster_experiment_scripts/attngan_flowers.sh" beforeDir="false" afterPath="$PROJECT_DIR$/cluster_experiment_scripts/flowers.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cluster_experiment_scripts/slurm-302888.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cluster_experiment_scripts/slurm-302889.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/captiongan_modules.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/captiongan_modules.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/model/loss.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/loss.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/train.py" beforeDir="false" afterPath="$PROJECT_DIR$/train.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/trainer/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/trainer/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/trainer/attngan_trainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/trainer/attngan_trainer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/trainer/cyclegan_trainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/trainer/cyclegan_trainer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/util.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/util.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -54,22 +44,26 @@
       <file leaf-file-name="loss.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/model/loss.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2844">
-              <caret line="340" column="60" selection-start-line="340" selection-start-column="60" selection-end-line="340" selection-end-column="60" />
-              <folding>
-                <element signature="e#5977#8597#0" />
-                <element signature="e#8645#12347#0" />
-                <element signature="e#12468#12767#0" />
-              </folding>
+            <state relative-caret-position="442">
+              <caret line="328" column="40" selection-start-line="328" selection-start-column="40" selection-end-line="328" selection-end-column="40" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="cyclegan_trainer.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="visualization.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/utils/visualization.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="762">
+              <caret line="219" column="64" selection-start-line="219" selection-start-column="64" selection-end-line="219" selection-end-column="64" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="cyclegan_trainer.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/trainer/cyclegan_trainer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="414">
-              <caret line="256" column="43" selection-start-line="256" selection-start-column="43" selection-end-line="256" selection-end-column="43" />
+            <state relative-caret-position="439">
+              <caret line="249" selection-start-line="249" selection-end-line="249" />
             </state>
           </provider>
         </entry>
@@ -77,7 +71,7 @@
       <file leaf-file-name="global_attention_modules.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/model/global_attention_modules.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="232">
+            <state relative-caret-position="960">
               <caret line="49" selection-start-line="49" selection-end-line="49" />
             </state>
           </provider>
@@ -86,8 +80,8 @@
       <file leaf-file-name="train.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/train.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="472">
-              <caret line="62" column="120" selection-start-line="62" selection-start-column="120" selection-end-line="62" selection-end-column="120" />
+            <state relative-caret-position="142">
+              <caret line="58" column="107" selection-start-line="58" selection-start-column="107" selection-end-line="58" selection-end-column="107" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -95,29 +89,31 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="base_data_loader.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/base/base_data_loader.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state>
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="base_options.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/base/base_options.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="472">
+              <caret line="60" column="29" selection-start-line="60" selection-start-column="29" selection-end-line="60" selection-end-column="38" />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="functional.py" pinned="false" current-in-tab="false">
         <entry file="file:///anaconda3/envs/I2T2I/lib/python3.6/site-packages/torch/nn/functional.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="658">
+            <state relative-caret-position="42240">
               <caret line="2128" selection-start-line="2128" selection-end-line="2128" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="attngan_modules.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/model/attngan_modules.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-421">
-              <caret line="52" column="24" selection-start-line="52" selection-start-column="15" selection-end-line="52" selection-end-column="24" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="rnn.py" pinned="false" current-in-tab="false">
-        <entry file="file:///anaconda3/envs/I2T2I/lib/python3.6/site-packages/torch/nn/modules/rnn.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="225">
-              <caret line="147" selection-start-line="147" selection-end-line="147" />
             </state>
           </provider>
         </entry>
@@ -125,7 +121,7 @@
       <file leaf-file-name="module.py" pinned="false" current-in-tab="false">
         <entry file="file:///anaconda3/envs/I2T2I/lib/python3.6/site-packages/torch/nn/modules/module.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="233">
+            <state relative-caret-position="10540">
               <caret line="534" selection-start-line="534" selection-end-line="534" />
             </state>
           </provider>
@@ -134,16 +130,9 @@
       <file leaf-file-name="captiongan_modules.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/model/captiongan_modules.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="430">
-              <caret line="395" column="39" selection-start-line="395" selection-start-column="39" selection-end-line="395" selection-end-column="39" />
+            <state relative-caret-position="339">
+              <caret line="234" column="3" lean-forward="true" selection-start-line="234" selection-start-column="3" selection-end-line="234" selection-end-column="3" />
             </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="networks.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/model/networks.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2907" />
           </provider>
         </entry>
       </file>
@@ -242,11 +231,11 @@
         <option value="$PROJECT_DIR$/base/base_options.py" />
         <option value="$PROJECT_DIR$/trainer/__init__.py" />
         <option value="$PROJECT_DIR$/trainer/attngan_trainer.py" />
-        <option value="$PROJECT_DIR$/model/loss.py" />
         <option value="$PROJECT_DIR$/utils/util.py" />
         <option value="$PROJECT_DIR$/model/captiongan_modules.py" />
-        <option value="$PROJECT_DIR$/train.py" />
+        <option value="$PROJECT_DIR$/model/loss.py" />
         <option value="$PROJECT_DIR$/trainer/cyclegan_trainer.py" />
+        <option value="$PROJECT_DIR$/train.py" />
       </list>
     </option>
   </component>
@@ -262,7 +251,7 @@
   <component name="ProjectFrameBounds">
     <option name="x" value="1440" />
     <option name="y" value="-157" />
-    <option name="width" value="1263" />
+    <option name="width" value="1628" />
     <option name="height" value="1049" />
   </component>
   <component name="ProjectLevelVcsManager">
@@ -486,7 +475,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1440" y="-157" width="1263" height="1049" extended-state="0" />
+    <frame x="1440" y="-157" width="1628" height="1049" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -496,7 +485,7 @@
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Python Console" order="7" />
       <window_info anchor="bottom" id="Terminal" order="7" />
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49793103" visible="true" weight="0.16134316" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49793103" visible="true" weight="0.12736444" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="right" id="Database" order="3" weight="0.32962963" />
       <window_info anchor="right" id="SciView" order="3" />
@@ -567,17 +556,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/trainer/cyclegan_trainer.py</url>
-          <line>251</line>
-          <option name="timeStamp" value="350" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/trainer/cyclegan_trainer.py</url>
-          <line>258</line>
-          <option name="timeStamp" value="351" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/trainer/cyclegan_trainer.py</url>
-          <line>264</line>
+          <line>254</line>
           <option name="timeStamp" value="352" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -602,15 +581,11 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/model/hdgan_modules.py" />
     <entry file="file://$PROJECT_DIR$/model/AttnGAN.py" />
     <entry file="file://$PROJECT_DIR$/base/base_model.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="99">
           <caret line="5" column="15" selection-start-line="5" selection-start-column="6" selection-end-line="5" selection-end-column="15" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -709,13 +684,6 @@
         <state relative-caret-position="-2223" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/utils/visualization.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2618">
-          <caret line="219" column="64" selection-start-line="219" selection-start-column="64" selection-end-line="219" selection-end-column="64" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/model/metric.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="480">
@@ -737,21 +705,11 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="20">
           <caret line="1" column="31" selection-start-line="1" selection-start-column="31" selection-end-line="1" selection-end-column="31" />
-          <folding>
-            <element signature="e#0#30#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/model/damsm_modules.py">
       <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/base/base_options.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="472">
-          <caret line="60" column="29" selection-start-line="60" selection-start-column="29" selection-end-line="60" selection-end-column="38" />
-        </state>
-      </provider>
     </entry>
     <entry file="file:///anaconda3/envs/I2T2I/lib/python3.6/site-packages/torch/optim/optimizer.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -775,78 +733,94 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/model/networks.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2907" />
-      </provider>
+      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/model/attngan_modules.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-421">
+        <state relative-caret-position="900">
           <caret line="52" column="24" selection-start-line="52" selection-start-column="15" selection-end-line="52" selection-end-column="24" />
         </state>
       </provider>
     </entry>
     <entry file="file:///anaconda3/envs/I2T2I/lib/python3.6/site-packages/torch/nn/modules/rnn.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
+        <state relative-caret-position="2760">
           <caret line="147" selection-start-line="147" selection-end-line="147" />
         </state>
       </provider>
     </entry>
     <entry file="file:///anaconda3/envs/I2T2I/lib/python3.6/site-packages/torch/nn/modules/module.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="233">
+        <state relative-caret-position="10540">
           <caret line="534" selection-start-line="534" selection-end-line="534" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/model/captiongan_modules.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="430">
-          <caret line="395" column="39" selection-start-line="395" selection-start-column="39" selection-end-line="395" selection-end-column="39" />
         </state>
       </provider>
     </entry>
     <entry file="file:///anaconda3/envs/I2T2I/lib/python3.6/site-packages/torch/nn/functional.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="658">
+        <state relative-caret-position="42240">
           <caret line="2128" selection-start-line="2128" selection-end-line="2128" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/model/global_attention_modules.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="232">
+        <state relative-caret-position="960">
           <caret line="49" selection-start-line="49" selection-end-line="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model/captiongan_modules.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="339">
+          <caret line="234" column="3" lean-forward="true" selection-start-line="234" selection-start-column="3" selection-end-line="234" selection-end-column="3" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/model/loss.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2844">
-          <caret line="340" column="60" selection-start-line="340" selection-start-column="60" selection-end-line="340" selection-end-column="60" />
-          <folding>
-            <element signature="e#5977#8597#0" />
-            <element signature="e#8645#12347#0" />
-            <element signature="e#12468#12767#0" />
-          </folding>
+        <state relative-caret-position="442">
+          <caret line="328" column="40" selection-start-line="328" selection-start-column="40" selection-end-line="328" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/utils/visualization.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="762">
+          <caret line="219" column="64" selection-start-line="219" selection-start-column="64" selection-end-line="219" selection-end-column="64" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/trainer/cyclegan_trainer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="439">
+          <caret line="249" selection-start-line="249" selection-end-line="249" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/train.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="472">
-          <caret line="62" column="120" selection-start-line="62" selection-start-column="120" selection-end-line="62" selection-end-column="120" />
+        <state relative-caret-position="142">
+          <caret line="58" column="107" selection-start-line="58" selection-start-column="107" selection-end-line="58" selection-end-column="107" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/trainer/cyclegan_trainer.py">
+    <entry file="file://$PROJECT_DIR$/base/base_data_loader.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="414">
-          <caret line="256" column="43" selection-start-line="256" selection-start-column="43" selection-end-line="256" selection-end-column="43" />
+        <state>
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/base/base_options.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="472">
+          <caret line="60" column="29" selection-start-line="60" selection-start-column="29" selection-end-line="60" selection-end-column="38" />
         </state>
       </provider>
     </entry>
