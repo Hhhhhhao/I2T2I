@@ -183,10 +183,12 @@ def define_DAMSM(opt, gpu_ids=[]):
         rnn_encoder = torch.nn.DataParallel(rnn_encoder, gpu_ids)  # multi-GPUs
         cnn_encoder = torch.nn.DataParallel(cnn_encoder, gpu_ids)
     else:
-        # TODO add here for test on computer
-        rnn_encoder = torch.nn.DataParallel(rnn_encoder, gpu_ids)  # multi-GPUs
-        cnn_encoder = torch.nn.DataParallel(cnn_encoder, gpu_ids)
+        # # TODO add here for test on computer
+        # rnn_encoder = torch.nn.DataParallel(rnn_encoder, gpu_ids)  # multi-GPUs
+        # cnn_encoder = torch.nn.DataParallel(cnn_encoder, gpu_ids)
         device = torch.device('cpu')
+        rnn_encoder.to(device)
+        cnn_encoder.to(device)
 
     if "d" in opt.dataset_name:  # birds
         resume_path = birds_damsm
