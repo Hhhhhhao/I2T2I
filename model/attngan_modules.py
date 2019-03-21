@@ -207,6 +207,7 @@ class G_NET(nn.Module):
         ncf = opt.condition_dim
         nz = opt.noise_dim
         self.ca_net = CAEmbedding(nef, ncf)
+        self.ca_net.to(device)
         self.opt = opt
 
         if opt.branch_num > 0:

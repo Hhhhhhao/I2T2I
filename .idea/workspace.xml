@@ -38,15 +38,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="metric.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/model/metric.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="480">
-              <caret line="27" lean-forward="true" selection-start-line="27" selection-end-line="27" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="global_attention_modules.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/model/global_attention_modules.py">
           <provider selected="true" editor-type-id="text-editor" />
@@ -76,10 +67,31 @@
       <file leaf-file-name="cyclegan_trainer.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/trainer/cyclegan_trainer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3020">
+            <state relative-caret-position="2744">
               <caret line="160" lean-forward="true" selection-start-line="160" selection-end-line="160" />
             </state>
           </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="networks.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/model/networks.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-72" />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="captiongan_modules.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/model/captiongan_modules.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="453">
+              <caret line="282" column="14" selection-start-line="282" selection-start-column="14" selection-end-line="282" selection-end-column="14" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="base_trainer.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/trainer/base_trainer.py">
+          <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
       <file leaf-file-name="attngan_trainer.py" pinned="false" current-in-tab="false">
@@ -90,8 +102,8 @@
       <file leaf-file-name="attngan_modules.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/model/attngan_modules.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="608">
-              <caret line="100" selection-start-line="100" selection-end-line="101" selection-end-column="38" />
+            <state relative-caret-position="468">
+              <caret line="209" column="29" selection-start-line="209" selection-start-column="29" selection-end-line="209" selection-end-column="29" />
             </state>
           </provider>
         </entry>
@@ -749,16 +761,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/model/networks.py" />
     <entry file="file://$PROJECT_DIR$/model/rollout_module.py" />
-    <entry file="file://$PROJECT_DIR$/trainer/base_trainer.py" />
-    <entry file="file://$PROJECT_DIR$/model/captiongan_modules.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="453">
-          <caret line="282" column="14" selection-start-line="282" selection-start-column="14" selection-end-line="282" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/base/base_data_loader.py">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -781,16 +784,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/trainer/cyclegan_trainer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3020">
-          <caret line="160" lean-forward="true" selection-start-line="160" selection-end-line="160" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/trainer/attngan_trainer.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/utils/data_processing.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="658">
@@ -798,10 +791,35 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/trainer/attngan_trainer.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/trainer/base_trainer.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/trainer/cyclegan_trainer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2744">
+          <caret line="160" lean-forward="true" selection-start-line="160" selection-end-line="160" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model/networks.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-72" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model/captiongan_modules.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="453">
+          <caret line="282" column="14" selection-start-line="282" selection-start-column="14" selection-end-line="282" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/model/attngan_modules.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="608">
-          <caret line="100" selection-start-line="100" selection-end-line="101" selection-end-column="38" />
+        <state relative-caret-position="468">
+          <caret line="209" column="29" selection-start-line="209" selection-start-column="29" selection-end-line="209" selection-end-column="29" />
         </state>
       </provider>
     </entry>
