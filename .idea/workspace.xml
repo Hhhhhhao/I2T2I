@@ -41,8 +41,8 @@
       <file leaf-file-name="loss.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/model/loss.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="462">
-              <caret line="329" column="10" selection-start-line="329" selection-start-column="10" selection-end-line="329" selection-end-column="10" />
+            <state relative-caret-position="602">
+              <caret line="336" column="48" lean-forward="true" selection-start-line="336" selection-start-column="48" selection-end-line="336" selection-end-column="48" />
             </state>
           </provider>
         </entry>
@@ -816,8 +816,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/model/loss.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="462">
-          <caret line="329" column="10" selection-start-line="329" selection-start-column="10" selection-end-line="329" selection-end-column="10" />
+        <state relative-caret-position="602">
+          <caret line="336" column="48" lean-forward="true" selection-start-line="336" selection-start-column="48" selection-end-line="336" selection-end-column="48" />
         </state>
       </provider>
     </entry>
