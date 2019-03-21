@@ -185,11 +185,9 @@ class CycleGANTrainer(BaseTrainer):
         generator_scores = self.netD_S(self.real_imgs[-1], self.fake_captions, self.fake_caption_lengths)
         other_scores = self.netD_S(self.real_imgs[-1], self.wrong_captions, self.wrong_caption_lengths)
         batch_size = evaluator_scores.size(0)
-        self.loss_D_S = self.caption_discriminator_loss(evaluator_scores.view(batch_size),
-                                                        generator_scores.view(batch_size),
-                                                        other_scores.view(batch_size),
-                                                        self.real_labels,
-                                                        self.fake_labels)
+        self.loss_D_S = self.caption_discriminator_loss(evaluator_scores.view(batch_size, -1),
+                                                        generator_scores.view(batch_size, -1),
+                                                        other_scores.view(batch_size, -1))
         self.loss_D_S.backward()
 
     def backward_D_I(self):
