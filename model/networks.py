@@ -85,7 +85,7 @@ def init_net(net, init_type='normal', init_gain=0.02, gpu_ids=[]):
         gpu_ids (int list) -- which GPUs the network runs on: e.g., 0,1,2
     Return an initialized network.
     """
-    if len(gpu_ids) > 0:
+    if len(gpu_ids) > 1:
         assert(torch.cuda.is_available())
         net.to(gpu_ids[0])
         net = torch.nn.DataParallel(net, gpu_ids)  # multi-GPUs
