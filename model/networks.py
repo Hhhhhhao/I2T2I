@@ -180,14 +180,12 @@ def define_DAMSM(opt, gpu_ids=[]):
         device = torch.device('cuda:0')
         rnn_encoder.to(gpu_ids[0])
         cnn_encoder.to(gpu_ids[0])
-        # rnn_encoder = torch.nn.DataParallel(rnn_encoder, gpu_ids)  # multi-GPUs
-        # cnn_encoder = torch.nn.DataParallel(cnn_encoder, gpu_ids)
+        rnn_encoder = torch.nn.DataParallel(rnn_encoder, gpu_ids)  # multi-GPUs
+        cnn_encoder = torch.nn.DataParallel(cnn_encoder, gpu_ids)
     else:
         # # TODO add here for test on computer
-        # rnn_encoder = torch.nn.DataParallel(rnn_encoder, gpu_ids)  # multi-GPUs
-        # cnn_encoder = torch.nn.DataParallel(cnn_encoder, gpu_ids)
-        # rnn_encoder = rnn_encoder.module()
-        # cnn_encoder
+        rnn_encoder = torch.nn.DataParallel(rnn_encoder, gpu_ids)  # multi-GPUs
+        cnn_encoder = torch.nn.DataParallel(cnn_encoder, gpu_ids)
         device = torch.device('cuda:0')
         rnn_encoder.to(device)
         cnn_encoder.to(device)
@@ -210,5 +208,5 @@ def define_DAMSM(opt, gpu_ids=[]):
     for p in cnn_encoder.parameters():
         p.requires_grad = False
 
-    return rnn_encoder, cnn_encoder
+    return rnn_encoder.module(), cnn_encoder.module()
 
