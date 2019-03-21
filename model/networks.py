@@ -85,12 +85,10 @@ def init_net(net, init_type='normal', init_gain=0.02, gpu_ids=[]):
         gpu_ids (int list) -- which GPUs the network runs on: e.g., 0,1,2
     Return an initialized network.
     """
-    if len(gpu_ids) > 1:
+    if len(gpu_ids) > 0:
         assert(torch.cuda.is_available())
         net.to(gpu_ids[0])
         net = torch.nn.DataParallel(net, gpu_ids)  # multi-GPUs
-    elif len(gpu_ids) == 1:
-        net.to(gpu_ids[0])
     init_weights(net, init_type, init_gain=init_gain)
     return net
 
@@ -177,7 +175,7 @@ def define_DAMSM(opt, gpu_ids=[]):
     )
     cnn_encoder = DAMSM_CNN_Encoder(embedding_size=256)
 
-    if len(gpu_ids) > 1:
+    if len(gpu_ids) > 0:
         assert(torch.cuda.is_available())
         device = torch.device('cuda:0')
         rnn_encoder.to(gpu_ids[0])
@@ -188,7 +186,7 @@ def define_DAMSM(opt, gpu_ids=[]):
         # # TODO add here for test on computer
         rnn_encoder = torch.nn.DataParallel(rnn_encoder, gpu_ids)  # multi-GPUs
         cnn_encoder = torch.nn.DataParallel(cnn_encoder, gpu_ids)
-        device = torch.device('cuda:0')
+        device = torch.device('cpu:0')
         rnn_encoder.to(device)
         cnn_encoder.to(device)
 

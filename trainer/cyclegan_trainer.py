@@ -149,15 +149,15 @@ class CycleGANTrainer(BaseTrainer):
         """ Forward through the generator of CaptGAN"""
         ####### Forward CaptGAN Generator #########
         # feature forward to get genrated captions for training the discriminator
-        features = self.netG_S.feature_forward(images)
-        fake_captions = self.netG_S.feature_to_text(features)
+        features = self.netG_S.module.feature_forward(images)
+        fake_captions = self.netG_S.module.feature_to_text(features)
         fake_captions, fake_caption_lengths = get_caption_lengths(fake_captions)
         fake_captions = fake_captions.detach()
         fake_captions.to(self.device)
         fake_caption_lengths.to(self.device)
 
         # reward forward for training CaptGAN generator
-        rewards, props = self.netG_S.reward_forward(images, self.netD_S, monte_carlo_count=18)
+        rewards, props = self.netG_S.module.reward_forward(images, self.netD_S, monte_carlo_count=18)
 
         return rewards, props, fake_captions, fake_caption_lengths
 
