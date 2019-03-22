@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b3134c42-5a5c-4eae-8274-2ca6fc32ab15" name="Default" comment="" />
+    <list default="true" id="b3134c42-5a5c-4eae-8274-2ca6fc32ab15" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/utils/util.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/util.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -21,20 +23,16 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="coco_config.json" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/config/coco_config.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="380">
-              <caret line="19" column="22" selection-start-line="19" selection-start-column="22" selection-end-line="19" selection-end-column="22" />
-            </state>
-          </provider>
+      <file leaf-file-name="visualization.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/utils/visualization.py">
+          <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
       <file leaf-file-name="train.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/train.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="756">
-              <caret line="85" column="29" selection-start-line="85" selection-start-column="29" selection-end-line="85" selection-end-column="29" />
+            <state relative-caret-position="147">
+              <caret line="34" selection-start-line="34" selection-end-line="39" selection-end-column="78" />
             </state>
           </provider>
         </entry>
@@ -42,8 +40,25 @@
       <file leaf-file-name="test.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/test.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-255">
-              <caret line="19" column="21" selection-start-line="19" selection-start-column="21" selection-end-line="19" selection-end-column="21" />
+            <state relative-caret-position="581">
+              <caret line="34" column="8" selection-start-line="34" selection-start-column="8" selection-end-line="34" selection-end-column="44" />
+              <folding>
+                <element signature="e#0#9#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="base_trainer.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/base/base_trainer.py">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file leaf-file-name="base_model.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/base/base_model.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="680">
+              <caret line="36" column="45" selection-start-line="36" selection-start-column="45" selection-end-line="36" selection-end-column="45" />
             </state>
           </provider>
         </entry>
@@ -51,11 +66,20 @@
       <file leaf-file-name="datasets_custom.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/data_loader/datasets_custom.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="380">
-              <caret line="27" column="35" selection-start-line="27" selection-start-column="35" selection-end-line="27" selection-end-column="35" />
+            <state relative-caret-position="-1464">
+              <caret line="288" selection-start-line="288" selection-end-line="292" selection-end-column="58" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="util.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/utils/util.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="649">
+              <caret line="168" column="42" selection-start-line="168" selection-start-column="42" selection-end-line="168" selection-end-column="42" />
             </state>
           </provider>
         </entry>
@@ -65,6 +89,22 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="200">
               <caret line="17" column="47" selection-start-line="17" selection-start-column="47" selection-end-line="17" selection-end-column="47" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="model.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/model/model.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-4656" />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="gan_trainer.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/trainer/gan_trainer.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-287">
+              <caret line="275" selection-start-line="275" selection-end-line="281" selection-end-column="9" />
             </state>
           </provider>
         </entry>
@@ -114,7 +154,6 @@
         <option value="$PROJECT_DIR$/base/__init__.py" />
         <option value="$PROJECT_DIR$/utils/local_utils.py" />
         <option value="$PROJECT_DIR$/utils/plot_utils.py" />
-        <option value="$PROJECT_DIR$/utils/util.py" />
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/model/model.py" />
         <option value="$PROJECT_DIR$/model/metric.py" />
@@ -128,6 +167,8 @@
         <option value="$PROJECT_DIR$/trainer/gan_trainer.py" />
         <option value="$PROJECT_DIR$/base/base_gan_trainer.py" />
         <option value="$PROJECT_DIR$/train.py" />
+        <option value="$PROJECT_DIR$/test.py" />
+        <option value="$PROJECT_DIR$/utils/util.py" />
       </list>
     </option>
   </component>
@@ -140,7 +181,7 @@
   <component name="NodePackageJsonFileManager">
     <packageJsonPaths />
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="1">
     <option name="x" value="1521" />
     <option name="y" value="-143" />
     <option name="width" value="1606" />
@@ -364,7 +405,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1521" y="-143" width="1606" height="1043" extended-state="0" />
+    <frame x="1521" y="-143" width="1606" height="1043" extended-state="1" />
     <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -374,7 +415,7 @@
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Python Console" order="7" />
       <window_info anchor="bottom" id="Terminal" order="7" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49846625" visible="true" weight="0.16815856" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49846625" visible="true" weight="0.17007673" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="right" id="Database" order="3" />
       <window_info anchor="right" id="SciView" order="3" />
@@ -393,24 +434,24 @@
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info id="Favorites" order="2" side_tool="true" />
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.12718447" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.21985058" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.32977587" />
-      <window_info anchor="bottom" id="Python Console" order="10" />
+      <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.38633937" />
       <window_info anchor="right" id="Database" order="4" />
       <window_info anchor="bottom" id="Terminal" order="11" />
       <window_info anchor="bottom" id="Event Log" order="12" side_tool="true" />
       <window_info anchor="bottom" id="Database Changes" order="9" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="right" id="SciView" order="3" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32977587" />
+      <window_info anchor="bottom" id="Python Console" order="10" />
     </layout-to-restore>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -591,21 +632,8 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/output/Deep-Attentional-Multimodal-Similarity-Birds/0226_204228/birds_config.json" />
-    <entry file="file://$PROJECT_DIR$/base/base_trainer.py" />
-    <entry file="file://$PROJECT_DIR$/base/base_model.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="680">
-          <caret line="36" column="45" selection-start-line="36" selection-start-column="45" selection-end-line="36" selection-end-column="45" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/utils/local_utils.py" />
     <entry file="file://$PROJECT_DIR$/utils/plot_utils.py" />
-    <entry file="file://$PROJECT_DIR$/utils/visualization.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-417" />
-      </provider>
-    </entry>
     <entry file="file:///anaconda3/envs/I2T2I/lib/python3.6/json/decoder.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="347">
@@ -617,13 +645,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="207">
           <caret line="128" selection-start-line="128" selection-end-line="128" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/utils/util.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="475">
-          <caret line="174" column="9" selection-start-line="174" selection-start-column="9" selection-end-line="174" selection-end-column="9" />
         </state>
       </provider>
     </entry>
@@ -659,25 +680,7 @@
     <entry file="file://$PROJECT_DIR$/model/damsm.py" />
     <entry file="file://$PROJECT_DIR$/cluster_experiment_scripts/hdgan_birds.sh" />
     <entry file="file://$PROJECT_DIR$/cluster_experiment_scripts/hdgan_flowers.sh" />
-    <entry file="file://$PROJECT_DIR$/trainer/gan_trainer.py" />
     <entry file="file://$PROJECT_DIR$/config/flowers_config.json" />
-    <entry file="file://$PROJECT_DIR$/utils/data_processing.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="200">
-          <caret line="17" column="47" selection-start-line="17" selection-start-column="47" selection-end-line="17" selection-end-column="47" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data_loader/datasets_custom.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="380">
-          <caret line="27" column="35" selection-start-line="27" selection-start-column="35" selection-end-line="27" selection-end-column="35" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/config/coco_config.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="380">
@@ -687,18 +690,69 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/config/birds_config.json" />
     <entry file="file://$PROJECT_DIR$/base/base_gan_trainer.py" />
-    <entry file="file://$PROJECT_DIR$/model/model.py" />
+    <entry file="file://$PROJECT_DIR$/base/base_trainer.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/base/base_model.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="680">
+          <caret line="36" column="45" selection-start-line="36" selection-start-column="45" selection-end-line="36" selection-end-column="45" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/utils/visualization.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
     <entry file="file://$PROJECT_DIR$/train.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="756">
-          <caret line="85" column="29" selection-start-line="85" selection-start-column="29" selection-end-line="85" selection-end-column="29" />
+        <state relative-caret-position="147">
+          <caret line="34" selection-start-line="34" selection-end-line="39" selection-end-column="78" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data_loader/datasets_custom.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1464">
+          <caret line="288" selection-start-line="288" selection-end-line="292" selection-end-column="58" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/utils/data_processing.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="200">
+          <caret line="17" column="47" selection-start-line="17" selection-start-column="47" selection-end-line="17" selection-end-column="47" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model/model.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-4656" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/utils/util.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="649">
+          <caret line="168" column="42" selection-start-line="168" selection-start-column="42" selection-end-line="168" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/trainer/gan_trainer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-287">
+          <caret line="275" selection-start-line="275" selection-end-line="281" selection-end-column="9" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/test.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-255">
-          <caret line="19" column="21" selection-start-line="19" selection-start-column="21" selection-end-line="19" selection-end-column="21" />
+        <state relative-caret-position="581">
+          <caret line="34" column="8" selection-start-line="34" selection-start-column="8" selection-end-line="34" selection-end-column="44" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
