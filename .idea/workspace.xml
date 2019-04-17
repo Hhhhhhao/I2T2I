@@ -40,8 +40,8 @@
       <file leaf-file-name="test.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/test.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-679">
-              <caret line="16" column="22" lean-forward="true" selection-start-line="16" selection-start-column="22" selection-end-line="16" selection-end-column="22" />
+            <state relative-caret-position="280">
+              <caret line="29" lean-forward="true" selection-start-line="29" selection-end-line="29" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -66,7 +66,7 @@
       <file leaf-file-name="datasets_custom.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/data_loader/datasets_custom.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="5600">
+            <state relative-caret-position="5760">
               <caret line="288" selection-start-line="288" selection-end-line="292" selection-end-column="58" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
@@ -179,11 +179,11 @@
   <component name="NodePackageJsonFileManager">
     <packageJsonPaths />
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="41" />
-    <option name="y" value="23" />
-    <option name="width" value="1399" />
-    <option name="height" value="877" />
+  <component name="ProjectFrameBounds">
+    <option name="x" value="153" />
+    <option name="y" value="68" />
+    <option name="width" value="1227" />
+    <option name="height" value="791" />
   </component>
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -403,7 +403,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="47" y="23" width="1393" height="877" extended-state="6" />
+    <frame x="153" y="68" width="1227" height="791" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -413,14 +413,14 @@
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Python Console" order="7" />
       <window_info anchor="bottom" id="Terminal" order="7" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49846625" visible="true" weight="0.19837157" />
-      <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49846625" visible="true" weight="0.23206751" />
       <window_info anchor="right" id="Database" order="3" />
       <window_info anchor="right" id="SciView" order="3" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.35102925" />
       <window_info id="Favorites" order="2" sideWeight="0.50153375" side_tool="true" weight="0.1661085" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -546,13 +546,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/coco/cocoapi/PythonAPI/pycocotools/coco.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="365">
-          <caret line="83" selection-start-line="83" selection-end-line="83" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/data/coco/cocoapi/PythonAPI/pycocotools/coco.py" />
     <entry file="file://$PROJECT_DIR$/.gitattributes">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="15">
@@ -710,7 +704,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/data_loader/datasets_custom.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5600">
+        <state relative-caret-position="5760">
           <caret line="288" selection-start-line="288" selection-end-line="292" selection-end-column="58" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
@@ -744,8 +738,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/test.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-679">
-          <caret line="16" column="22" lean-forward="true" selection-start-line="16" selection-start-column="22" selection-end-line="16" selection-end-column="22" />
+        <state relative-caret-position="280">
+          <caret line="29" lean-forward="true" selection-start-line="29" selection-end-line="29" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
